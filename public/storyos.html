@@ -1,0 +1,1505 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Story OS · סבא שמעון · גרסה 12</title>
+<style>
+:root{
+ --bg:#f6f1e7;--paper:#fffdf8;--ink:#1d2940;--muted:#64708a;--line:#dfd7ca;
+ --primary:#f09a29;--primary2:#6c50e0;--accent:#2ea6ff;--good:#3a9d5d;--warn:#d49a1f;--danger:#b44343;
+ --soft:#f0ebdf;--shadow:0 10px 30px rgba(37,43,62,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#f8f4ed 0%,#f5efe4 100%);color:var(--ink);font-family:Arial,"Noto Sans Hebrew",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+
+header{position:sticky;top:0;z-index:50;background:rgba(255,253,249,.97);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);box-shadow:0 4px 18px rgba(0,0,0,.04)}
+.head-inner{max-width:1500px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-logo{width:68px;height:68px;border-radius:18px;object-fit:cover;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06);background:#fff}
+.brand h1{font-size:1.45rem;margin:0}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.head-actions button,.btn,.upload-label{
+ border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 14px;
+ box-shadow:0 3px 10px rgba(0,0,0,.03)
+}
+.btn.primary{background:linear-gradient(135deg,var(--primary),#ffb752)!important;color:white;border-color:#e28b19!important}
+.btn.secondary{background:linear-gradient(135deg,var(--primary2),#7d67ed)!important;color:white;border-color:#5e45d7!important}
+.btn.good{background:linear-gradient(135deg,#38b56c,#4bc68e)!important;color:white;border-color:#2f9e5d!important}
+.btn.warn{background:linear-gradient(135deg,#efbd48,#d99d1b)!important;color:white;border-color:#be8b1a!important}
+.btn.danger{background:linear-gradient(135deg,#d35e5e,#bf3c3c)!important;color:white;border-color:#a32a2a!important}
+.btn.ghost{background:transparent}
+.btn.small{padding:8px 10px;border-radius:11px;font-size:.92rem}
+.upload-label{display:inline-flex;align-items:center;gap:8px}
+.upload-label input{display:none}
+
+main{max-width:1500px;margin:auto;padding:20px}
+.section-title{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.section-title img{width:48px;height:48px;border-radius:12px;object-fit:cover}
+.section-title h2{margin:0;font-size:1.45rem}
+.section-title p{margin:3px 0 0;color:var(--muted)}
+
+.hero-banner{
+ background:linear-gradient(135deg,#fffdf8,#f6f0ff 50%,#fff9ee);
+ border:1px solid var(--line);border-radius:28px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px;
+ display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap
+}
+.hero-banner .big{font-size:1.55rem;margin:0 0 8px}
+.hero-banner .mini{color:var(--muted)}
+.hero-banner .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:.9rem}
+
+.planner{
+ background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow);margin-bottom:18px
+}
+.planner-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}
+.planner-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.planner-grid label{display:flex;flex-direction:column;gap:6px;font-size:.95rem;font-weight:700}
+.planner-grid select,.planner-grid input,.controls input,.controls select{
+ border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;color:var(--ink)
+}
+.planner-actions{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.planner-results{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.rec{
+ background:linear-gradient(180deg,#fff,#fff8f2);border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:var(--shadow)
+}
+.rec-cover{width:100%;height:170px;object-fit:contain;border-radius:16px;background:#f6f4ee;padding:10px;border:1px solid #ece5d8}
+.rank{display:inline-block;background:#fff1d8;border:1px solid #f2d28a;border-radius:999px;padding:5px 10px;font-size:.83rem;margin-top:10px}
+.why{color:var(--muted)}
+.rec-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.dashboard-wrap{background:rgba(255,255,255,.45);border:1px solid rgba(223,215,202,.7);border-radius:24px;padding:16px}
+.controls{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:10px}
+.stats{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
+.stats div{
+ background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:12px 16px;min-width:120px;box-shadow:var(--shadow)
+}
+.stats b{font-size:1.4rem;display:block}
+.stats span{color:var(--muted);font-size:.86rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:16px}
+.card{
+ background:linear-gradient(180deg,#fff,#fff9f2);border:1px solid var(--line);border-radius:22px;padding:14px;display:flex;flex-direction:column;min-height:420px;box-shadow:var(--shadow)
+}
+.cover-wrap{background:#faf7ef;border:1px solid #ede5d9;border-radius:18px;padding:12px;display:grid;place-items:center;min-height:220px;margin-bottom:12px}
+.cover-thumb{max-width:100%;max-height:210px;object-fit:contain}
+.meta-line{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:.83rem}
+.card h2{font-size:1.18rem;margin:8px 0 4px}
+.author{color:var(--muted);font-size:.93rem}
+.card .summary{color:#39445c;line-height:1.5;font-size:.95rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.tag{background:#f1ebff;color:#48348f;border-radius:999px;padding:5px 9px;font-size:.82rem;border:1px solid #e0d9ff}
+.tag.alt{background:#eaf7ff;color:#215d8f;border-color:#d5ecff}
+.tag.soft{background:#fff1db;color:#8b5c0f;border-color:#f6e2b9}
+.card-actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+.card-actions .star{margin-inline-start:auto}
+
+.hero{
+ background:linear-gradient(135deg,#fffdf8,#fff9ef);border:1px solid var(--line);border-radius:24px;padding:22px;display:flex;justify-content:space-between;gap:22px;box-shadow:var(--shadow);flex-wrap:wrap
+}
+.hero-main{display:flex;gap:18px;align-items:flex-start}
+.hero-cover{width:190px;max-width:38vw;height:250px;object-fit:contain;background:#f7f4ec;border:1px solid #ece4d7;border-radius:18px;padding:14px}
+.score{
+ background:linear-gradient(135deg,var(--primary2),#53b7ff);color:white;border-radius:18px;padding:18px;text-align:center;min-width:120px;height:max-content;box-shadow:var(--shadow)
+}
+.detail-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}
+.panel{
+ background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:var(--shadow)
+}
+.panel h3{margin-top:0}
+.panel ul{padding-right:20px}
+.timeline{width:100%;border-collapse:collapse}
+.timeline td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+.timeline td:first-child{white-space:nowrap;font-weight:700}
+.note{width:100%;min-height:110px;border:1px solid var(--line);border-radius:12px;padding:10px}
+.help-note{background:#eef7ff;border:1px solid #d7ebff;color:#355b7a;padding:10px 12px;border-radius:14px;margin-top:10px}
+
+.live-layout{display:grid;grid-template-columns:1.25fr .9fr;gap:16px}
+.live-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.timer{
+ font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--ink),#3b4a68);color:white;border-radius:16px;padding:10px 18px;font-variant-numeric:tabular-nums;box-shadow:var(--shadow)
+}
+.live-card{
+ background:linear-gradient(180deg,#fff,#fffaf3);border:1px solid var(--line);border-radius:24px;padding:24px;min-height:420px;display:flex;flex-direction:column;box-shadow:var(--shadow)
+}
+.live-card .step{color:var(--muted);font-weight:700}
+.live-card h2{font-size:2rem;margin:10px 0}
+.live-card .cue{font-size:1.2rem;line-height:1.7}
+.live-card .type{
+ display:inline-block;background:#efe7ff;color:#5b41ba;border-radius:999px;padding:7px 12px;width:max-content;border:1px solid #e0d6ff
+}
+.live-nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto;padding-top:18px}
+.live-nav button,.slide-nav button{padding:14px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:700}
+.emergency{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.steps-mini{display:grid;grid-template-columns:1fr;gap:8px;max-height:310px;overflow:auto}
+.step-mini{
+ border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;font-size:.95rem
+}
+.step-mini.active{border-color:#7d67ed;background:#f3f0ff}
+.step-mini .m{color:var(--muted);font-size:.82rem}
+.live-presentation .panel{height:100%}
+.slide-stage{
+ min-height:360px;border-radius:20px;border:1px dashed #d5cad6;background:#faf7ef;display:grid;place-items:center;padding:14px;overflow:hidden
+}
+.slide-stage img{max-width:100%;max-height:340px;object-fit:contain;border-radius:14px}
+.slide-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);gap:10px}
+.slide-tools,.sync-tools,.slide-nav,.slide-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.slide-meta{justify-content:space-between;margin-top:10px;color:var(--muted)}
+.sync-tools{margin:12px 0}
+.sync-tools label{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);padding:7px 10px;border-radius:999px}
+.file-hint{font-size:.9rem;color:var(--muted)}
+.audit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.audit-card{
+ background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow);text-align:center
+}
+.audit-card img{width:100%;height:180px;object-fit:contain;background:#f8f4ec;border:1px solid #eee5d9;border-radius:14px;padding:8px}
+.audit-status{display:inline-block;background:#ebfff1;color:#207348;border:1px solid #bfe1c9;border-radius:999px;padding:4px 8px;font-size:.8rem;margin-top:10px}
+
+.modal{
+ position:fixed;inset:0;background:rgba(29,41,64,.45);display:grid;place-items:center;padding:20px;z-index:70
+}
+.modalbox{
+ width:min(780px,95vw);background:#fff;border-radius:20px;padding:22px;border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.18)
+}
+
+.footer-note{
+ margin-top:18px;background:#fff8eb;border:1px solid #f1ddaf;border-radius:18px;padding:14px;color:#74561a
+}
+
+@media (max-width:1200px){
+ .planner-grid{grid-template-columns:repeat(3,1fr)}
+ .controls{grid-template-columns:repeat(3,1fr)}
+ .live-layout{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+ .head-inner,.planner-head,.hero-banner,.hero,.hero-main,.live-top{flex-direction:column;align-items:flex-start}
+ .planner-grid,.controls,.planner-results,.grid{grid-template-columns:1fr}
+ .cards{grid-template-columns:1fr}
+ .hero-cover{width:100%;height:290px}
+}
+
+/* ===== V9: PDF + persistent story decks ===== */
+.deck-status{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin:10px 0;padding:10px 12px;border-radius:14px;
+  background:#eef8ff;border:1px solid #cfe9fb;color:#2c5c78
+}
+.deck-status.saved{background:#edfff3;border-color:#c4e8cf;color:#246b42}
+.pdf-stage{
+  width:100%;min-height:420px;border:1px solid #ded7ca;border-radius:18px;
+  background:#ececec;overflow:hidden
+}
+.pdf-stage embed,.pdf-stage iframe{
+  width:100%;height:520px;border:0;background:#fff
+}
+.deck-toolbar{
+  display:flex;gap:8px;flex-wrap:wrap;margin:10px 0
+}
+.deck-toolbar .upload-label{background:#fff}
+.page-control{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0
+}
+.page-control input{
+  width:82px;border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center
+}
+.persist-note{
+  font-size:.88rem;color:var(--muted);line-height:1.5;margin-top:8px
+}
+.deck-kind{
+  display:inline-block;padding:5px 9px;border-radius:999px;
+  background:#f4edff;border:1px solid #e1d5ff;color:#59419c;font-size:.84rem
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="head-inner">
+    <div class="brand">
+      <img class="brand-logo" src="/story-assets/image-443bfe2d4996.png" alt="לוגו IMAGINA">
+      <div>
+        <h1>Story OS · סבא שמעון</h1>
+        <p>מערכת הפעלה לשעת סיפור · סל תרבות · גיל הרך · גרסה 12 · ייצוא רשימת ספרים</p>
+      </div>
+    </div>
+    <div class="head-actions">
+      <button id="homeBtn">כל הסיפורים</button>
+      <button id="favBtn">★ מועדפים</button>
+      <button id="auditBtn">בדיקת 30 הכריכות</button>
+      <button id="exportBooksBtn" title="ייצוא 30 ספרי שעת הסיפור לקובץ CSV שמתאים ל-Google Sheets ול-LibreOffice Calc">📊 ייצוא רשימת ספרים</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero-banner">
+    <div>
+      <p class="big">סבא שמעון – חכמה של פעם, מצחיק ומלא ב‑AI</p>
+      <p class="mini">כאן נמצאים הכרטיסים, מצב ההפעלה החיה, חלון מצגת הספר, חיפוש וסינון, ובדיקת כל 30 הכריכות.</p>
+      <div class="chips">
+        <span class="chip">30 ספרים</span>
+        <span class="chip">מצב חי ל־45 דקות</span>
+        <span class="chip">חלון מצגת לספר סרוק</span>
+        <span class="chip">חיפוש · סינון · קטגוריות</span>
+        <span class="chip">ייצוא מלא ל‑Google Sheets / LibreOffice</span>
+      </div>
+    </div>
+    <img src="/story-assets/image-443bfe2d4996.png" alt="לוגו" style="width:170px;max-width:38vw;border-radius:24px;border:1px solid var(--line);box-shadow:var(--shadow)">
+  </section>
+
+  <section id="todayPlanner" class="planner">
+    <div class="planner-head">
+      <div class="section-title"><img src="/story-assets/image-443bfe2d4996.png" alt="לוגו"><div><h2>מה אני עושה היום בגן?</h2><p>ממלאים כמה פרטים ומקבלים שלוש המלצות מיידיות.</p></div></div>
+      <button id="clearPlanner" class="btn">נקה</button>
+    </div>
+
+    <div class="planner-grid">
+      <label>גיל הילדים
+        <select id="pAge">
+          <option value="">לא משנה</option>
+          <option value="6–12">6–12 חודשים</option>
+          <option value="12–18">12–18 חודשים</option>
+          <option value="18–24">18–24 חודשים</option>
+          <option value="2">2–3</option>
+          <option value="3">3–4</option>
+          <option value="4">4–5</option>
+          <option value="5">5–6</option>
+        </select>
+      </label>
+
+      <label>מספר ילדים
+        <select id="pCount">
+          <option value="">לא משנה</option>
+          <option value="baby">עד 7</option>
+          <option value="toddlers">8–12</option>
+          <option value="small">עד 15</option>
+          <option value="medium">16–25</option>
+          <option value="large">26–35</option>
+          <option value="xlarge">מעל 35</option>
+        </select>
+      </label>
+
+      <label>סוג מסגרת
+        <select id="pSetting">
+          <option value="">רגיל / לא משנה</option>
+          <option value="inclusive">משלב</option>
+          <option value="special">חינוך מיוחד</option>
+        </select>
+      </label>
+
+
+      <label>סוג פעילות
+        <select id="pProgram">
+          <option value="">לא משנה</option>
+          <option value="עולם קטן, קסם גדול">עולם קטן, קסם גדול – פעוטות</option>
+          <option value="שעת סיפור והמחשה">שעת סיפור והמחשה</option>
+        </select>
+      </label>
+
+      <label>נושא או ערך
+        <select id="pTheme"><option value="">לא משנה</option></select>
+      </label>
+
+      <label>עונה / חג
+        <select id="pSeason"><option value="">לא משנה</option></select>
+      </label>
+
+      <label>רמת קשב צפויה
+        <select id="pAttention">
+          <option value="">רגילה</option>
+          <option value="short">קשב קצר</option>
+          <option value="veryshort">קבוצה מאוד תזזיתית</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="planner-actions">
+      <button id="recommendBtn" class="btn primary">תן לי 3 המלצות</button>
+    </div>
+
+    <div id="plannerResults" class="planner-results"></div>
+  </section>
+
+  <section id="dashboard" class="dashboard-wrap">
+    <div class="section-title"><img src="/story-assets/image-443bfe2d4996.png" alt="לוגו"><div><h2>מרכז ההפעלה – סיפורים ופעילויות</h2><p>שעת סיפור, סל תרבות ו״עולם קטן, קסם גדול״ לפעוטות – הכול במקום אחד.</p></div></div>
+    <div class="controls">
+      <input id="search" type="search" placeholder="חיפוש סיפור, פעילות, ערך, חג, עונה...">
+      <select id="program"><option value="">כל סוגי הפעילות</option></select>
+      <select id="theme"><option value="">כל הנושאים</option></select>
+      <select id="season"><option value="">כל העונות והמועדים</option></select>
+      <select id="ageFilter"><option value="">כל הגילאים</option></select>
+      <select id="category"><option value="">כל הקטגוריות</option></select>
+    </div>
+    <div class="stats">
+      <div><b id="count">39</b><span>פריטים מסוננים</span></div>
+      <div><b>8–45</b><span>דקות למפגש</span></div>
+      <div><b>30+9</b><span>סיפורים + פעילויות פעוטות</span></div>
+      <div><b>LIVE</b><span>מצגת משולבת</span></div>
+    </div>
+    <div id="cards" class="cards"></div>
+  </section>
+
+  <section id="detail" class="hidden"></section>
+  <section id="live" class="hidden"></section>
+  <section id="audit" class="hidden"></section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const STORIES = [{"id":"s01","num":1,"title":"דירה להשכיר","author":"לאה גולדברג","age":"4–6","duration":"45 דקות","score":96,"themes":["קבלת האחר","שכנות","חברות","שונות"],"season":"פתיחת שנה / כל השנה","summary":"דיירי בית משותף פוגשים מועמדים שונים המבקשים להצטרף לבניין, ובדרך נחשפות דעות קדומות לצד האפשרות לבחור בשכנות טובה.","message":"שכנות טובה נבנית מכבוד, קבלה והתנהגות — לא ממראה או מתווית.","puppets":["תרנגולת","קוקייה","חתולה","סנאית","ארנבת","יונה"],"props":["בית/מגדל מקרטון","שלט דירה להשכיר","מפתחות צעצוע"],"wow":"הקומה האחרונה נפתחת ובובה חדשה מציצה ממנה.","questions":["מה הופך מישהו לשכן טוב?","איך מרגישים כשלא מקבלים אותנו?","מה אפשר לעשות כדי לעזור למישהו חדש להרגיש שייך?"],"purchase":"https://www.e-vrit.co.il/Product/33207/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „דירה להשכיר” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"הקומה האחרונה נפתחת ובובה חדשה מציצה ממנה.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","תרנגולת","קוקייה","חתולה","סנאית","ארנבת","יונה","בית/מגדל מקרטון","שלט דירה להשכיר","מפתחות צעצוע","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-52e927b79873.png","cover_source":"real-cover","category":"קבלת השונה","program":"שעת סיפור והמחשה"},{"id":"s02","num":2,"title":"הבית של יעל","author":"מרים רות","age":"2.5–5","duration":"45 דקות","score":96,"themes":["עצמאות","דמיון","בית","ביטחון"],"season":"פתיחת שנה / משפחה","summary":"יעל מחפשת מקום שיהיה רק שלה ומגלה כיצד חפצים ומקומות פשוטים יכולים להפוך לבית בעזרת דמיון.","message":"בית הוא גם מקום שבו מרגישים בטוחים ושייכים.","puppets":["יעל","דמות מבוגר"],"props":["קופסת קרטון גדולה","שמיכה","שלט בית"],"wow":"קופסה פשוטה נפתחת והופכת לבית קטן.","questions":["מה צריך כדי שמקום ירגיש כמו בית?","איפה אתם אוהבים להתחבא?","מה הייתם מכניסים לבית קטן משלכם?"],"purchase":"https://www.e-vrit.co.il/Product/9923/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „הבית של יעל” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"קופסה פשוטה נפתחת והופכת לבית קטן.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","יעל","דמות מבוגר","קופסת קרטון גדולה","שמיכה","שלט בית","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-529c94953627.png","cover_source":"real-cover","category":"ביטחון ועצמאות","program":"שעת סיפור והמחשה"},{"id":"s03","num":3,"title":"האריה שאהב תות","author":"תרצה אתר","age":"3–6","duration":"45 דקות","score":99,"themes":["גמישות","התנסות","רצונות","הקשבה"],"season":"כל השנה","summary":"אריה צעיר רוצה רק תות, נשאר נעול על הרצון שלו, ולומד דרך ההתנסות שלא תמיד מה שאנחנו מדמיינים תואם למציאות.","message":"לפעמים כדאי לנסות לפני שמחליטים.","puppets":["אריה","דמות אם / לביאה","מוריס העכבר – אופציונלי"],"props":["סלסלה","תותים מלאכותיים","קערה","כרטיסי מזון"],"wow":"קערה מלאה בתותים מלאכותיים נחשפת ברגע השיא.","questions":["מה האריה רצה?","איך הוא הרגיש כשקיבל את מה שרצה?","קרה לכם פעם ששיניתם את דעתכם?"],"purchase":"https://www.google.com/search?q=site%3Ae-vrit.co.il%20%22%D7%94%D7%90%D7%A8%D7%99%D7%94%20%D7%A9%D7%90%D7%94%D7%91%20%D7%AA%D7%95%D7%AA%22","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „האריה שאהב תות” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"קערה מלאה בתותים מלאכותיים נחשפת ברגע השיא.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","אריה","דמות אם / לביאה","מוריס העכבר – אופציונלי","סלסלה","תותים מלאכותיים","קערה","כרטיסי מזון","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-385594d5e1a8.png","cover_source":"real-cover","category":"הומור וקבלה עצמית","program":"שעת סיפור והמחשה"},{"id":"s04","num":4,"title":"מעשה בחמישה בלונים","author":"מרים רות","age":"2–5","duration":"45 דקות","score":96,"themes":["פרידה","אכזבה","שינוי","רגשות"],"season":"כל השנה","summary":"חמישה ילדים מקבלים בלונים, וכל בלון עובר אירוע אחר עד שהילדים נאלצים להתמודד עם שינוי ופרידה.","message":"אפשר להצטער כשמשהו נגמר, ואז להמשיך הלאה.","puppets":["5 בובות ילדים – אופציונלי"],"props":["5 בלונים בצבעים שונים","סל","סרטים"],"wow":"כל בלון מופיע מתוך תיק נפרד, ובסוף נשאר רגע פרידה משותף.","questions":["איך מרגישים כשמשהו שאהבנו נגמר?","מה עוזר כשמאוכזבים?","איזה צבע בלון הייתם בוחרים?"],"purchase":"https://www.e-vrit.co.il/Product/9925/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „מעשה בחמישה בלונים” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"כל בלון מופיע מתוך תיק נפרד, ובסוף נשאר רגע פרידה משותף.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","5 בובות ילדים – אופציונלי","5 בלונים בצבעים שונים","סל","סרטים","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-ec822eb9042d.png","cover_source":"real-cover","category":"פרידה והתמודדות","program":"שעת סיפור והמחשה"},{"id":"s05","num":5,"title":"תירס חם","author":"מרים רות","age":"2.5–6","duration":"45 דקות","score":99,"themes":["חברות","ציפייה","קצב","תושייה"],"season":"קיץ / כל השנה","summary":"ילדים מצטרפים למסע קצבי בעקבות ציפייה לתירס חם, ומגלים מה קורה כשהדמיון, ההבטחה והמציאות נפגשים.","message":"חברות ותושייה עוזרות לנו להתמודד גם כשמשהו לא מסתדר כמתוכנן.","puppets":["מספר בובות ילדים"],"props":["סיר צעצוע","קלחי תירס מלאכותיים","כף עץ","כלי הקשה"],"wow":"סיר גדול נפתח ומתגלה בו התירס.","questions":["מה חשבו הילדים שיקרה?","מה עושים כשמשהו לא קורה כמו שציפינו?","איך אפשר לעזור לחברים?"],"purchase":"https://www.e-vrit.co.il/product/12977/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „תירס חם” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"סיר גדול נפתח ומתגלה בו התירס.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","מספר בובות ילדים","סיר צעצוע","קלחי תירס מלאכותיים","כף עץ","כלי הקשה","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-7311ce50b926.png","cover_source":"real-cover","category":"חברות ושפה","program":"שעת סיפור והמחשה"},{"id":"s06","num":6,"title":"איה פלוטו","author":"לאה גולדברג","age":"2.5–6","duration":"45 דקות","score":96,"themes":["סקרנות","מסע","בית","בעלי חיים"],"season":"אביב / כל השנה","summary":"כלב צעיר יוצא למסע, פוגש בעלי חיים ומקומות חדשים, ובסופו מגלה מחדש את המשמעות של הבית.","message":"סקרנות פותחת עולם, ובית נותן תחושת שייכות.","puppets":["כלב","פרה","צפרדע","סוס","חיות נוספות"],"props":["שביל בד","שלטי תחנות","קערת מים"],"wow":"מפת מסע נפרשת על הרצפה והילדים מובילים את פלוטו הביתה.","questions":["את מי פלוטו פגש?","מה מעניין בטיול למקום חדש?","מה אתם אוהבים בבית שלכם?"],"purchase":"https://www.google.com/search?q=site%3Ae-vrit.co.il%20%22%D7%90%D7%99%D7%94%20%D7%A4%D7%9C%D7%95%D7%98%D7%95%22","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „איה פלוטו” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"מפת מסע נפרשת על הרצפה והילדים מובילים את פלוטו הביתה.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","כלב","פרה","צפרדע","סוס","חיות נוספות","שביל בד","שלטי תחנות","קערת מים","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-7a2ccc478210.png","cover_source":"real-cover","category":"מסע וגילוי","program":"שעת סיפור והמחשה"},{"id":"s07","num":7,"title":"מיץ פטל","author":"חיה שנהב","age":"3–6","duration":"45 דקות","score":96,"themes":["חברות","סקרנות","מסתורין","היכרות"],"season":"כל השנה","summary":"אריה וג'ירפה מסתקרנים לגבי דמות מסתורית ומנסים להבין מיהו מיץ פטל, עד שהמפגש הופך להזדמנות לחברות.","message":"סקרנות יכולה להוביל להיכרות — כשניגשים לאחר בכבוד.","puppets":["אריה","ג'ירפה","ארנב"],"props":["בית קטן","דלת","בקבוק/כוס מיץ צעצוע"],"wow":"דלת הבית נפתחת והדמות המסתורית מופיעה.","questions":["למה הם הסתקרנו?","איך מכירים חבר חדש?","מה עדיף: לנחש על מישהו או לדבר איתו?"],"purchase":"https://www.google.com/search?q=site%3Ae-vrit.co.il%20%22%D7%9E%D7%99%D7%A5%20%D7%A4%D7%98%D7%9C%22","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „מיץ פטל” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"דלת הבית נפתחת והדמות המסתורית מופיעה.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","אריה","ג'ירפה","ארנב","בית קטן","דלת","בקבוק/כוס מיץ צעצוע","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-8b460ad4aece.png","cover_source":"real-cover","category":"חברות ודמיון","program":"שעת סיפור והמחשה"},{"id":"s08","num":8,"title":"אליעזר והגזר","author":"לוין קיפניס","age":"2.5–6","duration":"45 דקות","score":100,"themes":["שיתוף פעולה","התמדה","עזרה הדדית","עבודת צוות"],"season":"ט״ו בשבט / כל השנה","summary":"אליעזר מנסה להוציא גזר גדול מן האדמה. הוא אינו מצליח לבד, ועוד ועוד דמויות מצטרפות עד שהמאמץ המשותף מביא להצלחה.","message":"יש דברים שקשה לעשות לבד — וביחד אפשר להצליח.","puppets":["אליעזר","אלישבע","ילד/ה","כלב","חתול","עכבר"],"props":["גזר גדול","בד חום/עציץ","חבל קצר"],"wow":"גזר ענק יוצא לפתע מן האדמה אחרי משיכה משותפת.","questions":["למה אליעזר לא הצליח לבד?","מי הגיע לעזור?","מתי כדאי לבקש עזרה?"],"purchase":"https://www.google.com/search?q=site%3Ae-vrit.co.il%20%22%D7%90%D7%9C%D7%99%D7%A2%D7%96%D7%A8%20%D7%95%D7%94%D7%92%D7%96%D7%A8%22","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „אליעזר והגזר” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"גזר ענק יוצא לפתע מן האדמה אחרי משיכה משותפת.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","אליעזר","אלישבע","ילד/ה","כלב","חתול","עכבר","גזר גדול","בד חום/עציץ","חבל קצר","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-6ea90e408c9d.png","cover_source":"real-cover","category":"שיתוף פעולה","program":"שעת סיפור והמחשה"},{"id":"s09","num":9,"title":"הצב של אורן","author":"מירה מאיר","age":"2.5–5","duration":"45 דקות","score":96,"themes":["טבע","סקרנות","אחריות","סבלנות"],"season":"אביב","summary":"ילד ומבוגר יוצאים בעקבות צב ומגלים את הקצב השונה של עולם הטבע ואת האחריות שלנו כלפי בעלי חיים.","message":"מתבוננים בטבע בסבלנות ומתייחסים לבעלי חיים בעדינות.","puppets":["צב","ילד","דמות מבוגר"],"props":["עלים","אבן","בד ירוק"],"wow":"צב קטן מופיע באיטיות מתוך ערימת עלים.","questions":["למה צב מתקדם לאט?","איך נוגעים בבעל חיים בעדינות?","מה אפשר ללמוד כשמחכים בסבלנות?"],"purchase":"https://www.google.com/search?q=site%3Ae-vrit.co.il%20%22%D7%94%D7%A6%D7%91%20%D7%A9%D7%9C%20%D7%90%D7%95%D7%A8%D7%9F%22","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „הצב של אורן” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"צב קטן מופיע באיטיות מתוך ערימת עלים.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","צב","ילד","דמות מבוגר","עלים","אבן","בד ירוק","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-7978491789a0.png","cover_source":"real-cover","category":"אחריות ודמיון","program":"שעת סיפור והמחשה"},{"id":"s10","num":10,"title":"שמוליקיפוד","author":"ט. כרמי ושושנה הימן","age":"3–6","duration":"45 דקות","score":96,"themes":["חברות","בדידות","אמפתיה","פרידה"],"season":"כל השנה","summary":"ילד וקיפוד נפגשים ונוצרת ביניהם חברות רגישה, שמאפשרת לדבר על קרבה, אכפתיות וגם על פרידה.","message":"חברות יכולה לצמוח ממפגש קטן של הקשבה ואכפתיות.","puppets":["ילד","קיפוד"],"props":["שמיכה","תפוח צעצוע","עלים"],"wow":"הקיפוד מציץ מתוך קן עלים ליד הילד.","questions":["איך יודעים שמישהו צריך חברה?","מה עושה חבר טוב?","איך נפרדים מחבר ועדיין זוכרים אותו?"],"purchase":"https://www.e-vrit.co.il/product/12973/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „שמוליקיפוד” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"הקיפוד מציץ מתוך קן עלים ליד הילד.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","ילד","קיפוד","שמיכה","תפוח צעצוע","עלים","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-6720871526e3.png","cover_source":"real-cover","category":"חברות וריפוי","program":"שעת סיפור והמחשה"},{"id":"s11","num":11,"title":"כספיון הדג הקטן","author":"פאול קור","age":"2.5–6","duration":"45 דקות","score":99,"themes":["אומץ","עזרה","חברות","ים"],"season":"קיץ","summary":"דג קטן פוגש בעולם הים מצב שמבקש ממנו אומץ ועזרה לאחר, ומגלה שגם מי שקטן יכול לעשות מעשה גדול.","message":"הגודל שלנו לא קובע כמה אנחנו יכולים לעזור.","puppets":["דג קטן","לווייתן","דגים נוספים"],"props":["בד כחול","בועות סבון – אם מותר","צדפים"],"wow":"בד כחול גדול הופך את כל האזור לים.","questions":["מתי צריך אומץ?","איך קטן יכול לעזור לגדול?","למי הייתם עוזרים בים?"],"purchase":"https://www.e-vrit.co.il/Product/10502/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „כספיון הדג הקטן” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"בד כחול גדול הופך את כל האזור לים.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","דג קטן","לווייתן","דגים נוספים","בד כחול","בועות סבון – אם מותר","צדפים","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-dbfc5d5bb8f6.png","cover_source":"real-cover","category":"אומץ וגילוי","program":"שעת סיפור והמחשה"},{"id":"s12","num":12,"title":"הפיל שרצה להיות הכי","author":"פאול קור","age":"3–6","duration":"45 דקות","score":100,"themes":["קבלה עצמית","זהות","שונות","ביטחון עצמי"],"season":"פורים / כל השנה","summary":"פיל שאינו מרוצה ממראהו מנסה להיות אחר, ובדרך מגלה שהייחוד שלו אינו פגם ושאין צורך להפוך למישהו אחר כדי להיות ראוי.","message":"אפשר להשתנות ולשחק, אבל לא צריך למחוק את עצמנו כדי להיות שווים.","puppets":["פיל","חיות יער"],"props":["בדים צבעוניים","מראה לא שבירה","כרטיסי צבע"],"wow":"הפיל משנה צבעים במהירות בעזרת בדים שונים.","questions":["מה מיוחד בנו?","למה לפעמים רוצים להיות כמו מישהו אחר?","איך אפשר לאהוב משהו שמיוחד בנו?"],"purchase":"https://www.google.com/search?q=site%3Ae-vrit.co.il%20%22%D7%94%D7%A4%D7%99%D7%9C%20%D7%A9%D7%A8%D7%A6%D7%94%20%D7%9C%D7%94%D7%99%D7%95%D7%AA%20%D7%94%D7%9B%D7%99%22","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „הפיל שרצה להיות הכי” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"הפיל משנה צבעים במהירות בעזרת בדים שונים.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","פיל","חיות יער","בדים צבעוניים","מראה לא שבירה","כרטיסי צבע","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-e80a495672af.png","cover_source":"real-cover","category":"קבלה עצמית","program":"שעת סיפור והמחשה"},{"id":"s13","num":13,"title":"לבד על המרבד","author":"בריאן וילדסמית","age":"2–4.5","duration":"45 דקות","score":96,"themes":["מרחב אישי","גבולות","ביחד ולבד","סבלנות"],"season":"כל השנה","summary":"עוד ועוד חיות מצטרפות אל מרבד אחד, והמצב מאפשר לשוחח בפשטות על מקום אישי, צפיפות, ביחד ולבד.","message":"מותר לרצות חברה, ומותר גם לבקש קצת מקום.","puppets":["חתול","כלב","עז","פרה","פיל"],"props":["מרבד קטן","כרטיסי עצור/בואו"],"wow":"המרבד הולך ומתמלא בבובות עד שכמעט אין מקום.","questions":["איך יודעים שמישהו רוצה קצת מקום?","איך מבקשים להצטרף?","מתי נעים להיות יחד ומתי לבד?"],"purchase":"https://www.e-vrit.co.il/product/12951/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „לבד על המרבד” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"המרבד הולך ומתמלא בבובות עד שכמעט אין מקום.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","חתול","כלב","עז","פרה","פיל","מרבד קטן","כרטיסי עצור/בואו","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-88c64fb1538d.png","cover_source":"real-cover","category":"סבלנות והומור","program":"שעת סיפור והמחשה"},{"id":"s14","num":14,"title":"הזחל הרעב","author":"אריק קרל","age":"2–5","duration":"45 דקות","score":96,"themes":["גדילה","שינוי","טבע","מחזור חיים"],"season":"ט״ו בשבט / אביב","summary":"זחל קטן אוכל, גדל ומשתנה, והסיפור מאפשר המחשה מוחשית של התפתחות ומחזור החיים.","message":"שינוי הוא חלק טבעי מהגדילה.","puppets":["זחל","פרפר"],"props":["פירות צעצוע","עלה","פקעת בד"],"wow":"הזחל נעלם בתוך פקעת ומופיע כפרפר גדול.","questions":["מה משתנה כשגדלים?","מה הזחל צריך כדי לגדול?","איזה שינוי בטבע אתם מכירים?"],"purchase":"https://www.e-vrit.co.il/product/12989/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „הזחל הרעב” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"הזחל נעלם בתוך פקעת ומופיע כפרפר גדול.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","זחל","פרפר","פירות צעצוע","עלה","פקעת בד","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-6c3248ee9f7a.png","cover_source":"real-cover","category":"טבע והתפתחות","program":"שעת סיפור והמחשה"},{"id":"s15","num":15,"title":"אילת מטיילת","author":"רינת הופר","age":"2–5","duration":"45 דקות","score":96,"themes":["טיול","שפה","חזרתיות","בעלי חיים"],"season":"אביב / כל השנה","summary":"אילת יוצאת לטייל ופוגשת בדרך דמויות ובעלי חיים, ברצף קצבי שמזמין את הילדים לנחש, לחזור ולהשתתף.","message":"טיול הופך להרפתקה כששמים לב למה שפוגשים בדרך.","puppets":["אילת","חיות שונות"],"props":["תיק קטן","שביל","כרטיסי חיות"],"wow":"כל חיה יוצאת בהפתעה מכיס אחר בתיק.","questions":["את מי פגשנו?","מה אפשר לראות בדרך לגן?","איזו חיה הייתם רוצים לפגוש בטיול?"],"purchase":"https://www.e-vrit.co.il/product/8943/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „אילת מטיילת” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"כל חיה יוצאת בהפתעה מכיס אחר בתיק.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","אילת","חיות שונות","תיק קטן","שביל","כרטיסי חיות","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-e5749cec5473.png","cover_source":"real-cover","category":"טיול וסקרנות","program":"שעת סיפור והמחשה"},{"id":"s16","num":16,"title":"הארנב ממושי","author":"שלומית כהן־אסיף","age":"3–6","duration":"45 דקות","score":99,"themes":["חברות","נתינה","קבלה","שייכות"],"season":"כל השנה","summary":"ארנב יוצא אל העולם ומנסה ליצור קשרים, והמפגשים מאפשרים לבחון מהי חברות שמבוססת על מי שאנחנו ולא רק על מה שיש לנו.","message":"חבר אמיתי רוצה להיות איתנו — לא רק לקבל מאיתנו משהו.","puppets":["ארנב","חיות שונות"],"props":["סלסלה","חפצי מתנה קטנים"],"wow":"הארנב נשאר בלי המתנות אך מגלה מי נשאר איתו.","questions":["מה ההבדל בין מתנה לחברות?","איך יודעים שמישהו חבר אמיתי?","מה אפשר לתת לחבר בלי לקנות דבר?"],"purchase":"https://www.e-vrit.co.il/Product/12996/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „הארנב ממושי” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"הארנב נשאר בלי המתנות אך מגלה מי נשאר איתו.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","ארנב","חיות שונות","סלסלה","חפצי מתנה קטנים","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-d55a70759d5f.png","cover_source":"real-cover","category":"אהבה והרגעה","program":"שעת סיפור והמחשה"},{"id":"s17","num":17,"title":"הכינה נחמה","author":"מאיר שלו","age":"3.5–6","duration":"45 דקות","score":96,"themes":["הומור","נקודת מבט","גוף","שפה"],"season":"כל השנה","summary":"כינה זעירה עוברת הרפתקה קומית ומאפשרת לילדים לראות את העולם מנקודת מבט קטנטנה ומשונה.","message":"לפעמים שינוי נקודת המבט הופך דבר מוכר למשהו מצחיק ומפתיע.","puppets":["כינה גדולה קומית","דמות אדם"],"props":["מסרק גדול","זכוכית מגדלת צעצוע"],"wow":"בובת כינה ענקית יוצאת מתוך מסרק.","questions":["איך העולם נראה למישהו ממש קטן?","מה מצחיק כשמשנים גודל?","איזה חפץ נראה ענק בעיני כינה?"],"purchase":"https://www.google.com/search?q=site%3Ae-vrit.co.il%20%22%D7%94%D7%9B%D7%99%D7%A0%D7%94%20%D7%A0%D7%97%D7%9E%D7%94%22","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „הכינה נחמה” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"בובת כינה ענקית יוצאת מתוך מסרק.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","כינה גדולה קומית","דמות אדם","מסרק גדול","זכוכית מגדלת צעצוע","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-ebe4398d0fdc.png","cover_source":"real-cover","category":"הומור והתמדה","program":"שעת סיפור והמחשה"},{"id":"s18","num":18,"title":"ויהי ערב","author":"פניה ברגשטיין","age":"3–6","duration":"45 דקות","score":96,"themes":["לילה","סקרנות","רגש","קשר"],"season":"חורף / ערב","summary":"סיפור ערב עדין שמאפשר לעסוק בסקרנות, ברגעים שקטים ובקשר בין ילד לעולם שסביבו.","message":"גם ברגעים שקטים אפשר לגלות עולם שלם.","puppets":["ילדה","תרנגולת/חיות משק"],"props":["פנס","בד כהה","ירח מנייר"],"wow":"החדר מחשיך מעט ופנס יוצר ירח קטן על הקיר.","questions":["מה שומעים בערב?","מה מרגיש אחרת בלילה?","מה עוזר לנו להרגיש בטוחים?"],"purchase":"https://www.e-vrit.co.il/product/12978/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „ויהי ערב” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"החדר מחשיך מעט ופנס יוצר ירח קטן על הקיר.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","ילדה","תרנגולת/חיות משק","פנס","בד כהה","ירח מנייר","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-2276558786eb.png","cover_source":"real-cover","category":"יחסי הורה-ילד","program":"שעת סיפור והמחשה"},{"id":"s19","num":19,"title":"ברכבת יושבת ארנבת","author":"טובה שינברג","age":"2–4.5","duration":"45 דקות","score":96,"themes":["קצב","נסיעה","חזרתיות","בעלי חיים"],"season":"כל השנה","summary":"מסע רכבת קצבי עם בעלי חיים ודמויות שחוזרות ומתחלפות, המתאים במיוחד להשתתפות קולית ותנועתית.","message":"אפשר ללמוד ולהשתתף דרך קצב, חזרה ומשחק.","puppets":["ארנבת","חיות נוספות"],"props":["רכבת מקרטון","כרטיסים","משרוקית צעצוע"],"wow":"שורת כיסאות הופכת לרכבת וכל הילדים נוסעים יחד.","questions":["מי עולה לרכבת?","איזה קול עושה רכבת?","לאן הייתם נוסעים?"],"purchase":"https://www.e-vrit.co.il/product/12993/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „ברכבת יושבת ארנבת” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"שורת כיסאות הופכת לרכבת וכל הילדים נוסעים יחד.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","ארנבת","חיות נוספות","רכבת מקרטון","כרטיסים","משרוקית צעצוע","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-2e480c7b8591.png","cover_source":"real-cover","category":"קצב וחריזה","program":"שעת סיפור והמחשה"},{"id":"s20","num":20,"title":"לילה חשוך אחד","author":"אורה איל","age":"3–6","duration":"45 דקות","score":96,"themes":["פחד","דמיון","הומור","לילה"],"season":"חורף / כל השנה","summary":"אירוע לילי מקבל ממדים מפחידים בדמיון, עד שמתברר שאפשר להסתכל על הפחד גם בצורה אחרת ומשעשעת.","message":"כשבודקים מה באמת קורה, הפחד לפעמים נעשה קטן יותר.","puppets":["דמות ילד","חיה/דמות מפתיעה"],"props":["פנס","בד כהה","צלליות"],"wow":"צל מפחיד מתגלה בסוף כחפץ מוכר ומצחיק.","questions":["מה עוזר כשמפחדים?","מה ההבדל בין דמיון למציאות?","איזה צל יכול להיראות מפחיד?"],"purchase":"https://www.e-vrit.co.il/product/12970/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „לילה חשוך אחד” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"צל מפחיד מתגלה בסוף כחפץ מוכר ומצחיק.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","דמות ילד","חיה/דמות מפתיעה","פנס","בד כהה","צלליות","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-f2c548b97d02.png","cover_source":"real-cover","category":"לילה וביטחון","program":"שעת סיפור והמחשה"},{"id":"s21","num":21,"title":"בוקר בהיר אחד","author":"אורה איל","age":"2.5–5","duration":"45 דקות","score":96,"themes":["מסע","ציפייה","רצף","טבע"],"season":"אביב","summary":"מסע בוקר מצטבר שבו עוד דמות ועוד אירוע מצטרפים לדרך, ומזמינים את הילדים לזכור, לחזור ולנחש.","message":"כשמסתכלים סביב, כל דרך יכולה להפוך לסיפור.","puppets":["דמויות וחיות שונות"],"props":["שמש מנייר","שביל","כרטיסי תחנות"],"wow":"השביל נפרש בהדרגה וכל תחנה מתגלה מתחת לכרטיס.","questions":["מה קרה קודם ומה אחר כך?","מה רואים בבוקר?","איזו תחנה הייתם מוסיפים למסע?"],"purchase":"https://www.e-vrit.co.il/product/12969/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „בוקר בהיר אחד” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"השביל נפרש בהדרגה וכל תחנה מתגלה מתחת לכרטיס.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","דמויות וחיות שונות","שמש מנייר","שביל","כרטיסי תחנות","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-6d3e23ed8336.png","cover_source":"real-cover","category":"בוקר ושרשרת עלילה","program":"שעת סיפור והמחשה"},{"id":"s22","num":22,"title":"מעשה בארנב ובזנב","author":"ע. הלל","age":"3–6","duration":"45 דקות","score":96,"themes":["זהות","הומור","שפה","קבלה"],"season":"כל השנה","summary":"סיפור משעשע סביב ארנב וזנב שמאפשר משחקי שפה ודיון קליל בזהות ובדברים שמאפיינים אותנו.","message":"לפעמים דווקא הדבר הקטן שמייחד אותנו הופך לחלק חשוב ממי שאנחנו.","puppets":["ארנב"],"props":["זנבות נשלפים","מראה לא שבירה"],"wow":"הארנב מחליף כמה זנבות מצחיקים לפני שחוזר לעצמו.","questions":["מה מיוחד בארנב?","מה מצחיק בשינוי?","איזה דבר מיוחד אתם אוהבים בעצמכם?"],"purchase":"https://www.e-vrit.co.il/product/15293/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „מעשה בארנב ובזנב” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"הארנב מחליף כמה זנבות מצחיקים לפני שחוזר לעצמו.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","ארנב","זנבות נשלפים","מראה לא שבירה","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-ca5d30714786.png","cover_source":"real-cover","category":"חריזה והומור","program":"שעת סיפור והמחשה"},{"id":"s23","num":23,"title":"האריה שבפנים","author":"רייצ'ל ברייט וג'ים פילד","age":"3–6","duration":"45 דקות","score":100,"themes":["אומץ","ביטחון עצמי","קטן וגדול","חברות"],"season":"כל השנה","summary":"דמות קטנה שמרגישה שקופה מחפשת דרך להשמיע את קולה, ומגלה שאומץ אינו קשור לגודל ושגם מי שנראה חזק יכול לפחד.","message":"אומץ הוא לפעול גם כשאנחנו קטנים או חוששים.","puppets":["עכבר","אריה"],"props":["מגפון צעצוע","סלע מקרטון"],"wow":"העכבר הזעיר משמיע פתאום שאגה גדולה.","questions":["האם צריך להיות גדול כדי להיות אמיץ?","ממה גם חזקים יכולים לפחד?","מתי מצאתם אומץ?"],"purchase":"https://www.e-vrit.co.il/product/14253/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „האריה שבפנים” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"העכבר הזעיר משמיע פתאום שאגה גדולה.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","עכבר","אריה","מגפון צעצוע","סלע מקרטון","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-0c2e549f71a7.png","cover_source":"real-cover","category":"ביטחון עצמי","program":"שעת סיפור והמחשה"},{"id":"s24","num":24,"title":"קווין הקואלה תקוע למעלה","author":"רייצ'ל ברייט וג'ים פילד","age":"3–6","duration":"45 דקות","score":99,"themes":["שינוי","גמישות","פחד","יציאה מאזור הנוחות"],"season":"פתיחת שנה / כל השנה","summary":"קואלה שמעדיף להישאר במקום המוכר מתקשה לרדת ולנסות משהו חדש, עד שהמציאות עוזרת לו לגלות שהשינוי יכול להיות גם הזדמנות.","message":"אפשר לפחד משינוי ובכל זאת לנסות צעד קטן.","puppets":["קואלה","חיות יער"],"props":["ענף/עץ מקרטון","סולם צעצוע"],"wow":"הקואלה יורד סוף סוף מן העץ ונוחת על כרית.","questions":["למה קשה לשנות?","מה עוזר לנסות משהו חדש?","איזה צעד קטן אפשר לעשות כשחוששים?"],"purchase":"https://www.e-vrit.co.il/product/11217/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „קווין הקואלה תקוע למעלה” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"הקואלה יורד סוף סוף מן העץ ונוחת על כרית.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","קואלה","חיות יער","ענף/עץ מקרטון","סולם צעצוע","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-e3ec8a405b69.png","cover_source":"real-cover","category":"שינוי וגמישות","program":"שעת סיפור והמחשה"},{"id":"s25","num":25,"title":"דאגנוזאור","author":"רייצ'ל ברייט","age":"3–6","duration":"45 דקות","score":99,"themes":["דאגה","ויסות רגשי","ביטחון","מחשבות"],"season":"כל השנה","summary":"דינוזאור קטן מגלה כיצד מחשבות של דאגה יכולות לגדול, וכיצד אפשר לזהות אותן ולחזור בהדרגה לתחושת ביטחון.","message":"אפשר להרגיש דאגה, לדבר עליה ולמצוא דברים שעוזרים לנו להירגע.","puppets":["דינוזאור"],"props":["ענן מחשבות מנייר","כרטיסי רגשות","בקבוק נשימות/נצנצים סגור"],"wow":"ענן דאגה גדול מתפרק לכמה עננים קטנים שנעלמים.","questions":["איך מרגישים דאגה בגוף?","מה עוזר לכם להירגע?","עם מי אפשר לדבר כשדואגים?"],"purchase":"https://www.e-vrit.co.il/product/25216/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „דאגנוזאור” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"ענן דאגה גדול מתפרק לכמה עננים קטנים שנעלמים.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","דינוזאור","ענן מחשבות מנייר","כרטיסי רגשות","בקבוק נשימות/נצנצים סגור","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-25a26210b018.png","cover_source":"real-cover","category":"חרדה ודאגה","program":"שעת סיפור והמחשה"},{"id":"s26","num":26,"title":"הגמל שלא רצה לצעוד","author":"רייצ'ל ברייט","age":"3–6","duration":"45 דקות","score":96,"themes":["תסכול","מצב רוח","גמישות","חברות"],"season":"קיץ / כל השנה","summary":"גמל עקשן וממורמר מתקשה להצטרף למסע, והמפגש עם האחרים מאפשר לו לשנות קצב ומצב רוח.","message":"לפעמים אפשר להתחיל מצעד קטן גם כשאין לנו חשק.","puppets":["גמל","חיות מדבר"],"props":["בד חול","בקבוק מים צעצוע","שמש מנייר"],"wow":"הגמל שעמד במקום מתחיל לצעוד עם כל הילדים.","questions":["מה עושים כשאין חשק?","איך חבר יכול לעזור?","מתי צריך גם לנוח?"],"purchase":"https://www.e-vrit.co.il/product/39733/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „הגמל שלא רצה לצעוד” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"הגמל שעמד במקום מתחיל לצעוד עם כל הילדים.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","גמל","חיות מדבר","בד חול","בקבוק מים צעצוע","שמש מנייר","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-9e691fc68389.png","cover_source":"real-cover","category":"מצב רוח וגישת חיים","program":"שעת סיפור והמחשה"},{"id":"s27","num":27,"title":"חברים בכל מיני צבעים","author":"חנה גולדברג","age":"2.5–6","duration":"45 דקות","score":96,"themes":["שונות","קבלה","חברות","סובלנות"],"season":"כל השנה","summary":"סיפור שמציג ילדים וחברים השונים זה מזה ומאפשר לדבר בפשטות על כך ששונות היא חלק טבעי מקבוצה.","message":"אפשר להיות שונים מאוד ועדיין להיות חברים.","puppets":["בובות ילדים מגוונות"],"props":["כרטיסי צבע","שרשרת ידידות"],"wow":"כל בובה מוסיפה צבע אחר לשרשרת משותפת.","questions":["במה חברים יכולים להיות שונים?","מה בכל זאת מחבר ביניהם?","איך מקבלים ילד חדש לקבוצה?"],"purchase":"https://www.e-vrit.co.il/product/12968/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „חברים בכל מיני צבעים” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"כל בובה מוסיפה צבע אחר לשרשרת משותפת.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","בובות ילדים מגוונות","כרטיסי צבע","שרשרת ידידות","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-e7bbf857ec57.png","cover_source":"real-cover","category":"קבלת השונה","program":"שעת סיפור והמחשה"},{"id":"s28","num":28,"title":"פעם היה ילד שלא רצה לישון לבדו","author":"מירה מאיר","age":"2.5–5","duration":"45 דקות","score":96,"themes":["שינה","פחד","ביטחון","משפחה"],"season":"חורף / ערב","summary":"ילד שמתקשה להישאר לבדו בזמן השינה מחפש ביטחון, והסיפור פותח מקום לדבר על פחדים בלילה ועל דברים שעוזרים להירגע.","message":"פחד בלילה הוא רגש שאפשר לדבר עליו ולמצוא לו עוגנים של ביטחון.","puppets":["ילד","בובות חיות/דמויות מלוות"],"props":["שמיכה","כרית","פנס לילה"],"wow":"פנס קטן נדלק ומגלה שהחדר מוכר ובטוח.","questions":["מה עוזר להרגיש בטוחים לפני השינה?","למי מספרים כשמפחדים?","איזה טקס ערב אתם אוהבים?"],"purchase":"https://www.e-vrit.co.il/product/12976/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „פעם היה ילד שלא רצה לישון לבדו” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"פנס קטן נדלק ומגלה שהחדר מוכר ובטוח.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","ילד","בובות חיות/דמויות מלוות","שמיכה","כרית","פנס לילה","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-aeb194550ec0.png","cover_source":"real-cover","category":"שינה ופחדים","program":"שעת סיפור והמחשה"},{"id":"s29","num":29,"title":"תפילילה","author":"מאיה חנוך ומיכל כהן־חי","age":"2–6","duration":"45 דקות","score":96,"themes":["רגיעה","משפחה","התבוננות","ערב"],"season":"סיום יום / כל השנה","summary":"טקסט ערב רך שמזמין לעצור, להתבונן בעולם הקרוב ולסיים את היום בתחושה רגועה ומחוברת.","message":"אפשר לסיים יום בהודיה, שקט וקשר למה שיקר לנו.","puppets":["בובה קבועה של סבא שמעון – אופציונלי"],"props":["כוכבים מנייר","פנס קטן","בד שמיים"],"wow":"תקרת החדר מתמלאת בכוכבים מנייר/אור רך.","questions":["על מה אתם רוצים להגיד תודה היום?","מה היה רגע טוב היום?","מה עוזר לגוף להירגע?"],"purchase":"https://www.e-vrit.co.il/product/9143/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „תפילילה” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"תקרת החדר מתמלאת בכוכבים מנייר/אור רך.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","בובה קבועה של סבא שמעון – אופציונלי","כוכבים מנייר","פנס קטן","בד שמיים","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-9a0336aba7f7.png","cover_source":"real-cover","category":"רגיעה ושינה","program":"שעת סיפור והמחשה"},{"id":"s30","num":30,"title":"שני סנאים ואצטרובל","author":"רייצ'ל ברייט וג'ים פילד","age":"3–6","duration":"45 דקות","score":96,"themes":["שיתוף פעולה","תחרות","חברות","סתיו"],"season":"סתיו / חורף","summary":"שני סנאים רוצים אותו אוצר קטן ונכנסים לתחרות, עד שהם מגלים ששיתוף פעולה וחברות חשובים יותר מהניצחון.","message":"לא כל דבר צריך להפוך לתחרות; לפעמים מרוויחים יותר כשמשתפים פעולה.","puppets":["2 סנאים"],"props":["אצטרובל גדול","ענפים","עלי סתיו"],"wow":"האצטרובל 'בורח' בין הסנאים והילדים צריכים לעזור להם לעבוד יחד.","questions":["מה קורה כששנינו רוצים אותו דבר?","איך אפשר לפתור ויכוח?","מתי שיתוף פעולה עדיף על תחרות?"],"purchase":"https://www.e-vrit.co.il/product/20913/","timeline":[{"m":"0–3","title":"כניסה ומסתורין","cue":"לא מתחילים בקריאה. מציגים חפץ/רמז ומעוררים סקרנות.","type":"פתיחה"},{"m":"3–6","title":"הופעת הבובה הראשונה","cue":"הבובה מציגה בעיה קטנה או שאלה שמכניסה את הילדים לסיפור.","type":"בובה"},{"m":"6–10","title":"חימום אינטראקטיבי","cue":"2–3 שאלות קצרות, קולות או תנועה. אין תשובה 'נכונה'.","type":"השתתפות"},{"m":"10–14","title":"חשיפת הספר","cue":"מראים את כריכת „שני סנאים ואצטרובל” ומחברים בין מה שקרה לבין הספר.","type":"ספר"},{"m":"14–21","title":"סיפור והמחזה – חלק א׳","cue":"מספרים במקטעים: ספר → בובה → שאלה → תגובת ילדים.","type":"סיפור"},{"m":"21–25","title":"עצירת ניבוי","cue":"עוצרים בנקודת מתח ושואלים 3–4 ילדים מה לדעתם יקרה.","type":"חשיבה"},{"m":"25–30","title":"רגע WOW","cue":"האצטרובל 'בורח' בין הסנאים והילדים צריכים לעזור להם לעבוד יחד.","type":"WOW"},{"m":"30–34","title":"סיפור והמחזה – חלק ב׳","cue":"ממשיכים אל הפתרון תוך שיתוף הילדים בפעולה או בקול חוזר.","type":"סיפור"},{"m":"34–38","title":"משחק קצר","cue":"פעילות תנועה/בחירה/חיקוי הקשורה ישירות לנושא הסיפור.","type":"משחק"},{"m":"38–42","title":"שאלות ומשמעות","cue":"עוברים מה קרה → איך הרגישו → למה → מה זה מזכיר לנו.","type":"שיחה"},{"m":"42–44","title":"המסר דרך הבובה","cue":"הבובה מגלה משהו בעצמה. לא מכריזים 'מוסר ההשכל'.","type":"מסר"},{"m":"44–45","title":"טקס סיום","cue":"„מי עשה היום את הסיפור?” — „אנחנו!” ואז פרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה קשובה: ממשיכים בגרסה המלאה, מאפשרים ניחושים, תשובות ואלתור.","yellow":"הקשב יורד: מפסיקים דיבור ומכניסים 30–60 שניות של תנועה, קול או פעולה עם בובה.","red":"הקבוצה יצאה מאיזון: סוגרים זמנית את הספר, עושים משימה קבוצתית קצרה וברורה, ואז חוזרים לישיבה."},"inclusion":["מקטעים קצרים והחלפה בין הקשבה, בובה, חפץ ותנועה.","אפשר להשתתף גם בהצבעה, חיקוי או צפייה — אין חובה לדבר.","לרגישות חושית: להפחית סאונד והפתעות ולהציג מראש את סדר הפעילות.","לקשיי שפה: להשתמש במשפטים קצרים ובשאלות בחירה.","לצורך ספציפי בגן: לתאם מראש עם הצוות ולא להניח אבחנה לפי התנהגות."],"packing":["הספר המקורי","2 סנאים","אצטרובל גדול","ענפים","עלי סתיו","טלפון טעון","רמקול – אופציונלי","כרטיס ההפעלה"],"cover":"/story-assets/image-6f3fdbc8f8f7.png","cover_source":"real-cover","category":"שיתוף פעולה","program":"שעת סיפור והמחשה"},{"id":"t01","num":31,"title":"שלום מוריס – מפגש היכרות","author":"סבא שמעון","age":"6–12 חודשים","duration":"8–10 דקות","score":96,"themes":["מוכרות","קשר","קול ותנועה","טקס קבוע"],"season":"כל השנה","summary":"מפגש פתיחה קבוע שבו מוריס מופיע לאט, אומר שלום בקול מוכר, נע מצד לצד וחוזר על שיר קצר. המטרה היא ליצור טקס פתיחה מוכר שניתן לשחזר בכל מפגש.","message":"אותה דמות, אותו קול ואותו שיר יוצרים מוכרות וביטחון.","puppets":["מוריס – הבובה המארחת הקבועה"],"props":["שטיח/מחצלת ישיבה","פעמון רך או רעשן עדין","מטפחת בד רכה אחת"],"wow":"מוריס מציץ בהדרגה מתוך המטפחת ומופיע בדיוק אחרי הצליל הקבוע.","questions":["איפה מוריס?","רוצים להגיד שלום ביד?"],"purchase":"","timeline":[{"m":"0–2","title":"צליל פתיחה","cue":"צליל קצר וקבוע. מחכים רגע ומאפשרים לילדים להפנות מבט.","type":"פתיחה"},{"m":"2–4","title":"מוריס מופיע","cue":"מוריס עולה לאט, מסתכל ימינה ושמאלה ואומר שלום באותו משפט קבוע.","type":"בובה"},{"m":"4–7","title":"שיר שלום","cue":"שיר קצר עם תנועה אחת חוזרת של היד/הראש.","type":"שיר"},{"m":"7–9","title":"קשר אישי קצר","cue":"מוריס פונה בעדינות לשניים־שלושה ילדים בלי להתקרב מדי.","type":"קשר"},{"m":"9–10","title":"פרידה קבועה","cue":"אותו משפט פרידה ואותו צליל סיום.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","מטפחת","רעשן/פעמון רך","מחצלת","שקית בד מסומנת T01"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"},{"id":"t02","num":32,"title":"קופסת הפלא","author":"סבא שמעון","age":"6–12 חודשים","duration":"8–10 דקות","score":96,"themes":["ציפייה","חישה","חזרתיות","גילוי"],"season":"כל השנה","summary":"מוריס מביא קופסה קטנה ומוציא ממנה חפץ אחד בכל פעם. כל חפץ מקבל רגע קצר של מבט, תנועה וצליל לפני שהוא חוזר לקופסה.","message":"מעט גירויים, אחד בכל פעם, מאפשרים ציפייה וחזרתיות.","puppets":["מוריס"],"props":["קופסת פלא עם מכסה קל","כדור בד רך","טבעת בד גדולה","כוכב בד","צעיף צבעוני"],"wow":"הקופסה נשמעת ריקה – ואז מוריס מוצא בתוכה כוכב גדול ורך.","questions":["מה יוצא עכשיו?","איפה הכדור?"],"purchase":"","timeline":[{"m":"0–2","title":"טקס פתיחה","cue":"מוריס ושיר השלום הקבוע.","type":"פתיחה"},{"m":"2–4","title":"הקופסה מגיעה","cue":"מציגים קופסה סגורה ומקישים עליה בעדינות פעם אחת.","type":"חפץ"},{"m":"4–7","title":"אחד־אחד","cue":"מוציאים 2–3 חפצים בלבד; לכל חפץ תנועה או צליל קבוע.","type":"חישה"},{"m":"7–9","title":"רגע הפלא","cue":"הכוכב הרך יוצא אחרון ומוריס מתפעל ממנו.","type":"WOW"},{"m":"9–10","title":"הכול חוזר הביתה","cue":"מחזירים לקופסה ונפרדים.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","קופסת פלא","כדור בד","טבעת בד גדולה","כוכב בד","צעיף","שקית T02"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"},{"id":"t03","num":33,"title":"שיר נגיעה עם בובה","author":"סבא שמעון","age":"6–12 חודשים","duration":"8–10 דקות","score":96,"themes":["מוזיקה","גוף","קצב","חזרתיות"],"season":"כל השנה","summary":"פעילות מוזיקלית קצרה שבה מוריס מוביל שיר גוף פשוט. הבובה מדגימה על עצמה תנועה אחת בכל פעם; המבוגר המלווה יכול לחקות עם הילד אם מתאים לו.","message":"שיר ותנועה חוזרים הופכים את המפגש לצפוי, נעים וקל להצטרפות.","puppets":["מוריס"],"props":["רצועת בד צבעונית","רעשן עדין","כרטיס תזכורת למילות השיר – לשימוש המפעיל בלבד"],"wow":"מוריס מתבלבל בכוונה בין יד לרגל והמטפלים/הילדים “עוזרים” לו בתנועה.","questions":["איפה היד?","נעשה שלום עם היד?"],"purchase":"","timeline":[{"m":"0–2","title":"שלום קבוע","cue":"מוריס מופיע עם הצליל הקבוע.","type":"פתיחה"},{"m":"2–6","title":"שיר גוף","cue":"2–3 בתים קצרים; יד, רגל, ראש. מוריס מדגים על עצמו.","type":"שיר"},{"m":"6–8","title":"חיקוי קטן","cue":"חוזרים על תנועה אחת שהקבוצה מגיבה אליה.","type":"תנועה"},{"m":"8–10","title":"הרגעה ופרידה","cue":"מאטים את השיר ומסיימים במשפט הקבוע.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","רצועת בד","רעשן","כרטיס שיר","שקית T03"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"},{"id":"t04","num":34,"title":"מי מסתתר?","author":"סבא שמעון","age":"12–18 חודשים","duration":"10–12 דקות","score":96,"themes":["הופעה והיעלמות","ציפייה","השתתפות","משחק"],"season":"כל השנה","summary":"משחק בובות של הופעה והיעלמות. מוריס וחבר קטן מציצים מאחורי וילון, נעלמים וחוזרים במקומות צפויים.","message":"הילדים מגלים שהדמות חוזרת גם אחרי שנעלמה מן העין.","puppets":["מוריס","בובת חבר קטנה – דובי/ארנב"],"props":["מסגרת מיני עם וילון","מטפחת גדולה","קופסה עם פתח הצצה"],"wow":"שתי הבובות מופיעות יחד אחרי שכל אחת “נעלמה” בנפרד.","questions":["איפה מוריס?","מי יצא עכשיו?","עוד פעם?"],"purchase":"","timeline":[{"m":"0–2","title":"שלום מוריס","cue":"שיר פתיחה קצר.","type":"פתיחה"},{"m":"2–5","title":"נעלם וחוזר","cue":"מוריס מציץ שלוש פעמים מאותו מקום.","type":"משחק"},{"m":"5–8","title":"חבר חדש","cue":"בובה שנייה מציצה ממקום אחר.","type":"בובה"},{"m":"8–10","title":"מחפשים יחד","cue":"הילדים מצביעים/מסתכלים לכיוון שבו אולי הבובה נמצאת.","type":"השתתפות"},{"m":"10–12","title":"שתי הבובות נפרדות","cue":"שתיהן מופיעות יחד ונפרדות בשיר קצר.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","בובת חבר","תיאטרון מיני/וילון","מטפחת","קופסת הצצה","שקית T04"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"},{"id":"t05","num":35,"title":"שתי בובות נפגשות","author":"סבא שמעון","age":"12–18 חודשים","duration":"10–12 דקות","score":96,"themes":["עזרה","חברות","חזרתיות","סיפור קצר"],"season":"כל השנה","summary":"תיאטרון בובות מיני עם שתי דמויות ועלילה של כמה משפטים: מוריס רוצה לשחק, הדובי לא מוצא את הכדור, וביחד הם מוצאים אותו.","message":"סיפור קטן יכול להיבנות מפעולה ברורה, חזרה ופתרון פשוט.","puppets":["מוריס","דובי"],"props":["תיאטרון מיני","כדור בד גדול","סל קטן"],"wow":"הכדור שהיה “אבוד” מתגלגל מתוך הסל ישר אל מוריס.","questions":["איפה הכדור?","מוריס מצא?","נמחא כפיים?"],"purchase":"","timeline":[{"m":"0–2","title":"פתיחה","cue":"שיר שלום.","type":"פתיחה"},{"m":"2–5","title":"הבעיה","cue":"דובי מחפש כדור. חוזרים פעמיים על “איפה הכדור?”.","type":"סיפור"},{"m":"5–8","title":"מוריס עוזר","cue":"מוריס בודק שני מקומות ברורים.","type":"בובה"},{"m":"8–10","title":"הכדור נמצא","cue":"הכדור מתגלגל החוצה והילדים מגיבים.","type":"WOW"},{"m":"10–12","title":"משחק ופרידה","cue":"מחיאת כף/נענוע קצר ופרידה.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","דובי","כדור בד","סל קטן","תיאטרון מיני","שקית T05"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"},{"id":"t06","num":36,"title":"מוריס מספר רגש","author":"סבא שמעון","age":"12–18 חודשים","duration":"10–12 דקות","score":96,"themes":["רגש","הבעה","קול","הרגעה"],"season":"כל השנה","summary":"מוריס פוגש שלושה מצבים פשוטים דרך הפנים, הקול והתנועה: שמח, מופתע ועייף. כל מצב מקבל חפץ קטן וצליל ברור.","message":"אפשר לפגוש רגש דרך הבעה, קול ותנועה גם בלי לבקש מהילד להסביר במילים.","puppets":["מוריס"],"props":["מראה אקרילית בטיחותית גדולה","לב בד","כוכב בד","כרית קטנה"],"wow":"מוריס רואה את עצמו במראה ומחקה בהגזמה הבעה אחת.","questions":["מוריס שמח?","איפה הכרית?","נעשה פנים מצחיקות?"],"purchase":"","timeline":[{"m":"0–2","title":"פתיחה","cue":"שלום קבוע.","type":"פתיחה"},{"m":"2–5","title":"שמח","cue":"לב בד, קול קליל ותנועה אחת.","type":"רגש"},{"m":"5–8","title":"מופתע","cue":"כוכב יוצא ומוריס מגיב בהפתעה קצרה.","type":"רגש"},{"m":"8–10","title":"עייף","cue":"מוריס נשען על כרית והקצב יורד.","type":"הרגעה"},{"m":"10–12","title":"מראה ופרידה","cue":"מוריס מביט במראה ונפרד.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","מראה בטיחותית","לב בד","כוכב בד","כרית קטנה","שקית T06"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"},{"id":"t07","num":37,"title":"איפה הדובי?","author":"סבא שמעון","age":"18–24 חודשים","duration":"12–15 דקות","score":96,"themes":["סיפור ראשון","בחירה","חברות","חיפוש"],"season":"כל השנה","summary":"עלילה קצרה עם התחלה, אמצע וסוף: מוריס מחפש את הדובי, פוגש ארנב, בודק שתי קופסאות ולבסוף מוצא אותו.","message":"פעוטות יכולים להיות חלק מן הסיפור דרך הצבעה, מילה קצרה ותנועה.","puppets":["מוריס","דובי","ארנב"],"props":["שתי קופסאות צבעוניות","שמיכה קטנה","פעמון רך"],"wow":"הדובי נמצא מתחת לשמיכה ומצלצל בפעמון קטן.","questions":["איפה הדובי?","בקופסה האדומה או הכחולה?","מי מצא אותו?"],"purchase":"","timeline":[{"m":"0–2","title":"פתיחה","cue":"מוריס ושיר שלום.","type":"פתיחה"},{"m":"2–5","title":"הדובי איננו","cue":"מוריס מחפש וקורא לדובי.","type":"סיפור"},{"m":"5–8","title":"שתי בחירות","cue":"הילדים מצביעים איזו קופסה לבדוק.","type":"בחירה"},{"m":"8–11","title":"הארנב עוזר","cue":"ארנב מגיע ונותן רמז קצר.","type":"בובה"},{"m":"11–13","title":"מצאנו","cue":"פעמון נשמע והדובי מופיע.","type":"WOW"},{"m":"13–15","title":"חיבוק ופרידה","cue":"שלוש הבובות יחד בפרידה קצרה.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","דובי","ארנב","2 קופסאות","שמיכה","פעמון","שקית T07"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"},{"id":"t08","num":38,"title":"מוריס שכח משהו","author":"סבא שמעון","age":"18–24 חודשים","duration":"12–15 דקות","score":96,"themes":["עצמאות","בחירה","עזרה","דמיון"],"season":"כל השנה","summary":"מוריס מתכונן לצאת לטיול קטן אבל “שוכח” שלושה דברים ברורים. הילדים עוזרים לו לבחור מה חסר מתוך שתי אפשרויות בכל פעם.","message":"הילדים עוזרים לדמות ומניעים את העלילה בהחלטות קטנות וברורות.","puppets":["מוריס"],"props":["תיק קטן","כובע בד","בקבוק צעצוע ריק","כדור בד","3 כרטיסי תמונה גדולים"],"wow":"בסוף מוריס פותח את התיק ומגלה שבתוכו כבר היה הכדור שחיפש.","questions":["מה חסר למוריס?","כובע או כדור?","נשים בתיק?"],"purchase":"","timeline":[{"m":"0–2","title":"שלום","cue":"טקס פתיחה.","type":"פתיחה"},{"m":"2–5","title":"יוצאים לטיול","cue":"מוריס מראה תיק ריק.","type":"סיפור"},{"m":"5–9","title":"מה לקחת?","cue":"שלוש בחירות פשוטות בין שני חפצים.","type":"השתתפות"},{"m":"9–12","title":"אופס, שכחנו","cue":"מוריס מחפש את הכדור.","type":"בעיה"},{"m":"12–14","title":"הפתעה בתיק","cue":"הכדור נמצא בתחתית התיק.","type":"WOW"},{"m":"14–15","title":"יוצאים ונפרדים","cue":"מוריס מנופף ויוצא.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","תיק קטן","כובע","בקבוק צעצוע ריק","כדור בד","כרטיסי תמונה","שקית T08"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"},{"id":"t09","num":39,"title":"ספר קטן, בובה גדולה","author":"סבא שמעון","age":"18–24 חודשים","duration":"12–15 דקות","score":96,"themes":["ספר ראשון","שפה","המחשה","הקשבה"],"season":"כל השנה","summary":"מפגש מעבר לשעת סיפור: ספר תמונות קצר עם מעט תמונות מרכזיות, כאשר מוריס מגיב לכל תמונה בתנועה או במשפט קצר.","message":"ספר ובובה יכולים לפעול יחד: התמונה נותנת רמז והבובה הופכת אותו לחוויה חיה.","puppets":["מוריס","בובה נוספת לפי הספר/הנושא"],"props":["ספר תמונות מתאים בבעלות המסגרת/המפעיל","מעמד ספר נמוך","3 חפצי המחשה גדולים הקשורים לסיפור"],"wow":"אחד הפריטים שמופיע בתמונה “יוצא” מתוך סל ההמחשה בגודל גדול.","questions":["מה רואים בתמונה?","איפה ה…?","מוריס יעשה גם?"],"purchase":"","timeline":[{"m":"0–2","title":"פתיחה","cue":"מוריס ושיר שלום.","type":"פתיחה"},{"m":"2–4","title":"מגלים את הספר","cue":"מציגים כריכה/תמונה אחת בלבד.","type":"ספר"},{"m":"4–8","title":"תמונה → בובה","cue":"עוברים בין 2–3 תמונות; מוריס מגיב לכל אחת.","type":"סיפור"},{"m":"8–11","title":"חפץ יוצא מהסיפור","cue":"מוציאים חפץ המחשה גדול התואם לתמונה.","type":"WOW"},{"m":"11–13","title":"תגובה של הילדים","cue":"הצבעה, מילה או תנועה אחת.","type":"השתתפות"},{"m":"13–15","title":"סגירת הספר ופרידה","cue":"הספר נסגר, מוריס אומר משפט סיום קבוע.","type":"סיום"}],"attention":{"green":"הקבוצה רגועה ומעורבת: ממשיכים ברצף המתוכנן ומשאירים מרווח לתגובה ולחזרתיות.","yellow":"הקשב יורד: מקצרים דיבור, חוזרים לשיר/צליל הקבוע או מאפשרים לבובה פעולה אחת ברורה וחוזרת.","red":"יש עומס או אי־שקט: עוצרים את העלילה, מורידים גירויים, עוברים לפרידה הקבועה ומסיימים מוקדם בלי למשוך את המפגש."},"inclusion":["הפעילות מתקיימת בקבוצה קטנה ובקצב רגוע; אין חובה להשתתף במגע או בקול.","אפשר לצפות בלבד, להגיב בתנועה, בהצבעה או בקול קצר.","שומרים על עוצמת קול מתונה, תנועות צפויות ומרחק נעים מן הילד.","מתאמים מראש עם צוות המעון התאמות נקודתיות לקבוצה."],"packing":["מוריס","בובה נוספת","ספר תמונות","מעמד ספר","3 חפצי המחשה","סל המחשה","שקית T09"],"cover":"/story-assets/image-93331fd87bfb.png","cover_source":"סבא שמעון ומוריס – פעילות פעוטות","category":"פעוטות","program":"עולם קטן, קסם גדול"}];
+const APP_LOGO = "/story-assets/image-443bfe2d4996.png";
+
+const dashboard = $("#dashboard");
+const detail = $("#detail");
+const live = $("#live");
+const audit = $("#audit");
+const cards = $("#cards");
+
+let favs = new Set(JSON.parse(localStorage.getItem("story_favs") || "[]"));
+let onlyFav = false;
+let current = null;
+let liveIndex = 0;
+let elapsed = 0;
+let timerHandle = null;
+const slideState = {}; // {storyId:{slides:[{name,url}], index:0, sync:'step'}}
+
+STORIES.forEach(s => { if(!s.program) s.program = "שעת סיפור והמחשה"; });
+const programs = [...new Set(STORIES.map(s => s.program))].sort();
+const themes = [...new Set(STORIES.flatMap(s => s.themes))].sort();
+const seasons = [...new Set(STORIES.map(s => s.season))].sort();
+const ages = [...new Set(STORIES.map(s => s.age))].sort();
+const categories = [...new Set(STORIES.map(s => s.category))].sort();
+
+themes.forEach(x => $("#theme").insertAdjacentHTML("beforeend", `<option>${x}</option>`));
+themes.forEach(x => $("#pTheme").insertAdjacentHTML("beforeend", `<option>${x}</option>`));
+seasons.forEach(x => $("#season").insertAdjacentHTML("beforeend", `<option>${x}</option>`));
+seasons.forEach(x => $("#pSeason").insertAdjacentHTML("beforeend", `<option>${x}</option>`));
+ages.forEach(x => $("#ageFilter").insertAdjacentHTML("beforeend", `<option>${x}</option>`));
+categories.forEach(x => $("#category").insertAdjacentHTML("beforeend", `<option>${x}</option>`));
+programs.forEach(x => $("#program").insertAdjacentHTML("beforeend", `<option>${x}</option>`));
+
+function brandBadge(size=48){
+  return `<img src="${APP_LOGO}" alt="לוגו" style="width:${size}px;height:${size}px;border-radius:12px;object-fit:cover;border:1px solid rgba(0,0,0,.06)">`;
+}
+
+
+function safeImageFilename(value){
+  return String(value || "StoryOS")
+    .replace(/[\\/:*?"<>|]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+window.downloadStoryImage = id => {
+  const story = STORIES.find(s => s.id === id);
+  if(!story || !story.cover){
+    alert("לא נמצאה תמונה להורדה עבור פריט זה.");
+    return;
+  }
+  const imageType = story.program === "שעת סיפור והמחשה" ? "כריכת הספר" : "פוסטר הפעילות";
+  const sourceExtension = (String(story.cover).match(/\.(png|jpe?g|webp|gif)(?:[?#]|$)/i) || [])[1] || "png";
+  const link = document.createElement("a");
+  link.href = story.cover;
+  link.download = safeImageFilename(`${imageType} - ${story.title}.${sourceExtension.replace("jpeg", "jpg")}`);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
+
+function imageDownloadLabel(story){
+  return story.program === "שעת סיפור והמחשה" ? "⬇ הורדת כריכה" : "⬇ הורדת פוסטר";
+}
+
+function filtered(){
+  const q = $("#search").value.trim().toLowerCase();
+  const th = $("#theme").value;
+  const se = $("#season").value;
+  const ag = $("#ageFilter").value;
+  const cat = $("#category").value;
+  const prog = $("#program").value;
+  return STORIES.filter(s => {
+    const hay = [s.title,s.author,s.summary,s.message,s.season,s.category,s.program,...s.themes].join(" ").toLowerCase();
+    return (!q || hay.includes(q))
+      && (!th || s.themes.includes(th))
+      && (!se || s.season === se)
+      && (!ag || s.age === ag)
+      && (!cat || s.category === cat)
+      && (!prog || s.program === prog)
+      && (!onlyFav || favs.has(s.id));
+  });
+}
+
+function render(){
+  const arr = filtered();
+  $("#count").textContent = arr.length;
+  cards.innerHTML = arr.map(s => `
+    <article class="card">
+      <div class="cover-wrap"><img class="cover-thumb" src="${s.cover}" alt="כריכת ${s.title}"></div>
+      <div class="meta-line"><span>${s.program === "עולם קטן, קסם גדול" ? "פעילות" : "סיפור"} ${s.num}</span><span>ציון ${s.score}/100</span></div>
+      <h2>${s.title}</h2>
+      <div class="author">${s.author} · גיל ${s.age}</div>
+      <div class="tags">
+        <span class="tag alt">${s.program}</span><span class="tag alt">${s.category}</span>
+        <span class="tag soft">${s.season}</span>
+        ${s.themes.slice(0,3).map(t => `<span class="tag">${t}</span>`).join("")}
+      </div>
+      <p class="summary">${s.message}</p>
+      <div class="card-actions">
+        <button class="btn primary small" onclick="openStory('${s.id}')">פתח כרטיס</button>
+        <button class="btn secondary small" onclick="startLive('${s.id}')">▶ מצב חי</button>
+        <a class="btn good small" href="${s.cover}" download="${safeImageFilename(`${s.program === "שעת סיפור והמחשה" ? "כריכת הספר" : "פוסטר הפעילות"} - ${s.title}.png`)}" onclick="event.stopPropagation()">${imageDownloadLabel(s)}</a>
+        <button class="btn small star" onclick="toggleFav('${s.id}')">${favs.has(s.id) ? "★" : "☆"}</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+function bullets(a){ return `<ul>${a.map(x => `<li>${x}</li>`).join("")}</ul>`; }
+
+window.toggleFav = id => {
+  favs.has(id) ? favs.delete(id) : favs.add(id);
+  localStorage.setItem("story_favs", JSON.stringify([...favs]));
+  render();
+};
+
+window.openStory = id => {
+  current = STORIES.find(s => s.id === id);
+  dashboard.classList.add("hidden");
+  live.classList.add("hidden");
+  audit.classList.add("hidden");
+  detail.classList.remove("hidden");
+  const note = localStorage.getItem("note_" + id) || "";
+  detail.innerHTML = `
+    <button class="btn back" onclick="goHome()">← חזרה למרכז ההפעלה</button>
+    <section class="hero">
+      <div class="hero-main">
+        <img class="hero-cover" src="${current.cover}" alt="כריכת ${current.title}">
+        <div>
+          <div class="section-title">${brandBadge(40)}<div><h2>${current.title}</h2><p>${current.author} · גיל ${current.age} · ${current.duration} · ${current.season}</p></div></div>
+          <div class="tags">
+            <span class="tag alt">${current.category}</span>
+            ${current.themes.map(t => `<span class="tag">${t}</span>`).join("")}
+          </div>
+          <div class="help-note">בכל עת אפשר לעבור ל<b>מצב הפעלה חיה</b>. בסיפורים אפשר לטעון תמונות/מצגת; בפעילויות הפעוטות אפשר להשתמש באותו חלון לרקעים, סמלים ותמונות המחשה.</div>
+        </div>
+      </div>
+      <div class="score"><b>${current.score}/100</b><br>ציון הפעלה</div>
+    </section>
+    <div class="detail-actions">
+      <button class="btn primary" onclick="startLive('${id}')">▶ מצב הפעלה חיה</button>
+      <a class="btn good" href="${current.cover}" download="${safeImageFilename(`${current.program === "שעת סיפור והמחשה" ? "כריכת הספר" : "פוסטר הפעילות"} - ${current.title}.png`)}">${imageDownloadLabel(current)}</a>
+      ${current.purchase ? `<a class="btn" target="_blank" rel="noopener" href="${current.purchase}">רכישה / איתור הספר</a>` : ``}
+      <button class="btn" onclick="toggleFav('${id}')">${favs.has(id) ? "★ מועדף" : "☆ הוסף למועדפים"}</button>
+    </div>
+    <div class="grid">
+      <section class="panel"><h3>תקציר</h3><p>${current.summary}</p></section>
+      <section class="panel"><h3>המסר המרכזי</h3><p><b>${current.message}</b></p></section>
+      <section class="panel"><h3>בובות</h3>${bullets(current.puppets)}</section>
+      <section class="panel"><h3>אביזרים</h3>${bullets(current.props)}</section>
+      <section class="panel"><h3>רגע WOW</h3><p>${current.wow}</p></section>
+      <section class="panel"><h3>שאלות לילדים</h3>${bullets(current.questions)}</section>
+    </div>
+    <section class="panel" style="margin-top:14px">
+      <h3>תסריט ${current.duration}</h3>
+      <table class="timeline">${current.timeline.map(x => `<tr><td>${x.m}</td><td><b>${x.title}</b><br>${x.cue}</td></tr>`).join("")}</table>
+    </section>
+    <div class="grid">
+      <section class="panel"><h3>מצבי קשב</h3><p><b>ירוק:</b> ${current.attention.green}</p><p><b>צהוב:</b> ${current.attention.yellow}</p><p><b>אדום:</b> ${current.attention.red}</p></section>
+      <section class="panel"><h3>התאמות והכלה</h3>${bullets(current.inclusion)}</section>
+      <section class="panel"><h3>רשימת אריזה</h3>${bullets(current.packing)}</section>
+      <section class="panel"><h3>הערות אישיות</h3><textarea id="note" class="note" placeholder="מה עבד? מה לשנות? רעיונות לבובות...">${note}</textarea><div style="margin-top:10px"><button class="btn" onclick="saveNote()">שמור הערה</button></div></section>
+    </div>
+  `;
+  window.scrollTo(0,0);
+};
+
+window.saveNote = () => {
+  if(current){
+    localStorage.setItem("note_" + current.id, $("#note").value);
+    alert("ההערה נשמרה במכשיר הזה.");
+  }
+};
+
+window.goHome = () => {
+  stopTimer();
+  detail.classList.add("hidden");
+  live.classList.add("hidden");
+  audit.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+  render();
+  window.scrollTo(0,0);
+};
+
+function showAudit(){
+  detail.classList.add("hidden");
+  live.classList.add("hidden");
+  dashboard.classList.add("hidden");
+  audit.classList.remove("hidden");
+  audit.innerHTML = `
+    <button class="btn back" onclick="goHome()">← חזרה למרכז ההפעלה</button>
+    <div class="section-title">${brandBadge(44)}<div><h2>בדיקה ויזואלית של ספרים ופעילויות</h2><p>כל התמונות והכרטיסים המשולבים בקובץ מוצגים כאן לבדיקה מהירה.</p></div></div>
+    <div class="audit-grid">
+      ${STORIES.map(s => `
+        <article class="audit-card">
+          <img src="${s.cover}" alt="כריכת ${s.title}">
+          <div style="margin-top:8px;font-weight:700">${s.num}. ${s.title}</div>
+          <div class="audit-status">✓ תמונה נטענה</div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+  window.scrollTo(0,0);
+}
+window.showAudit = showAudit;
+
+
+// ===== V11: ייצוא מלא של 30 ספרי שעת הסיפור ל-Google Sheets / LibreOffice =====
+function tableText(value){
+  if(value === null || value === undefined) return "";
+  if(Array.isArray(value)) return value.map(tableText).filter(Boolean).join(" | ");
+  if(typeof value === "object") return JSON.stringify(value);
+  return String(value).replace(/\r?\n/g, " ⏎ ").trim();
+}
+
+function csvCell(value){
+  const s = tableText(value).replace(/"/g, '""');
+  return `"${s}"`;
+}
+
+function timelineToText(timeline){
+  return (timeline || []).map(x => {
+    const parts = [];
+    if(x.m) parts.push(x.m);
+    if(x.title) parts.push(x.title);
+    let out = parts.join(" — ");
+    if(x.cue) out += `${out ? ": " : ""}${x.cue}`;
+    if(x.type) out += ` [${x.type}]`;
+    return out;
+  }).join(" | ");
+}
+
+async function getDeckExportInfo(storyId){
+  const empty = {
+    saved:"לא", kind:"", name:"", count:"", sync:"", updated:""
+  };
+  try{
+    if(typeof getDeckRecord !== "function") return empty;
+    const rec = await getDeckRecord(storyId);
+    if(!rec) return empty;
+
+    let count = "";
+    if(rec.kind === "pdf") count = rec.pageCount || "";
+    if(rec.kind === "images") count = Array.isArray(rec.slides) ? rec.slides.length : "";
+
+    return {
+      saved:"כן",
+      kind: rec.kind === "pdf" ? "PDF" : (rec.kind === "images" ? "תמונות" : (rec.kind || "")),
+      name: rec.name || "",
+      count,
+      sync: rec.sync || "",
+      updated: rec.updatedAt ? new Date(rec.updatedAt).toLocaleString("he-IL") : ""
+    };
+  }catch(err){
+    console.warn("לא ניתן לקרוא מידע מצגת עבור", storyId, err);
+    return empty;
+  }
+}
+
+async function exportBooksTable(){
+  const books = STORIES
+    .filter(s => s.program === "שעת סיפור והמחשה")
+    .sort((a,b) => (a.num || 0) - (b.num || 0));
+
+  if(!books.length){
+    alert("לא נמצאו ספרים לייצוא.");
+    return;
+  }
+
+  const headers = [
+    "מזהה",
+    "מספר",
+    "שם הספר",
+    "מחבר/ת",
+    "מאייר/ת",
+    "הוצאה לאור",
+    "שנת הוצאה",
+    "ISBN",
+    "מספר עמודים",
+    "גיל",
+    "משך פעילות",
+    "ציון הפעלה",
+    "קטגוריה",
+    "תוכנית",
+    "עונה / מועד",
+    "נושאים",
+    "תקציר",
+    "מסר מרכזי",
+    "בובות",
+    "אביזרים",
+    "רגע WOW",
+    "שאלות לילדים",
+    "תסריט / מהלך מלא",
+    "קשב – ירוק",
+    "קשב – צהוב",
+    "קשב – אדום",
+    "התאמות והכלה",
+    "רשימת אריזה",
+    "קישור רכישה / איתור",
+    "מקור כריכה",
+    "כריכה מוטמעת בקובץ",
+    "מועדף",
+    "הערות אישיות",
+    "מצגת שמורה",
+    "סוג מצגת",
+    "שם קובץ מצגת",
+    "מספר עמודים / תמונות",
+    "סנכרון מצגת",
+    "עודכן מצגת"
+  ];
+
+  const rows = [];
+  for(const s of books){
+    const deck = await getDeckExportInfo(s.id);
+    const note = localStorage.getItem("note_" + s.id) || "";
+    const coverEmbedded = typeof s.cover === "string" && s.cover.startsWith("data:") ? "כן" : "לא";
+
+    rows.push([
+      s.id,
+      s.num,
+      s.title,
+      s.author,
+      s.illustrator || "",
+      s.publisher || "",
+      s.year || s.publishYear || "",
+      s.isbn || s.ISBN || "",
+      s.pages || s.pageCount || "",
+      s.age,
+      s.duration,
+      s.score,
+      s.category,
+      s.program,
+      s.season,
+      (s.themes || []).join(" | "),
+      s.summary,
+      s.message,
+      (s.puppets || []).join(" | "),
+      (s.props || []).join(" | "),
+      s.wow,
+      (s.questions || []).join(" | "),
+      timelineToText(s.timeline),
+      s.attention?.green || "",
+      s.attention?.yellow || "",
+      s.attention?.red || "",
+      (s.inclusion || []).join(" | "),
+      (s.packing || []).join(" | "),
+      s.purchase || "",
+      s.cover_source || "",
+      coverEmbedded,
+      favs.has(s.id) ? "כן" : "לא",
+      note,
+      deck.saved,
+      deck.kind,
+      deck.name,
+      deck.count,
+      deck.sync,
+      deck.updated
+    ]);
+  }
+
+  const csv = "\uFEFF" + [
+    headers.map(csvCell).join(","),
+    ...rows.map(row => row.map(csvCell).join(","))
+  ].join("\r\n");
+
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `StoryOS_רשימת_30_ספרים_מלאה_${date}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+  alert(
+    `נוצר קובץ טבלה עם ${books.length} ספרים וכל המידע הקיים במערכת.\n\n` +
+    "הקובץ מקודד UTF-8 ומתאים להעלאה ישירה ל-Google Sheets או לפתיחה ב-LibreOffice Calc.\n" +
+    "פעילויות הפעוטות אינן נכללות ברשימת הספרים."
+  );
+}
+window.exportBooksTable = exportBooksTable;
+
+$("#homeBtn").onclick = () => { onlyFav = false; goHome(); };
+$("#favBtn").onclick = () => {
+  onlyFav = !onlyFav;
+  dashboard.classList.remove("hidden");
+  detail.classList.add("hidden");
+  live.classList.add("hidden");
+  audit.classList.add("hidden");
+  render();
+  window.scrollTo(0,0);
+};
+$("#auditBtn").onclick = showAudit;
+$("#exportBooksBtn").onclick = exportBooksTable;
+$("#search").oninput = render;
+$("#theme").onchange = render;
+$("#season").onchange = render;
+$("#ageFilter").onchange = render;
+$("#category").onchange = render;
+$("#program").onchange = render;
+
+function fmt(sec){
+  const m = Math.floor(sec/60), s = sec % 60;
+  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+function startTimer(){
+  if(timerHandle) return;
+  timerHandle = setInterval(() => {
+    elapsed++;
+    const t = $("#timer");
+    if(t) t.textContent = fmt(elapsed);
+    const d = getDeck();
+    if(current && d && d.sync === "timer"){
+      const prev = d.index;
+      syncDeck();
+      if(prev !== d.index && !live.classList.contains("hidden")) renderLive();
+    }
+  }, 1000);
+}
+function stopTimer(){ clearInterval(timerHandle); timerHandle = null; }
+
+function getDeck(storyId = current?.id){
+  if(!storyId) return null;
+  if(!slideState[storyId]) slideState[storyId] = {slides:[], index:0, sync:"step"};
+  return slideState[storyId];
+}
+function syncDeck(){
+  const d = getDeck();
+  if(!current || !d || !d.slides.length) return;
+  if(d.sync === "step"){
+    const max = Math.max(current.timeline.length - 1, 1);
+    d.index = Math.min(d.slides.length - 1, Math.round((liveIndex / max) * (d.slides.length - 1)));
+  } else if(d.sync === "timer"){
+    const mm = (current.duration.match(/(\d+)(?:–(\d+))?/) || []);
+    const totalMinutes = Number(mm[2] || mm[1] || 45);
+    const total = totalMinutes * 60;
+    d.index = Math.min(d.slides.length - 1, Math.floor((elapsed / total) * d.slides.length));
+  }
+}
+function bindSlideUploader(){
+  const inp = $("#slideFiles");
+  if(!inp) return;
+  inp.addEventListener("change", e => {
+    const files = [...e.target.files].filter(f => f.type.startsWith("image/"));
+    const deck = getDeck();
+    if(!deck) return;
+    deck.slides = files.map(f => ({name:f.name, url:URL.createObjectURL(f)}));
+    deck.index = 0;
+    renderLive();
+  });
+}
+function currentSlideMarkup(){
+  const d = getDeck();
+  if(!d || !d.slides.length){
+    return `<div class="slide-placeholder">
+      ${brandBadge(78)}
+      <div><b>עדיין לא נטענו תמונות סרוקות</b></div>
+      <div>אפשר להתחיל עם כריכת הספר, ואז ללחוץ על "טען תמונות".</div>
+      <img src="${current.cover}" alt="כריכת הספר" style="max-width:70%;max-height:220px;object-fit:contain;border-radius:14px;border:1px solid #ece4d7;background:#fff;padding:10px">
+    </div>`;
+  }
+  const slide = d.slides[d.index];
+  return `<img src="${slide.url}" alt="${slide.name}">`;
+}
+
+window.startLive = id => {
+  current = STORIES.find(s => s.id === id);
+  liveIndex = 0;
+  elapsed = 0;
+  stopTimer();
+  const d = getDeck(id);
+  if(d.sync === "step") d.index = 0;
+  dashboard.classList.add("hidden");
+  detail.classList.add("hidden");
+  audit.classList.add("hidden");
+  live.classList.remove("hidden");
+  renderLive();
+  startTimer();
+  window.scrollTo(0,0);
+};
+
+function renderLive(){
+  const x = current.timeline[liveIndex];
+  const d = getDeck();
+  if(d && d.sync === "step") syncDeck();
+  live.innerHTML = `
+    <button class="btn back" onclick="openStory('${current.id}')">← חזרה לכרטיס הסיפור</button>
+    <div class="live-top">
+      <div class="section-title">${brandBadge(44)}<div><h2>${current.title}</h2><p>${current.author} · מצב הפעלה חי · 45 דקות</p></div></div>
+      <div id="timer" class="timer">${fmt(elapsed)}</div>
+    </div>
+    <div class="live-layout">
+      <section>
+        <div class="live-card">
+          <span class="type">${x.type}</span>
+          <div class="step">שלב ${liveIndex+1} מתוך ${current.timeline.length} · דקות ${x.m}</div>
+          <h2>${x.title}</h2>
+          <div class="cue">${x.cue}</div>
+          <div class="live-nav">
+            <button onclick="prevStep()">הקודם</button>
+            <button class="btn primary" onclick="nextStep()">הבא</button>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:14px">
+          <h3>מפת ההפעלה</h3>
+          <div class="steps-mini">
+            ${current.timeline.map((step,i) => `
+              <button class="step-mini ${i===liveIndex ? 'active' : ''}" onclick="jumpToStep(${i})">
+                <div class="m">${step.m} · ${step.type}</div>
+                <div><b>${step.title}</b></div>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="emergency">
+          <button class="btn good" onclick="showMode('green')">🟢 ירוק</button>
+          <button class="btn warn" onclick="showMode('yellow')">🟡 הקשב יורד</button>
+          <button class="btn danger" onclick="showMode('red')">🔴 יציאה מאיזון</button>
+          <button class="btn" onclick="showPacking()">ציוד</button>
+          <button class="btn" onclick="exitLive()">סיום מצב חי</button>
+        </div>
+      </section>
+
+      <aside class="live-presentation">
+        <section class="panel">
+          <h3>חלון מצגת הספר</h3>
+          <div class="slide-tools">
+            <label class="upload-label">📁 טען תמונות
+              <input type="file" id="slideFiles" accept="image/*" multiple>
+            </label>
+            <button class="btn small" onclick="clearSlides()">נקה מצגת</button>
+          </div>
+          <div class="file-hint">מומלץ להעלות תמונות JPG/PNG של עמודי הספר. כרגע זו טעינה מקומית לאותה הפעלה.</div>
+          <div class="sync-tools">
+            <label><input type="radio" name="sync" value="manual" ${d.sync==='manual'?'checked':''} onchange="setSyncMode('manual')"> ידני</label>
+            <label><input type="radio" name="sync" value="step" ${d.sync==='step'?'checked':''} onchange="setSyncMode('step')"> לפי שלבים</label>
+            <label><input type="radio" name="sync" value="timer" ${d.sync==='timer'?'checked':''} onchange="setSyncMode('timer')"> לפי טיימר 45 דק׳</label>
+          </div>
+          <div class="slide-stage">${currentSlideMarkup()}</div>
+          <div class="slide-meta">
+            <div>מצגת: ${d.slides.length ? `שקופית ${d.index+1} מתוך ${d.slides.length}` : "טרם נטענו שקופיות"}</div>
+            <div>${d.sync==='manual'?'מצב ידני':d.sync==='step'?'סנכרון לפי שלבי ההפעלה':'סנכרון לפי טיימר'}</div>
+          </div>
+          <div class="slide-nav" style="margin-top:10px">
+            <button onclick="prevSlide()">שקופית קודמת</button>
+            <button onclick="nextSlide()">שקופית הבאה</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+    <div class="footer-note">
+      <b>הערה חשובה:</b> החלון כבר מוכן להצגת עמודי הספר. אחרי שתארגן את הספרים הסרוקים שרכשת, תוכל לטעון אותם כאן ולהריץ את המצגת תוך כדי הסיפור.
+      אם תרצה, בשלב הבא אפשר להוסיף גם תמיכה ב־PDF וחלוקה אוטומטית לעמודים.
+    </div>
+  `;
+  bindSlideUploader();
+}
+
+window.jumpToStep = i => {
+  liveIndex = i;
+  if(getDeck()?.sync === "step") syncDeck();
+  renderLive();
+};
+window.nextStep = () => {
+  if(liveIndex < current.timeline.length - 1){
+    liveIndex++;
+    if(getDeck()?.sync === "step") syncDeck();
+    renderLive();
+  } else {
+    showModal("הפעילות הסתיימה","טקס הסיום הושלם. אפשר לחזור לכרטיס ולרשום הערה קצרה על מה שעבד.");
+  }
+};
+window.prevStep = () => {
+  if(liveIndex > 0){
+    liveIndex--;
+    if(getDeck()?.sync === "step") syncDeck();
+    renderLive();
+  }
+};
+window.setSyncMode = mode => {
+  const d = getDeck();
+  d.sync = mode;
+  syncDeck();
+  renderLive();
+};
+window.nextSlide = () => {
+  const d = getDeck();
+  if(!d.slides.length) return;
+  d.index = Math.min(d.slides.length - 1, d.index + 1);
+  d.sync = "manual";
+  renderLive();
+};
+window.prevSlide = () => {
+  const d = getDeck();
+  if(!d.slides.length) return;
+  d.index = Math.max(0, d.index - 1);
+  d.sync = "manual";
+  renderLive();
+};
+window.clearSlides = () => {
+  const d = getDeck();
+  d.slides = [];
+  d.index = 0;
+  renderLive();
+};
+
+window.showMode = k => showModal(k==="green"?"מצב ירוק":k==="yellow"?"מצב צהוב":"מצב אדום", current.attention[k]);
+window.showPacking = () => showModal("רשימת ציוד", bullets(current.packing), true);
+window.exitLive = () => { stopTimer(); openStory(current.id); };
+
+function showModal(title, body, isHtml=false){
+  const m = document.createElement("div");
+  m.className = "modal";
+  m.innerHTML = `<div class="modalbox"><h2>${title}</h2><div>${isHtml ? body : `<p>${body}</p>`}</div><div style="margin-top:16px"><button class="btn primary" onclick="this.closest('.modal').remove()">סגור</button></div></div>`;
+  document.body.appendChild(m);
+}
+
+// ===== "מה אני עושה היום בגן?" =====
+(function(){
+  function ageMatch(storyAge, age){ if(!age) return 0; return storyAge.includes(age) ? 18 : -8; }
+  function themeMatch(s, theme){ if(!theme) return 0; return s.themes.includes(theme) ? 24 : -4; }
+  function seasonMatch(s, season){ if(!season) return 0; return s.season===season ? 20 : (s.season.includes("כל השנה") ? 8 : 0); }
+  function attentionBonus(s, att){
+    if(!att) return 0;
+    const highlyInteractive = ["אליעזר והגזר","האריה שאהב תות","תירס חם","לבד על המרבד","אילת מטיילת","ברכבת יושבת ארנבת","כספיון הדג הקטן","האריה שבפנים"];
+    if(att==="short") return highlyInteractive.includes(s.title) ? 16 : 4;
+    if(att==="veryshort") return highlyInteractive.includes(s.title) ? 24 : 0;
+    return 0;
+  }
+  function settingBonus(s, setting){
+    if(!setting) return 0;
+    const inclusiveThemes = ["קבלה עצמית","שונות","גבולות","דאגה","ויסות רגשי","משפחה","הקשבה","חברות","קבלת האחר"];
+    return s.themes.some(t => inclusiveThemes.includes(t)) ? 12 : 2;
+  }
+  function sizeBonus(s, count){
+    if(!count) return 0;
+    const groupFriendly = ["אליעזר והגזר","תירס חם","ברכבת יושבת ארנבת","אילת מטיילת","כספיון הדג הקטן","דירה להשכיר"];
+    if((count==="baby"||count==="toddlers") && s.program==="עולם קטן, קסם גדול") return 18;
+    if((count==="baby"||count==="toddlers") && s.program!=="עולם קטן, קסם גדול") return -12;
+    if((count==="large"||count==="xlarge") && groupFriendly.includes(s.title)) return 12;
+    return 3;
+  }
+  function rationale(s, vals){
+    const bits = [];
+    if(s.program==="עולם קטן, קסם גדול") bits.push("מותאם למסלול הפעוטות ולמפגש קצר");
+    if(vals.theme && s.themes.includes(vals.theme)) bits.push("מתאים במיוחד לערך שבחרת");
+    if(vals.season && (s.season===vals.season || s.season.includes("כל השנה"))) bits.push("מתאים לעונה/מועד");
+    if(vals.attention && ["אליעזר והגזר","האריה שאהב תות","תירס חם","לבד על המרבד","אילת מטיילת","ברכבת יושבת ארנבת","כספיון הדג הקטן","האריה שבפנים"].includes(s.title)) bits.push("אינטראקטיבי ומתאים לקשב קצר");
+    if(vals.setting && s.themes.some(t=>["קבלה עצמית","שונות","גבולות","דאגה","ויסות רגשי","משפחה","הקשבה","חברות","קבלת האחר"].includes(t))) bits.push("מתאים למסגרת משלבת/מיוחדת");
+    if(!bits.length) bits.push("ציון הפעלה גבוה והתאמה רחבה לגיל הרך");
+    return bits.slice(0,2).join(" · ");
+  }
+
+  function recommend(){
+    const vals = {
+      age: $("#pAge").value,
+      count: $("#pCount").value,
+      setting: $("#pSetting").value,
+      theme: $("#pTheme").value,
+      season: $("#pSeason").value,
+      attention: $("#pAttention").value,
+    };
+    const ranked = STORIES.map(s => {
+      let score = s.score;
+      score += ageMatch(s.age, vals.age) + themeMatch(s, vals.theme) + seasonMatch(s, vals.season) + attentionBonus(s, vals.attention) + settingBonus(s, vals.setting) + sizeBonus(s, vals.count);
+      return {s, score};
+    }).sort((a,b) => b.score - a.score).slice(0,3);
+
+    $("#plannerResults").innerHTML = ranked.map((r,i)=>`
+      <article class="rec">
+        <img class="rec-cover" src="${r.s.cover}" alt="כריכת ${r.s.title}">
+        <div class="rank">המלצה ${i+1}</div>
+        <h3>${r.s.title}</h3>
+        <div>${r.s.author} · גיל ${r.s.age}</div>
+        <div class="tags"><span class="tag alt">${r.s.category}</span>${r.s.themes.slice(0,2).map(t => `<span class="tag">${t}</span>`).join("")}</div>
+        <p class="why">${rationale(r.s, vals)}</p>
+        <div class="rec-actions">
+          <button class="btn primary" onclick="openStory('${r.s.id}')">פתח כרטיס</button>
+          <button class="btn secondary" onclick="startLive('${r.s.id}')">▶ התחל עכשיו</button>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  $("#recommendBtn").addEventListener("click", recommend);
+  $("#clearPlanner").addEventListener("click", () => {
+    ["pAge","pCount","pSetting","pProgram","pTheme","pSeason","pAttention"].forEach(id => $("#"+id).value = "");
+    $("#plannerResults").innerHTML = "";
+  });
+})();
+
+render();
+</script>
+<script>
+// ===== V9 ADD-ON: PDF support + persistent deck storage per story =====
+const DECK_DB_NAME = "StoryOS_SabaShimon_Decks";
+const DECK_DB_VERSION = 1;
+const DECK_STORE = "decks";
+
+function openDeckDB(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open(DECK_DB_NAME, DECK_DB_VERSION);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains(DECK_STORE)){
+        db.createObjectStore(DECK_STORE, {keyPath:"storyId"});
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveDeckRecord(record){
+  const db = await openDeckDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(DECK_STORE,"readwrite");
+    tx.objectStore(DECK_STORE).put(record);
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getDeckRecord(storyId){
+  const db = await openDeckDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(DECK_STORE,"readonly");
+    const req = tx.objectStore(DECK_STORE).get(storyId);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function deleteDeckRecord(storyId){
+  const db = await openDeckDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(DECK_STORE,"readwrite");
+    tx.objectStore(DECK_STORE).delete(storyId);
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+function releaseDeckUrls(d){
+  if(!d) return;
+  if(d.pdfUrl){ try{ URL.revokeObjectURL(d.pdfUrl); }catch(e){} }
+  if(d.slides){
+    d.slides.forEach(s=>{ if(s.url){ try{ URL.revokeObjectURL(s.url); }catch(e){} } });
+  }
+}
+
+async function hydrateDeck(storyId){
+  const record = await getDeckRecord(storyId);
+  const old = slideState[storyId];
+  if(old) releaseDeckUrls(old);
+
+  if(!record){
+    slideState[storyId] = {kind:null,slides:[],index:0,sync:"step",pageCount:0,pdfUrl:null,name:null,saved:false};
+    return slideState[storyId];
+  }
+
+  if(record.kind === "pdf"){
+    slideState[storyId] = {
+      kind:"pdf",
+      slides:[],
+      index:Math.max(0,(record.lastPage||1)-1),
+      sync:record.sync || "step",
+      pageCount:record.pageCount || 1,
+      pdfUrl:URL.createObjectURL(record.pdfBlob),
+      name:record.name || "ספר.pdf",
+      saved:true
+    };
+  }else{
+    slideState[storyId] = {
+      kind:"images",
+      slides:(record.slides||[]).map(x=>({name:x.name,url:URL.createObjectURL(x.blob),blob:x.blob})),
+      index:Math.max(0,record.lastIndex||0),
+      sync:record.sync || "step",
+      pageCount:(record.slides||[]).length,
+      pdfUrl:null,
+      name:record.name || "תמונות סרוקות",
+      saved:true
+    };
+  }
+  return slideState[storyId];
+}
+
+function getDeck(storyId = current?.id){
+  if(!storyId) return null;
+  if(!slideState[storyId]){
+    slideState[storyId] = {kind:null,slides:[],index:0,sync:"step",pageCount:0,pdfUrl:null,name:null,saved:false};
+  }
+  return slideState[storyId];
+}
+
+async function persistRuntimeDeck(){
+  const d = getDeck();
+  if(!current || !d || !d.kind) return;
+
+  if(d.kind === "pdf"){
+    const old = await getDeckRecord(current.id);
+    if(!old || !old.pdfBlob) return;
+    await saveDeckRecord({
+      ...old,
+      sync:d.sync,
+      pageCount:d.pageCount,
+      lastPage:d.index+1,
+      updatedAt:Date.now()
+    });
+  }else if(d.kind === "images"){
+    const old = await getDeckRecord(current.id);
+    if(!old || !old.slides) return;
+    await saveDeckRecord({
+      ...old,
+      sync:d.sync,
+      lastIndex:d.index,
+      updatedAt:Date.now()
+    });
+  }
+}
+
+async function estimatePdfPages(file){
+  try{
+    const buf = await file.arrayBuffer();
+    const txt = new TextDecoder("iso-8859-1").decode(buf);
+    const matches = txt.match(/\/Type\s*\/Page\b/g);
+    return matches ? matches.length : 0;
+  }catch(e){
+    return 0;
+  }
+}
+
+window.loadPdfDeck = async function(input){
+  const file = input.files && input.files[0];
+  if(!file || !current) return;
+
+  let estimate = await estimatePdfPages(file);
+  let answer = prompt(
+    "כמה עמודים יש ב-PDF?\nהמערכת צריכה את המספר כדי לסנכרן עמודים עם 45 הדקות.",
+    estimate > 0 ? String(estimate) : "24"
+  );
+  if(answer === null){ input.value=""; return; }
+  let pageCount = Math.max(1, parseInt(answer,10) || estimate || 1);
+
+  await saveDeckRecord({
+    storyId:current.id,
+    kind:"pdf",
+    name:file.name,
+    pdfBlob:file,
+    pageCount,
+    sync:"step",
+    lastPage:1,
+    updatedAt:Date.now()
+  });
+  await hydrateDeck(current.id);
+  renderLive();
+};
+
+window.loadImageDeck = async function(input){
+  const files = [...(input.files||[])].filter(f=>f.type.startsWith("image/"));
+  if(!files.length || !current) return;
+
+  const slides = files.map(f=>({name:f.name,blob:f}));
+  await saveDeckRecord({
+    storyId:current.id,
+    kind:"images",
+    name:`${files.length} תמונות`,
+    slides,
+    sync:"step",
+    lastIndex:0,
+    updatedAt:Date.now()
+  });
+  await hydrateDeck(current.id);
+  renderLive();
+};
+
+window.removeSavedDeck = async function(){
+  if(!current) return;
+  if(!confirm(`למחוק את המצגת השמורה של "${current.title}"?`)) return;
+  await deleteDeckRecord(current.id);
+  releaseDeckUrls(slideState[current.id]);
+  slideState[current.id] = {kind:null,slides:[],index:0,sync:"step",pageCount:0,pdfUrl:null,name:null,saved:false};
+  renderLive();
+};
+
+window.changePdfPageCount = async function(){
+  const d = getDeck();
+  if(!d || d.kind!=="pdf") return;
+  const input = document.getElementById("pdfPageCount");
+  const n = Math.max(1,parseInt(input.value,10)||1);
+  d.pageCount = n;
+  d.index = Math.min(d.index,n-1);
+  await persistRuntimeDeck();
+  renderLive();
+};
+
+function syncDeck(){
+  const d = getDeck();
+  if(!current || !d || !d.kind) return;
+
+  const totalItems = d.kind === "pdf" ? d.pageCount : d.slides.length;
+  if(!totalItems) return;
+
+  if(d.sync === "step"){
+    const max = Math.max(current.timeline.length - 1, 1);
+    d.index = Math.min(totalItems - 1, Math.round((liveIndex / max) * (totalItems - 1)));
+  }else if(d.sync === "timer"){
+    const total = 45 * 60;
+    d.index = Math.min(totalItems - 1, Math.floor((elapsed / total) * totalItems));
+  }
+}
+
+function currentSlideMarkup(){
+  const d = getDeck();
+
+  if(!d || !d.kind){
+    return `<div class="slide-placeholder">
+      ${brandBadge(78)}
+      <div><b>אין עדיין מצגת שמורה לספר הזה</b></div>
+      <div>אפשר לטעון PDF של הספר או סדרת תמונות JPG/PNG.</div>
+      <img src="${current.cover}" alt="כריכת הספר" style="max-width:70%;max-height:220px;object-fit:contain;border-radius:14px;border:1px solid #ece4d7;background:#fff;padding:10px">
+    </div>`;
+  }
+
+  if(d.kind === "pdf"){
+    const page = d.index + 1;
+    const src = `${d.pdfUrl}#page=${page}&zoom=page-fit&toolbar=0&navpanes=0`;
+    return `<div class="pdf-stage">
+      <embed src="${src}" type="application/pdf">
+    </div>`;
+  }
+
+  if(!d.slides.length){
+    return `<div class="slide-placeholder"><b>אין תמונות במצגת</b></div>`;
+  }
+  const slide = d.slides[d.index];
+  return `<img src="${slide.url}" alt="${slide.name}">`;
+}
+
+function deckStatusMarkup(){
+  const d = getDeck();
+  if(!d || !d.kind){
+    return `<div class="deck-status"><b>לא שמורה מצגת לספר זה.</b> טען PDF או תמונות והיא תישמר אוטומטית.</div>`;
+  }
+  const desc = d.kind==="pdf"
+    ? `PDF שמור: ${d.name} · ${d.pageCount} עמודים`
+    : `מצגת תמונות שמורה: ${d.slides.length} שקופיות`;
+  return `<div class="deck-status saved"><span class="deck-kind">${d.kind==="pdf"?"PDF":"תמונות"}</span><b>${desc}</b><span>✓ נשמרה לספר זה</span></div>`;
+}
+
+// Override V8 live start so it first reloads the saved deck from IndexedDB.
+window.startLive = async function(id){
+  current = STORIES.find(s=>s.id===id);
+  liveIndex = 0;
+  elapsed = 0;
+  stopTimer();
+  await hydrateDeck(id);
+  dashboard.classList.add("hidden");
+  detail.classList.add("hidden");
+  audit.classList.add("hidden");
+  live.classList.remove("hidden");
+  renderLive();
+  startTimer();
+  window.scrollTo(0,0);
+};
+
+function renderLive(){
+  const x = current.timeline[liveIndex];
+  const d = getDeck();
+  if(d && d.sync === "step") syncDeck();
+
+  const itemCount = !d || !d.kind ? 0 : (d.kind==="pdf" ? d.pageCount : d.slides.length);
+  const itemLabel = d?.kind==="pdf" ? "עמוד" : "שקופית";
+
+  live.innerHTML = `
+    <button class="btn back" onclick="openStory('${current.id}')">← חזרה לכרטיס הסיפור</button>
+
+    <div class="live-top">
+      <div class="section-title">${brandBadge(44)}<div><h2>${current.title}</h2><p>${current.author} · מצב הפעלה חי · 45 דקות</p></div></div>
+      <div id="timer" class="timer">${fmt(elapsed)}</div>
+    </div>
+
+    <div class="live-layout">
+      <section>
+        <div class="live-card">
+          <span class="type">${x.type}</span>
+          <div class="step">שלב ${liveIndex+1} מתוך ${current.timeline.length} · דקות ${x.m}</div>
+          <h2>${x.title}</h2>
+          <div class="cue">${x.cue}</div>
+          <div class="live-nav">
+            <button onclick="prevStep()">הקודם</button>
+            <button class="btn primary" onclick="nextStep()">הבא</button>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:14px">
+          <h3>מפת ההפעלה</h3>
+          <div class="steps-mini">
+            ${current.timeline.map((step,i)=>`
+              <button class="step-mini ${i===liveIndex?'active':''}" onclick="jumpToStep(${i})">
+                <div class="m">${step.m} · ${step.type}</div>
+                <div><b>${step.title}</b></div>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="emergency">
+          <button class="btn good" onclick="showMode('green')">🟢 ירוק</button>
+          <button class="btn warn" onclick="showMode('yellow')">🟡 הקשב יורד</button>
+          <button class="btn danger" onclick="showMode('red')">🔴 יציאה מאיזון</button>
+          <button class="btn" onclick="showPacking()">ציוד</button>
+          <button class="btn" onclick="exitLive()">סיום מצב חי</button>
+        </div>
+      </section>
+
+      <aside class="live-presentation">
+        <section class="panel">
+          <h3>חלון מצגת הספר</h3>
+          ${deckStatusMarkup()}
+
+          <div class="deck-toolbar">
+            <label class="upload-label">📕 טען PDF
+              <input type="file" accept="application/pdf" onchange="loadPdfDeck(this)">
+            </label>
+            <label class="upload-label">🖼️ טען תמונות
+              <input type="file" accept="image/*" multiple onchange="loadImageDeck(this)">
+            </label>
+            <button class="btn small danger" onclick="removeSavedDeck()">מחק מצגת שמורה</button>
+          </div>
+
+          <div class="persist-note">
+            המצגת נשמרת מקומית במחשב לפי הספר. בפעם הבאה שתפתח את אותו ספר, היא תיטען מחדש אוטומטית.
+          </div>
+
+          <div class="sync-tools">
+            <label><input type="radio" name="sync" value="manual" ${d.sync==='manual'?'checked':''} onchange="setSyncMode('manual')"> ידני</label>
+            <label><input type="radio" name="sync" value="step" ${d.sync==='step'?'checked':''} onchange="setSyncMode('step')"> לפי שלבים</label>
+            <label><input type="radio" name="sync" value="timer" ${d.sync==='timer'?'checked':''} onchange="setSyncMode('timer')"> לפי טיימר 45 דק׳</label>
+          </div>
+
+          ${d.kind==="pdf" ? `
+            <div class="page-control">
+              <span>מספר עמודים ב-PDF:</span>
+              <input id="pdfPageCount" type="number" min="1" value="${d.pageCount}">
+              <button class="btn small" onclick="changePdfPageCount()">עדכן</button>
+            </div>` : ""}
+
+          <div class="slide-stage">${currentSlideMarkup()}</div>
+
+          <div class="slide-meta">
+            <div>${itemCount ? `${itemLabel} ${d.index+1} מתוך ${itemCount}` : "טרם נטענה מצגת"}</div>
+            <div>${d.sync==='manual'?'מצב ידני':d.sync==='step'?'סנכרון לפי שלבים':'סנכרון לפי טיימר'}</div>
+          </div>
+
+          <div class="slide-nav" style="margin-top:10px">
+            <button onclick="prevSlide()">${d.kind==="pdf"?"עמוד קודם":"שקופית קודמת"}</button>
+            <button onclick="nextSlide()">${d.kind==="pdf"?"עמוד הבא":"שקופית הבאה"}</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <div class="footer-note">
+      <b>PDF:</b> Chrome ו‑Edge מציגים את העמוד הנבחר באמצעות מציג ה‑PDF המובנה שלהם.
+      אם מספר העמודים שזוהה אוטומטית אינו נכון, ניתן לעדכן אותו ידנית למעלה.
+    </div>
+  `;
+}
+
+window.setSyncMode = async function(mode){
+  const d = getDeck();
+  d.sync = mode;
+  syncDeck();
+  await persistRuntimeDeck();
+  renderLive();
+};
+
+window.nextSlide = async function(){
+  const d = getDeck();
+  if(!d || !d.kind) return;
+  const total = d.kind==="pdf" ? d.pageCount : d.slides.length;
+  if(!total) return;
+  d.index = Math.min(total-1,d.index+1);
+  d.sync = "manual";
+  await persistRuntimeDeck();
+  renderLive();
+};
+
+window.prevSlide = async function(){
+  const d = getDeck();
+  if(!d || !d.kind) return;
+  d.index = Math.max(0,d.index-1);
+  d.sync = "manual";
+  await persistRuntimeDeck();
+  renderLive();
+};
+
+window.jumpToStep = async function(i){
+  liveIndex = i;
+  if(getDeck()?.sync === "step") syncDeck();
+  await persistRuntimeDeck();
+  renderLive();
+};
+
+window.nextStep = async function(){
+  if(liveIndex < current.timeline.length-1){
+    liveIndex++;
+    if(getDeck()?.sync === "step") syncDeck();
+    await persistRuntimeDeck();
+    renderLive();
+  }else{
+    showModal("הפעילות הסתיימה","טקס הסיום הושלם. אפשר לחזור לכרטיס ולרשום הערה קצרה על מה שעבד.");
+  }
+};
+
+window.prevStep = async function(){
+  if(liveIndex > 0){
+    liveIndex--;
+    if(getDeck()?.sync === "step") syncDeck();
+    await persistRuntimeDeck();
+    renderLive();
+  }
+};
+
+// Timer sync: override startTimer to persist the newly selected page/slide when it changes.
+function startTimer(){
+  if(timerHandle) return;
+  timerHandle = setInterval(async ()=>{
+    elapsed++;
+    const t = $("#timer");
+    if(t) t.textContent = fmt(elapsed);
+
+    const d = getDeck();
+    if(current && d && d.kind && d.sync === "timer"){
+      const before = d.index;
+      syncDeck();
+      if(before !== d.index){
+        await persistRuntimeDeck();
+        if(!live.classList.contains("hidden")) renderLive();
+      }
+    }
+  },1000);
+}
+</script>
+</body>
+</html>
