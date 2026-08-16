@@ -2,9 +2,31 @@
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+project_root="$(cd "${script_dir}/.." && pwd)"
 
-# Netlify/GitHub may check out shell scripts without an executable bit.
-# Run the helper explicitly through bash so the build does not depend on file mode.
+# Production on Netlify is a static Story OS deployment from /public.
+# Do not invoke the Vinext/Cloudflare/OpenAI-hosting toolchain there.
+if [[ "${NETLIFY:-}" == "true" ]]; then
+  echo "Netlify static Story OS build: validating public files..."
+
+  required_files=(
+    "${project_root}/public/index.html"
+    "${project_root}/public/storyos.html"
+  )
+
+  for file in "${required_files[@]}"; do
+    if [[ ! -f "${file}" ]]; then
+      echo "Missing required static deploy file: ${file}" >&2
+      exit 1
+    fi
+  done
+
+  echo "Static Story OS files are ready in public/."
+  exit 0
+fi
+
+# Local / non-Netlify build keeps the original verified Vinext workflow.
+# Run helper scripts explicitly through bash so executable file modes do not matter.
 if [[ "${SITES_ENV_READY:-}" != "1" ]]; then
   exec bash "${script_dir}/sites-env.sh" -- bash "$0" "$@"
 fi
@@ -27,5 +49,4 @@ timeout \
   "${SITES_BUILD_TIMEOUT:-3m}" \
   "${vinext}" build
 
-# Same reason as above: do not require validate-artifact.sh to be executable.
 bash "${script_dir}/validate-artifact.sh"
