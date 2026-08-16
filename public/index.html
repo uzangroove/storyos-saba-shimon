@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Story OS · סבא שמעון · גרסה 15</title>
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f4ed}
@@ -10,7 +13,7 @@
   </style>
 </head>
 <body>
-  <iframe id="storyosFrame" src="/storyos.html" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=20260816-0741" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
   <script>
     (function(){
       const frame = document.getElementById('storyosFrame');
@@ -19,11 +22,9 @@
         const doc = frame.contentDocument;
         if(!doc) return;
 
-        // 1. הסרת הבאנר הראשי שסומן בצילום המסך.
         const hero = doc.querySelector('.hero-banner');
         if(hero) hero.remove();
 
-        // 2. העברת הסלוגן לאזור הכותרת העליונה, מתחת לשם המערכת.
         const brandCopy = doc.querySelector('.brand > div');
         if(brandCopy && !doc.getElementById('storyosBrandSlogan')){
           const slogan = doc.createElement('p');
@@ -40,18 +41,12 @@
           else brandCopy.prepend(slogan);
         }
 
-        // 3. הכפתורים של ארבע הפעילויות צריכים להיות הדבר הראשון מתחת לכותרת.
         const main = doc.querySelector('main');
-        if(main){
-          main.style.paddingTop = '14px';
-        }
+        if(main) main.style.paddingTop = '14px';
 
         const hub = doc.getElementById('activityHub');
-        if(hub){
-          hub.style.marginTop = '0';
-        }
+        if(hub) hub.style.marginTop = '0';
 
-        // 4. אם חוזרים למסך הראשי מתוך כרטיס/מצב חי — שומרים על אותו מבנה.
         const homeBtn = doc.getElementById('homeBtn');
         if(homeBtn && !homeBtn.dataset.layoutHooked){
           homeBtn.dataset.layoutHooked = '1';
@@ -63,7 +58,6 @@
 
       frame.addEventListener('load', function(){
         applyHomeLayout();
-        // חיזוק קטן למקרה שסקריפט פנימי משנה את ה-DOM מיד אחרי טעינה.
         setTimeout(applyHomeLayout, 80);
         setTimeout(applyHomeLayout, 350);
       });
