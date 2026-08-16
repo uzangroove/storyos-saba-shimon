@@ -66,11 +66,11 @@ main{max-width:1600px;margin:auto;padding:14px 18px 24px}
 <main>
   <section id="importCard" class="import-card">
     <h2>טעינת הספר בפעם הראשונה</h2>
-    <p>בחר את התיקייה שבה נמצאים קבצי <b>איילת מטיילת</b>. אין צורך לשנות אף שם קובץ. המערכת תזהה ותסדר אותם אוטומטית לפי התקן שכבר הכנת.</p>
+    <p>בחר את התיקייה שבה נמצאים קבצי <b>איילת מטיילת</b>. אין צורך לשנות אף שם קובץ. המערכת תזהה ותסדר אותם אוטומטית לפי הפורמט הקיים אצלך.</p>
     <div class="rules">
       <div class="rule">כריכת הספר<code>PAGE_001_MAIN.jpg</code></div>
-      <div class="rule">תמונת עמוד ללא טקסט<code>01_Page.jpg</code></div>
-      <div class="rule">תמונת טקסט של אותו עמוד<code>t_01_Page.jpg</code></div>
+      <div class="rule">תמונת עמוד ללא טקסט<code>page_01.jpg</code></div>
+      <div class="rule">תמונת טקסט של אותו עמוד<code>page_01_t.jpg</code></div>
     </div>
     <div class="note"><b>הקבצים אינם נשלחים לשרת.</b> הם נשמרים מקומית בדפדפן במכשיר הזה בלבד. לאחר הייבוא הראשון אפשר לסגור ולפתוח את המערכת והספר יישאר זמין.</div>
     <div id="validation" class="validation">ממתין לבחירת קבצים…</div>
@@ -126,8 +126,8 @@ main{max-width:1600px;margin:auto;padding:14px 18px 24px}
   const STORE = 'books';
   const imageExt = '(?:jpe?g|png|webp)';
   const coverRe = new RegExp('^PAGE_001_MAIN\\.' + imageExt + '$','i');
-  const mainRe = new RegExp('^(\\d+)_Page\\.' + imageExt + '$','i');
-  const textRe = new RegExp('^t_(\\d+)_Page\\.' + imageExt + '$','i');
+  const mainRe = new RegExp('^page_(\\d+)\\.' + imageExt + '$','i');
+  const textRe = new RegExp('^page_(\\d+)_t\\.' + imageExt + '$','i');
 
   const folderInput = document.getElementById('folderInput');
   const filesInput = document.getElementById('filesInput');
@@ -152,7 +152,7 @@ main{max-width:1600px;margin:auto;padding:14px 18px 24px}
   const textZoomLabel = document.getElementById('textZoomLabel');
 
   let book = null;
-  let position = 0; // 0 = cover, 1..n = pages array positions
+  let position = 0;
   let imageZoom = 1;
   let textZoom = 1;
   let textVisible = true;
@@ -249,7 +249,7 @@ main{max-width:1600px;margin:auto;padding:14px 18px 24px}
       const parsed = parseFiles(fileList);
       const errors = [];
       if(!parsed.cover) errors.push('לא נמצאה כריכה בשם PAGE_001_MAIN עם סיומת תמונה נתמכת.');
-      if(!parsed.pages.length) errors.push('לא נמצאו דפי תמונה בפורמט 01_Page, 02_Page וכן הלאה.');
+      if(!parsed.pages.length) errors.push('לא נמצאו דפי תמונה בפורמט page_01, page_02 וכן הלאה.');
       if(errors.length){
         validation.className = 'validation error';
         validation.innerHTML = '<b>הייבוא נעצר:</b><br>' + errors.join('<br>');
@@ -326,7 +326,7 @@ main{max-width:1600px;margin:auto;padding:14px 18px 24px}
       box.className = 'empty';
       box.innerHTML = entry.isCover
         ? '<strong>כריכת הספר</strong>לכריכה אין קובץ טקסט נפרד.'
-        : '<strong>אין טקסט בדף הזה</strong>לא נמצא קובץ בשם t_' + String(entry.pageNumber).padStart(2,'0') + '_Page עבור הדף הנוכחי.';
+        : '<strong>אין טקסט בדף הזה</strong>לא נמצא קובץ בשם page_' + String(entry.pageNumber).padStart(2,'0') + '_t עבור הדף הנוכחי.';
       textBody.appendChild(box);
     }
     textZoomLabel.textContent = Math.round(textZoom*100) + '%';
