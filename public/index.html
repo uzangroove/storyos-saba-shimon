@@ -10,13 +10,38 @@
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f4ed}
     #storyosFrame{display:block;width:100%;height:100dvh;border:0;background:#f8f4ed}
+    #scannedBookViewerBtn{
+      position:fixed;
+      top:18px;
+      left:18px;
+      z-index:9999;
+      border:1px solid #dfd7ca;
+      background:linear-gradient(135deg,#6c50e0,#7d67ed);
+      color:#fff;
+      border-radius:14px;
+      padding:11px 16px;
+      box-shadow:0 5px 16px rgba(37,43,62,.18);
+      font:700 16px Arial,"Noto Sans Hebrew",sans-serif;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    #scannedBookViewerBtn:hover{filter:brightness(1.04)}
+    @media(max-width:760px){
+      #scannedBookViewerBtn{top:auto;bottom:16px;left:16px;font-size:14px;padding:10px 13px}
+    }
   </style>
 </head>
 <body>
-  <iframe id="storyosFrame" src="/storyos.html?v=20260816-1018" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <button id="scannedBookViewerBtn" type="button" title="פתיחת נגן הספר הסרוק של איילת מטיילת">📖 נגן ספר סרוק</button>
+  <iframe id="storyosFrame" src="/storyos.html?v=20260816-1028" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
   <script>
     (function(){
       const frame = document.getElementById('storyosFrame');
+      const scannedBtn = document.getElementById('scannedBookViewerBtn');
+
+      scannedBtn.addEventListener('click', function(){
+        window.location.href = '/book-viewer.html?v=20260816-1028';
+      });
 
       function applyHomeLayout(){
         const doc = frame.contentDocument;
@@ -39,18 +64,6 @@
           const title = brandCopy.querySelector('h1');
           if(title) title.insertAdjacentElement('afterend', slogan);
           else brandCopy.prepend(slogan);
-        }
-
-        const headActions = doc.querySelector('.head-actions');
-        if(headActions && !doc.getElementById('scannedBookViewerBtn')){
-          const btn = doc.createElement('button');
-          btn.id = 'scannedBookViewerBtn';
-          btn.textContent = '📖 נגן ספר סרוק';
-          btn.title = 'פתיחת איילת מטיילת – תמונות וטקסט מסונכרנים';
-          btn.addEventListener('click', function(){
-            window.location.href = '/book-viewer.html';
-          });
-          headActions.appendChild(btn);
         }
 
         const main = doc.querySelector('main');
