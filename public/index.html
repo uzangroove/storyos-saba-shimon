@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-  <iframe id="storyosFrame" src="/storyos.html?v=20260816-0741" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=20260816-1018" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
   <script>
     (function(){
       const frame = document.getElementById('storyosFrame');
@@ -39,6 +39,18 @@
           const title = brandCopy.querySelector('h1');
           if(title) title.insertAdjacentElement('afterend', slogan);
           else brandCopy.prepend(slogan);
+        }
+
+        const headActions = doc.querySelector('.head-actions');
+        if(headActions && !doc.getElementById('scannedBookViewerBtn')){
+          const btn = doc.createElement('button');
+          btn.id = 'scannedBookViewerBtn';
+          btn.textContent = '📖 נגן ספר סרוק';
+          btn.title = 'פתיחת איילת מטיילת – תמונות וטקסט מסונכרנים';
+          btn.addEventListener('click', function(){
+            window.location.href = '/book-viewer.html';
+          });
+          headActions.appendChild(btn);
         }
 
         const main = doc.querySelector('main');
