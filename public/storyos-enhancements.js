@@ -3,14 +3,6 @@
   const scannedBtn = document.getElementById('scannedBookViewerBtn');
   const PROGRAM = 'שיר נולד בגן';
 
-  const ACTIVITY_GRAPHICS = [
-    { program: 'שעת סיפור והמחשה', src: '/activity-buttons/story-illustrated.png', alt: 'שעת סיפור בהמחשה' },
-    { program: 'כשהציור קם לתחייה', src: '/activity-buttons/drawing-comes-alive.png', alt: 'כשהציור קם לתחייה' },
-    { program: 'תיאטרון בובות', src: '/activity-buttons/puppet-theater.png', alt: 'תיאטרון בובות אינטימי לגן' },
-    { program: 'עולם קטן, קסם גדול', src: '/activity-buttons/small-world-big-magic.png', alt: 'עולם קטן, קסם גדול' },
-    { program: PROGRAM, src: '/activity-buttons/song-is-born.png', alt: 'שיר נולד בגן' }
-  ];
-
   const MUSIC_MEETINGS = [
     ['שלום, אנחנו הלהקה של הגן','ספטמבר','היכרות · שמות · קצב','יצירת תחושת שייכות, היכרות עם כלי ההקשה ובניית טקס פתיחה מוזיקלי קבוע.','ג׳ינגל פתיחה של הגן'],
     ['שיר הגן שלנו','ספטמבר','שייכות · קבוצה · זהות','הילדים מספרים מה מיוחד בגן, מה הם אוהבים לעשות ומה מאפיין את הקבוצה.','שיר הגן שלנו'],
@@ -80,36 +72,7 @@
     style.id = 'storyOSEnhancementStyles';
     style.textContent = `
       @media(min-width:1001px){.activity-tiles{grid-template-columns:repeat(5,1fr)!important}}
-      .activity-tile.activity-graphic{
-        position:relative!important;
-        overflow:hidden!important;
-        padding:0!important;
-      }
-      .activity-tile.activity-graphic .activity-icon{
-        position:absolute!important;
-        inset:8px!important;
-        width:auto!important;
-        height:auto!important;
-        margin:0!important;
-        padding:0!important;
-        display:flex!important;
-        align-items:center!important;
-        justify-content:center!important;
-        border-radius:18px!important;
-        background:transparent!important;
-        overflow:hidden!important;
-      }
-      .activity-tile.activity-graphic .activity-icon img{
-        display:block!important;
-        width:100%!important;
-        height:100%!important;
-        max-width:100%!important;
-        max-height:100%!important;
-        object-fit:contain!important;
-        object-position:center center!important;
-      }
-      .activity-tile.activity-graphic > strong,
-      .activity-tile.activity-graphic > small{display:none!important}
+      .activity-tile.music-program .activity-icon{background:#e9f8ea!important}
     `;
     doc.head.appendChild(style);
   }
@@ -121,8 +84,7 @@
 
     if (!win.__storyOSMusicProgramAdded) {
       try {
-        const items = musicItems();
-        win.eval('STORIES.push(...'+JSON.stringify(items)+');');
+        win.eval('STORIES.push(...'+JSON.stringify(musicItems())+');');
         win.__storyOSMusicProgramAdded = true;
       } catch (err) {
         console.error('Story OS music data injection failed', err);
@@ -153,7 +115,7 @@
     addOption('program','שיר נולד בגן');
 
     const brandMeta = doc.querySelector('.brand p');
-    if (brandMeta) brandMeta.textContent = 'מערכת הפעלה לסל תרבות · גיל הרך · גרסה 17 · חמישה מסלולי פעילות';
+    if (brandMeta) brandMeta.textContent = 'מערכת הפעלה לסל תרבות · גיל הרך · גרסה 19 · חמישה מסלולי פעילות';
     const dashboardText = doc.querySelector('#dashboard .section-title p');
     if (dashboardText) dashboardText.textContent = 'שעת סיפור, ציור קם לתחייה, תיאטרון בובות, עולם קטן קסם גדול ושיר נולד בגן — הכול במקום אחד.';
     const statBlocks = doc.querySelectorAll('#dashboard .stats div');
@@ -165,29 +127,24 @@
     }
   }
 
-  function applyActivityGraphics() {
-    const doc = frame.contentDocument;
-    if (!doc) return;
-    const container = doc.querySelector('.activity-tiles');
-    if (!container) return;
-
-    const orderedTiles = [];
-    ACTIVITY_GRAPHICS.forEach(cfg => {
-      const tile = container.querySelector(`.activity-tile[data-program="${cfg.program}"]`);
+  function restoreOriginalActivityCards(doc) {
+    const defs = [
+      ['שעת סיפור והמחשה','📖','שעת סיפור','ספרים, המחשה ותסריטי הפעלה'],
+      ['כשהציור קם לתחייה','🎨','ציור קם לתחייה','22 מפגשים שבועיים: מציור ועד בכורה'],
+      ['עולם קטן, קסם גדול','🧸','סיפור פעוטות','מפגשים קצרים לגילאי 6–24 חודשים'],
+      ['תיאטרון בובות','🎭','תיאטרון בובות','5 הצגות בובות מקוריות ומשתפות'],
+      [PROGRAM,'🎵','שיר נולד בגן','22 מפגשים: מרעיון ומילים ועד לחן, הקלטה ואלבום']
+    ];
+    const tiles = doc.querySelector('.activity-tiles');
+    if (!tiles) return;
+    defs.forEach(([program,icon,title,small]) => {
+      const tile = tiles.querySelector(`.activity-tile[data-program="${program}"]`);
       if (!tile) return;
-      orderedTiles.push(tile);
-      tile.classList.add('activity-graphic');
-      const icon = tile.querySelector('.activity-icon');
-      if (icon) {
-        icon.innerHTML = '';
-        const img = doc.createElement('img');
-        img.src = cfg.src;
-        img.alt = cfg.alt;
-        img.draggable = false;
-        icon.appendChild(img);
-      }
+      tile.classList.remove('activity-graphic','activity-graphic-fixed');
+      tile.querySelectorAll('.activity-fixed-image').forEach(el => el.remove());
+      tile.innerHTML = `<span class="activity-icon" aria-hidden="true">${icon}</span><strong>${title}</strong><small>${small}</small>`;
+      tile.onclick = () => frame.contentWindow.eval('showProgram('+JSON.stringify(program)+')');
     });
-    orderedTiles.forEach(tile => container.appendChild(tile));
   }
 
   function applyHomeLayout() {
@@ -196,7 +153,7 @@
 
     ensureStyle(doc);
     ensureMusicProgram();
-    applyActivityGraphics();
+    restoreOriginalActivityCards(doc);
 
     const hero = doc.querySelector('.hero-banner');
     if (hero) hero.remove();
@@ -235,7 +192,7 @@
 
   if (scannedBtn) {
     scannedBtn.addEventListener('click', () => {
-      window.location.href = '/book-viewer.html?v=20260817-1609';
+      window.location.href = '/book-viewer.html?v=20260817-1809';
     });
   }
 
