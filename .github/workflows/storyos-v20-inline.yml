@@ -22,7 +22,7 @@ jobs:
           ref: release/storyos-v20
           fetch-depth: 0
 
-      - name: Inline v20 content into StoryOS core
+      - name: Inline and validate v20 core
         run: node scripts/inline-storyos-v20.mjs
 
       - name: Validate v20 core markers
@@ -31,15 +31,18 @@ jobs:
           grep -q 'data-program="שיר נולד בגן"' public/storyos.html
           grep -q '"id":"music01"' public/storyos.html
           grep -q '"id":"music22"' public/storyos.html
+          grep -q '"totalItems": 88' public/storyos-v20-validation.json
+          grep -q '"musicItems": 22' public/storyos-v20-validation.json
+          grep -q '"pass": true' public/storyos-v20-validation.json
 
-      - name: Commit generated StoryOS v20 core
+      - name: Commit generated StoryOS v20 core and validation
         run: |
-          if git diff --quiet -- public/storyos.html; then
+          if git diff --quiet -- public/storyos.html public/storyos-v20-validation.json && git ls-files --error-unmatch public/storyos-v20-validation.json >/dev/null 2>&1; then
             echo "No StoryOS core changes required"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/storyos.html
-          git commit -m "Inline 22 music meetings into StoryOS v20 core"
+          git add public/storyos.html public/storyos-v20-validation.json
+          git commit -m "Validate unified StoryOS v20 core"
           git push origin HEAD:release/storyos-v20
