@@ -12,6 +12,7 @@ on:
       - public/storyos.html
       - public/index.html
       - public/book-viewer.html
+      - public/storyos-unified-controls.js
       - public/storyos-v20-music-data.json
       - .github/workflows/storyos-v20-inline.yml
 
@@ -49,6 +50,7 @@ jobs:
           grep -q '"musicItems": 22' public/storyos-v20-validation.json
           grep -q '"pass": true' public/storyos-v20-validation.json
           grep -q '"pass": true' public/storyos-v20-smoke-report.json
+          grep -q '"version": "20.1"' public/storyos-v20-smoke-report.json
 
       - name: Commit generated reports
         run: |
@@ -59,5 +61,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/storyos.html public/storyos-v20-validation.json public/storyos-v20-smoke-report.json
-          git commit -m "Run StoryOS v20 release checks"
+          git commit -m "Run StoryOS v20.1 release checks"
           git push origin HEAD:release/storyos-v20
