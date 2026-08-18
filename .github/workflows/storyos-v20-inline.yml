@@ -7,6 +7,8 @@ on:
     paths:
       - scripts/inline-storyos-v20.mjs
       - scripts/smoke-test-v20.mjs
+      - scripts/build-verified.sh
+      - package.json
       - public/storyos.html
       - public/index.html
       - public/book-viewer.html
@@ -31,6 +33,11 @@ jobs:
 
       - name: Run StoryOS v20 smoke tests
         run: node scripts/smoke-test-v20.mjs
+
+      - name: Run Netlify static build check
+        env:
+          NETLIFY: "true"
+        run: npm run build
 
       - name: Validate v20 core markers
         run: |
