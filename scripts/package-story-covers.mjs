@@ -1,21 +1,38 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import vm from 'node:vm';
 
 const root = process.cwd();
 const htmlPath = path.join(root, 'public', 'storyos.html');
 const outDir = path.join(root, 'public', 'downloads', 'storyos-30-covers');
 const manifestPath = path.join(root, 'public', 'downloads', 'storyos-30-covers-manifest.json');
 
+function findArrayEnd(source, arrayStart) {
+  let depth = 0, quote = null, escaped = false;
+  for (let i = arrayStart; i < source.length; i++) {
+    const c = source[i];
+    if (quote) {
+      if (escaped) escaped = false;
+      else if (c === '\\') escaped = true;
+      else if (c === quote) quote = null;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === '`') { quote = c; continue; }
+    if (c === '[') depth++;
+    if (c === ']') {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  throw new Error('Could not find end of STORIES array');
+}
+
 const html = fs.readFileSync(htmlPath, 'utf8');
-const marker = 'const STORIES = ';
+const marker = 'const STORIES = [';
 const start = html.indexOf(marker);
 if (start < 0) throw new Error('Could not find STORIES array in public/storyos.html');
-const arrayStart = start + marker.length;
-const arrayEnd = html.indexOf(';', arrayStart);
-if (arrayEnd < 0) throw new Error('Could not find end of STORIES array');
-const source = html.slice(arrayStart, arrayEnd).trim();
-const stories = vm.runInNewContext(`(${source})`, Object.create(null), { timeout: 2000 });
+const arrayStart = start + marker.length - 1;
+const arrayEnd = findArrayEnd(html, arrayStart);
+const stories = JSON.parse(html.slice(arrayStart, arrayEnd + 1));
 
 const books = stories.filter((item) => item && item.program === 'שעת סיפור והמחשה');
 if (books.length !== 30) {
