@@ -1,0 +1,45 @@
+name: StoryOS v20 inline core
+
+on:
+  push:
+    branches:
+      - release/storyos-v20
+    paths:
+      - scripts/inline-storyos-v20.mjs
+      - public/storyos-v20-music-data.json
+      - .github/workflows/storyos-v20-inline.yml
+
+permissions:
+  contents: write
+
+jobs:
+  inline-v20:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/storyos-v20
+          fetch-depth: 0
+
+      - name: Inline v20 content into StoryOS core
+        run: node scripts/inline-storyos-v20.mjs
+
+      - name: Validate v20 core markers
+        run: |
+          grep -q 'גרסה 20' public/storyos.html
+          grep -q 'data-program="שיר נולד בגן"' public/storyos.html
+          grep -q '"id":"music01"' public/storyos.html
+          grep -q '"id":"music22"' public/storyos.html
+
+      - name: Commit generated StoryOS v20 core
+        run: |
+          if git diff --quiet -- public/storyos.html; then
+            echo "No StoryOS core changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/storyos.html
+          git commit -m "Inline 22 music meetings into StoryOS v20 core"
+          git push origin HEAD:release/storyos-v20
