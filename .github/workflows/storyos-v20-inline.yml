@@ -1,4 +1,4 @@
-name: StoryOS v20 inline core
+name: StoryOS v20 release checks
 
 on:
   push:
@@ -6,6 +6,10 @@ on:
       - release/storyos-v20
     paths:
       - scripts/inline-storyos-v20.mjs
+      - scripts/smoke-test-v20.mjs
+      - public/storyos.html
+      - public/index.html
+      - public/book-viewer.html
       - public/storyos-v20-music-data.json
       - .github/workflows/storyos-v20-inline.yml
 
@@ -13,7 +17,7 @@ permissions:
   contents: write
 
 jobs:
-  inline-v20:
+  validate-v20:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout release branch
@@ -25,6 +29,9 @@ jobs:
       - name: Inline and validate v20 core
         run: node scripts/inline-storyos-v20.mjs
 
+      - name: Run StoryOS v20 smoke tests
+        run: node scripts/smoke-test-v20.mjs
+
       - name: Validate v20 core markers
         run: |
           grep -q 'גרסה 20' public/storyos.html
@@ -34,17 +41,16 @@ jobs:
           grep -q '"totalItems": 88' public/storyos-v20-validation.json
           grep -q '"musicItems": 22' public/storyos-v20-validation.json
           grep -q '"pass": true' public/storyos-v20-validation.json
+          grep -q '"pass": true' public/storyos-v20-smoke-report.json
 
-      - name: Commit generated StoryOS v20 core and validation
+      - name: Commit generated reports
         run: |
-          if git diff --quiet -- public/storyos.html public/storyos-v20-validation.json && git ls-files --error-unmatch public/storyos-v20-validation.json >/dev/null 2>&1; then
-            echo "No StoryOS core changes required"
+          if git diff --quiet -- public/storyos.html public/storyos-v20-validation.json public/storyos-v20-smoke-report.json && git ls-files --error-unmatch public/storyos-v20-smoke-report.json >/dev/null 2>&1; then
+            echo "No generated changes required"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/storyos.html public/storyos-v20-validation.json
-          git commit -m "Validate unified StoryOS v20 core"
+          git add public/storyos.html public/storyos-v20-validation.json public/storyos-v20-smoke-report.json
+          git commit -m "Run StoryOS v20 release checks"
           git push origin HEAD:release/storyos-v20
-
-# Manual trigger marker: 2026-08-18 v20 validation
