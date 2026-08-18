@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>Story OS · סבא שמעון · גרסה 19</title>
+  <title>Story OS · סבא שמעון · גרסה 20</title>
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f4ed}
     #storyosFrame{display:block;width:100%;height:100dvh;border:0;background:#f8f4ed}
@@ -22,7 +22,21 @@
 </head>
 <body>
   <button id="scannedBookViewerBtn" type="button" title="פתיחת נגן הספר הסרוק של איילת מטיילת">📖 נגן ספר סרוק</button>
-  <iframe id="storyosFrame" src="/storyos.html?v=20260817-1703" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
-  <script src="/storyos-enhancements.js?v=20260817-1703"></script>
+  <iframe id="storyosFrame" src="/storyos.html?v=20.1.0" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <script>
+    const storyosFrame = document.getElementById('storyosFrame');
+    storyosFrame.addEventListener('load', () => {
+      const doc = storyosFrame.contentDocument;
+      if (!doc || doc.getElementById('v20UnifiedControlsLoader')) return;
+      const script = doc.createElement('script');
+      script.id = 'v20UnifiedControlsLoader';
+      script.src = '/storyos-unified-controls.js?v=20.1.0';
+      doc.body.appendChild(script);
+    });
+
+    document.getElementById('scannedBookViewerBtn').addEventListener('click', () => {
+      window.location.href = '/book-viewer.html?v=20.0.0';
+    });
+  </script>
 </body>
 </html>
