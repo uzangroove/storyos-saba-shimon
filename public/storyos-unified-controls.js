@@ -6,8 +6,8 @@
     style.id = 'v20-unified-controls-style';
     style.textContent = `
       main{max-width:1800px}
-      .v20-main-layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:18px;align-items:start;margin-top:18px}
-      #v20UnifiedControls{grid-column:2;grid-row:1;position:sticky;top:102px;background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:16px;box-shadow:var(--shadow);z-index:10}
+      .v20-main-layout{display:flex;flex-direction:row;gap:18px;align-items:flex-start;margin-top:18px}
+      #v20UnifiedControls{width:390px;min-width:390px;flex:0 0 390px;position:sticky;top:102px;background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:16px;box-shadow:var(--shadow);z-index:10}
       #v20UnifiedControls h2{margin:0;font-size:1.25rem}
       #v20UnifiedControls .v20-sub{margin:4px 0 14px;color:var(--muted);font-size:.9rem;line-height:1.45}
       .v20-control-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
@@ -17,14 +17,14 @@
       .v20-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
       .v20-actions button{flex:1;min-width:120px}
       .v20-result-note{margin-top:10px;padding:9px 11px;border-radius:12px;background:#f7f3ff;color:#55428f;font-size:.86rem;line-height:1.4}
-      .v20-main-layout>.dashboard-wrap{grid-column:1;grid-row:1;min-width:0;margin:0}
+      .v20-main-layout>.dashboard-wrap{flex:1 1 auto;min-width:0;margin:0}
       .v20-main-layout>.dashboard-wrap>.controls{display:none!important}
       #todayPlanner{display:none!important}
       #v20UnifiedControls .v20-hidden-source{display:none!important}
       @media(max-width:1180px){
-        .v20-main-layout{grid-template-columns:1fr}
-        #v20UnifiedControls{grid-column:1;grid-row:1;position:static}
-        .v20-main-layout>.dashboard-wrap{grid-column:1;grid-row:2}
+        .v20-main-layout{flex-direction:column}
+        #v20UnifiedControls{width:100%;min-width:0;flex:1 1 auto;position:static}
+        .v20-main-layout>.dashboard-wrap{width:100%}
       }
       @media(max-width:620px){
         .v20-control-grid{grid-template-columns:1fr}
