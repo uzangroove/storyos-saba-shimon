@@ -22,8 +22,18 @@
 </head>
 <body>
   <button id="scannedBookViewerBtn" type="button" title="פתיחת נגן הספר הסרוק של איילת מטיילת">📖 נגן ספר סרוק</button>
-  <iframe id="storyosFrame" src="/storyos.html?v=20.0.0" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=20.1.0" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
   <script>
+    const storyosFrame = document.getElementById('storyosFrame');
+    storyosFrame.addEventListener('load', () => {
+      const doc = storyosFrame.contentDocument;
+      if (!doc || doc.getElementById('v20UnifiedControlsLoader')) return;
+      const script = doc.createElement('script');
+      script.id = 'v20UnifiedControlsLoader';
+      script.src = '/storyos-unified-controls.js?v=20.1.0';
+      doc.body.appendChild(script);
+    });
+
     document.getElementById('scannedBookViewerBtn').addEventListener('click', () => {
       window.location.href = '/book-viewer.html?v=20.0.0';
     });
