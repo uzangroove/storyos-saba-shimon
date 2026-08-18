@@ -1,0 +1,188 @@
+{
+  "version": 20,
+  "generatedAt": "2026-08-18T06:32:29.016Z",
+  "summary": {
+    "total": 33,
+    "passed": 33,
+    "failed": 0,
+    "pass": true
+  },
+  "core": {
+    "items": 88,
+    "programs": {
+      "כשהציור קם לתחייה": 22,
+      "עולם קטן, קסם גדול": 9,
+      "שיר נולד בגן": 22,
+      "שעת סיפור והמחשה": 30,
+      "תיאטרון בובות": 5
+    },
+    "duplicateIds": []
+  },
+  "checks": [
+    {
+      "name": "Version marker v20",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "88 core items",
+      "pass": true,
+      "detail": "found 88"
+    },
+    {
+      "name": "5 programs",
+      "pass": true,
+      "detail": "{\"כשהציור קם לתחייה\":22,\"עולם קטן, קסם גדול\":9,\"שיר נולד בגן\":22,\"שעת סיפור והמחשה\":30,\"תיאטרון בובות\":5}"
+    },
+    {
+      "name": "Expected program counts",
+      "pass": true,
+      "detail": "{\"כשהציור קם לתחייה\":22,\"עולם קטן, קסם גדול\":9,\"שיר נולד בגן\":22,\"שעת סיפור והמחשה\":30,\"תיאטרון בובות\":5}"
+    },
+    {
+      "name": "No duplicate IDs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "music01..music22 present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Five activity tiles",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Music activity tile",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Music planner option",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Planner program is used",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Search control exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Program filter exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Theme filter exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Season filter exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Age filter exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Category filter exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Favorites persistence",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Live mode entry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Timer exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "PDF deck support",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IndexedDB persistence",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Scanned book viewer entry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Scanned viewer IndexedDB",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "No runtime v20 adapter",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "No old v19 enhancement runtime",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Main iframe points to v20 core",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "RTL main document",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "RTL scanned viewer",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "storyos.html inline JS syntax",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "index.html inline JS syntax",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "book-viewer.html inline JS syntax",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "All referenced story cover assets exist",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Main logo asset exists",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}
