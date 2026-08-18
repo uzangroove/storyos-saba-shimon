@@ -99,3 +99,5 @@ html = html.replace(/\n\s*<section class="hero-banner">[\s\S]*?<\/section>\n/, '
 
 fs.writeFileSync(htmlPath, html, 'utf8');
 console.log(`StoryOS v20 core written: ${musicItems.length} music items inlined.`);
+
+// Touch marker: workflow trigger 2026-08-18.
