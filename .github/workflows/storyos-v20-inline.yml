@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/inline-storyos-v20.mjs
       - scripts/smoke-test-v20.mjs
+      - scripts/package-story-covers.mjs
       - scripts/build-verified.sh
       - package.json
       - public/storyos.html
@@ -35,6 +36,15 @@ jobs:
       - name: Run StoryOS v20 smoke tests
         run: node scripts/smoke-test-v20.mjs
 
+      - name: Package 30 story-hour covers
+        run: |
+          node scripts/package-story-covers.mjs
+          cd public/downloads
+          rm -f storyos-30-covers.zip
+          zip -r storyos-30-covers.zip storyos-30-covers
+          test "$(find storyos-30-covers -maxdepth 1 -type f | wc -l)" -eq 30
+          test -s storyos-30-covers.zip
+
       - name: Run Netlify static build check
         env:
           NETLIFY: "true"
@@ -51,15 +61,16 @@ jobs:
           grep -q '"pass": true' public/storyos-v20-validation.json
           grep -q '"pass": true' public/storyos-v20-smoke-report.json
           grep -q '"version": "20.1"' public/storyos-v20-smoke-report.json
+          grep -q '"count": 30' public/downloads/storyos-30-covers-manifest.json
 
-      - name: Commit generated reports
+      - name: Commit generated reports and cover archive
         run: |
-          if git diff --quiet -- public/storyos.html public/storyos-v20-validation.json public/storyos-v20-smoke-report.json && git ls-files --error-unmatch public/storyos-v20-smoke-report.json >/dev/null 2>&1; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/storyos.html public/storyos-v20-validation.json public/storyos-v20-smoke-report.json public/downloads/storyos-30-covers-manifest.json public/downloads/storyos-30-covers public/downloads/storyos-30-covers.zip
+          if git diff --cached --quiet; then
             echo "No generated changes required"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/storyos.html public/storyos-v20-validation.json public/storyos-v20-smoke-report.json
-          git commit -m "Run StoryOS v20.1 release checks"
+          git commit -m "Generate StoryOS 30-cover download archive"
           git push origin HEAD:release/storyos-v20
