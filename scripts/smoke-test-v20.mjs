@@ -4,6 +4,7 @@ import vm from 'node:vm';
 const html = fs.readFileSync('public/storyos.html','utf8');
 const index = fs.readFileSync('public/index.html','utf8');
 const viewer = fs.readFileSync('public/book-viewer.html','utf8');
+const unified = fs.readFileSync('public/storyos-unified-controls.js','utf8');
 
 function findArrayEnd(source, arrayStart){
   let depth=0, quote=null, escaped=false;
@@ -52,14 +53,25 @@ check('No duplicate IDs', duplicateIds.length===0, duplicateIds.join(','));
 check('music01..music22 present', Array.from({length:22},(_,i)=>`music${String(i+1).padStart(2,'0')}`).every(id=>ids.includes(id)));
 check('Five activity tiles', (html.match(/class="activity-tile"/g)||[]).length===5);
 check('Music activity tile', html.includes('data-program="שיר נולד בגן"'));
-check('Music planner option', html.includes('<option value="שיר נולד בגן">שיר נולד בגן – מוזיקה</option>'));
-check('Planner program is used', html.includes('program: $("#pProgram").value') && /vals\.program/.test(html));
-check('Search control exists', html.includes('id="search"'));
-check('Program filter exists', html.includes('id="program"'));
-check('Theme filter exists', html.includes('id="theme"'));
-check('Season filter exists', html.includes('id="season"'));
-check('Age filter exists', html.includes('id="ageFilter"'));
-check('Category filter exists', html.includes('id="category"'));
+
+check('Unified controls script loaded', index.includes('/storyos-unified-controls.js?v=20.1.0'));
+check('Unified controls panel exists in script', unified.includes("aside.id = 'v20UnifiedControls'"));
+check('Approved search field', unified.includes("search: $('#search')") && unified.includes("field('חיפוש חופשי'"));
+check('Approved program field', unified.includes("program: $('#program')") && unified.includes("field('סוג פעילות'"));
+check('Approved age field', unified.includes("age: $('#ageFilter')") && unified.includes("field('גיל הילדים'"));
+check('Approved theme field', unified.includes("theme: $('#theme')") && unified.includes("field('נושא / ערך'"));
+check('Approved season field', unified.includes("season: $('#season')") && unified.includes("field('עונה / חג'"));
+check('Approved group size field', unified.includes("count: $('#pCount')") && unified.includes("field('מספר ילדים'"));
+check('Approved setting field', unified.includes("setting: $('#pSetting')") && unified.includes("field('סוג מסגרת'"));
+check('Old planner hidden', unified.includes("#todayPlanner{display:none!important}"));
+check('Old category removed from visible controls', !unified.includes("field('קטגור"));
+check('Old attention removed from visible controls', !unified.includes("field('רמת קשב"));
+check('Desktop right sidebar layout', unified.includes('grid-template-columns:minmax(0,1fr) 390px'));
+check('Responsive single-column layout', unified.includes('@media(max-width:1180px)'));
+check('Unified clear action exists', unified.includes("clearBtn.textContent = 'נקה הכל'"));
+check('Unified show-results action exists', unified.includes("showBtn.textContent = 'הצג פעילויות מתאימות'"));
+check('Group size and setting affect relevance order', unified.includes('window.sizeBonus') && unified.includes('window.settingBonus'));
+
 check('Favorites persistence', html.includes('story_favs') && html.includes('localStorage.setItem("story_favs"'));
 check('Live mode entry', html.includes('window.startLive'));
 check('Timer exists', html.includes('id="timer"') && html.includes('function startTimer'));
@@ -69,21 +81,23 @@ check('Scanned book viewer entry', index.includes('/book-viewer.html?v=20.0.0'))
 check('Scanned viewer IndexedDB', viewer.includes("const DB_NAME = 'storyos-scanned-books'") && viewer.includes('indexedDB.open'));
 check('No runtime v20 adapter', !index.includes('storyos-v20-adapter.js'));
 check('No old v19 enhancement runtime', !index.includes('storyos-enhancements.js'));
-check('Main iframe points to v20 core', index.includes('/storyos.html?v=20.0.0'));
+check('Main iframe points to v20.1 core', index.includes('/storyos.html?v=20.1.0'));
 check('RTL main document', html.includes('<html lang="he" dir="rtl">'));
 check('RTL scanned viewer', viewer.includes('<html lang="he" dir="rtl">'));
 
-// Parse every inline script for JavaScript syntax errors.
-for(const [fileName,source] of [['storyos.html',html],['index.html',index],['book-viewer.html',viewer]]){
-  const scripts=[...source.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
-    .map(m=>m[1]).filter(Boolean);
+for(const [fileName,source] of [['storyos.html',html],['index.html',index],['book-viewer.html',viewer],['storyos-unified-controls.js',unified]]){
   let syntaxOk=true, syntaxError='';
-  try{ scripts.forEach((code,i)=>new vm.Script(code,{filename:`${fileName}:inline-${i+1}`})); }
-  catch(err){ syntaxOk=false; syntaxError=err.message; }
-  check(`${fileName} inline JS syntax`,syntaxOk,syntaxError);
+  try{
+    if(fileName.endsWith('.html')){
+      const scripts=[...source.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).filter(Boolean);
+      scripts.forEach((code,i)=>new vm.Script(code,{filename:`${fileName}:inline-${i+1}`}));
+    } else {
+      new vm.Script(source,{filename:fileName});
+    }
+  } catch(err){ syntaxOk=false; syntaxError=err.message; }
+  check(`${fileName} JS syntax`,syntaxOk,syntaxError);
 }
 
-// All required local assets referenced by core story covers must exist.
 const missingAssets=[];
 for(const s of stories){
   if(typeof s.cover==='string' && s.cover.startsWith('/')){
@@ -96,10 +110,11 @@ check('Main logo asset exists', fs.existsSync('public/story-assets/image-443bfe2
 
 const failed=checks.filter(x=>!x.pass);
 const report={
-  version:20,
+  version:'20.1',
   generatedAt:new Date().toISOString(),
   summary:{total:checks.length,passed:checks.length-failed.length,failed:failed.length,pass:failed.length===0},
   core:{items:stories.length,programs,duplicateIds},
+  ui:{visibleFields:['חיפוש חופשי','סוג פעילות','גיל הילדים','נושא / ערך','עונה / חג','מספר ילדים','סוג מסגרת']},
   checks
 };
 fs.writeFileSync('public/storyos-v20-smoke-report.json',JSON.stringify(report,null,2)+'\n');
