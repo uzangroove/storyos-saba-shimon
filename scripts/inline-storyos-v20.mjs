@@ -2,6 +2,7 @@ import fs from 'node:fs';
 
 const htmlPath = 'public/storyos.html';
 const dataPath = 'public/storyos-v20-music-data.json';
+const reportPath = 'public/storyos-v20-validation.json';
 let html = fs.readFileSync(htmlPath, 'utf8');
 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 const PROGRAM = data.program;
@@ -67,11 +68,9 @@ const marker = 'const STORIES = [';
 const start = html.indexOf(marker);
 if (start < 0) throw new Error('STORIES marker not found');
 const arrayStart = start + marker.length - 1;
-const arrayEnd = findArrayEnd(html, arrayStart);
-const currentArray = html.slice(arrayStart, arrayEnd + 1);
-if (currentArray.includes('"id":"music01"')) {
-  console.log('Music items already inlined; skipping data insertion.');
-} else {
+let arrayEnd = findArrayEnd(html, arrayStart);
+let currentArray = html.slice(arrayStart, arrayEnd + 1);
+if (!currentArray.includes('"id":"music01"')) {
   const payload = JSON.stringify(musicItems).slice(1,-1);
   html = html.slice(0,arrayEnd) + ',' + payload + html.slice(arrayEnd);
 }
@@ -93,11 +92,46 @@ if (!html.includes('<option value="שיר נולד בגן">')) html = html.repla
 html = html.replace('שעת סיפור, ציור קם לתחייה, סיפור פעוטות ותיאטרון בובות — הכול במקום אחד.', 'שעת סיפור, ציור קם לתחייה, סיפור פעוטות, תיאטרון בובות ושיר נולד בגן — הכול במקום אחד.');
 html = html.replace('<div><b id="count">66</b><span>פריטים מסוננים</span></div>', '<div><b id="count">88</b><span>פריטים מסוננים</span></div>');
 html = html.replace('<div><b>4</b><span>מסלולי פעילות</span></div>', '<div><b>5</b><span>מסלולי פעילות</span></div>');
-
-// Preserve the latest UX decision: route cards are immediately visible, without the old hero banner.
 html = html.replace(/\n\s*<section class="hero-banner">[\s\S]*?<\/section>\n/, '\n');
 
-fs.writeFileSync(htmlPath, html, 'utf8');
-console.log(`StoryOS v20 core written: ${musicItems.length} music items inlined.`);
+// Native music placeholder icon in the unified core.
+html = html.replace(
+  '{"שעת סיפור והמחשה":"📖","כשהציור קם לתחייה":"🎨","עולם קטן, קסם גדול":"🧸","תיאטרון בובות":"🎭"}',
+  '{"שעת סיפור והמחשה":"📖","כשהציור קם לתחייה":"🎨","עולם קטן, קסם גדול":"🧸","תיאטרון בובות":"🎭","שיר נולד בגן":"🎵"}'
+);
 
-// Touch marker: workflow trigger 2026-08-18.
+// Make the planner's program selector actually affect recommendations.
+html = html.replace(
+  'attention: $("#pAttention").value,\n    };',
+  'attention: $("#pAttention").value,\n      program: $("#pProgram").value,\n    };'
+);
+html = html.replace(
+  'let score = s.score;\n      score += ageMatch',
+  'let score = s.score;\n      if(vals.program && s.program !== vals.program) score -= 1000;\n      score += ageMatch'
+);
+
+fs.writeFileSync(htmlPath, html, 'utf8');
+
+// Validate the actual inlined STORIES array after all transformations.
+const finalStart = html.indexOf(marker);
+const finalArrayStart = finalStart + marker.length - 1;
+const finalArrayEnd = findArrayEnd(html, finalArrayStart);
+const stories = JSON.parse(html.slice(finalArrayStart, finalArrayEnd + 1));
+const ids = stories.map(x => x.id);
+const duplicates = [...new Set(ids.filter((id,i) => ids.indexOf(id) !== i))];
+const byProgram = Object.fromEntries([...new Set(stories.map(x => x.program))].sort().map(p => [p, stories.filter(x => x.program === p).length]));
+const report = {
+  version: 20,
+  generatedAt: new Date().toISOString(),
+  totalItems: stories.length,
+  musicItems: stories.filter(x => x.program === PROGRAM).length,
+  programs: byProgram,
+  uniquePrograms: Object.keys(byProgram).length,
+  duplicateIds: duplicates,
+  hasMusic01: ids.includes('music01'),
+  hasMusic22: ids.includes('music22'),
+  pass: stories.length === 88 && stories.filter(x => x.program === PROGRAM).length === 22 && Object.keys(byProgram).length === 5 && duplicates.length === 0 && ids.includes('music01') && ids.includes('music22')
+};
+fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n', 'utf8');
+if (!report.pass) throw new Error('StoryOS v20 validation failed: ' + JSON.stringify(report));
+console.log('StoryOS v20 validated:', report);
