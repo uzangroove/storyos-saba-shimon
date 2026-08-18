@@ -449,7 +449,7 @@ function itemKind(story){
   return "תוכנית";
 }
 function activityEmoji(program){
-  return ({"שעת סיפור והמחשה":"📖","כשהציור קם לתחייה":"🎨","עולם קטן, קסם גדול":"🧸","תיאטרון בובות":"🎭"})[program] || "✨";
+  return ({"שעת סיפור והמחשה":"📖","כשהציור קם לתחייה":"🎨","עולם קטן, קסם גדול":"🧸","תיאטרון בובות":"🎭","שיר נולד בגן":"🎵"})[program] || "✨";
 }
 function coverMarkup(story, className=""){
   if(story.cover) return '<img class="' + className + '" src="' + story.cover + '" alt="תמונה עבור ' + story.title + '">';
@@ -1076,9 +1076,11 @@ function showModal(title, body, isHtml=false){
       theme: $("#pTheme").value,
       season: $("#pSeason").value,
       attention: $("#pAttention").value,
+      program: $("#pProgram").value,
     };
     const ranked = STORIES.map(s => {
       let score = s.score;
+      if(vals.program && s.program !== vals.program) score -= 1000;
       score += ageMatch(s.age, vals.age) + themeMatch(s, vals.theme) + seasonMatch(s, vals.season) + attentionBonus(s, vals.attention) + settingBonus(s, vals.setting) + sizeBonus(s, vals.count);
       return {s, score};
     }).sort((a,b) => b.score - a.score).slice(0,3);
