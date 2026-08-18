@@ -1,9 +1,9 @@
 {
-  "version": 20,
-  "generatedAt": "2026-08-18T06:33:03.719Z",
+  "version": "20.1",
+  "generatedAt": "2026-08-18T07:40:34.473Z",
   "summary": {
-    "total": 33,
-    "passed": 33,
+    "total": 43,
+    "passed": 43,
     "failed": 0,
     "pass": true
   },
@@ -17,6 +17,17 @@
       "תיאטרון בובות": 5
     },
     "duplicateIds": []
+  },
+  "ui": {
+    "visibleFields": [
+      "חיפוש חופשי",
+      "סוג פעילות",
+      "גיל הילדים",
+      "נושא / ערך",
+      "עונה / חג",
+      "מספר ילדים",
+      "סוג מסגרת"
+    ]
   },
   "checks": [
     {
@@ -60,42 +71,87 @@
       "detail": ""
     },
     {
-      "name": "Music planner option",
+      "name": "Unified controls script loaded",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "Planner program is used",
+      "name": "Unified controls panel exists in script",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "Search control exists",
+      "name": "Approved search field",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "Program filter exists",
+      "name": "Approved program field",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "Theme filter exists",
+      "name": "Approved age field",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "Season filter exists",
+      "name": "Approved theme field",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "Age filter exists",
+      "name": "Approved season field",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "Category filter exists",
+      "name": "Approved group size field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Approved setting field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Old planner hidden",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Old category removed from visible controls",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Old attention removed from visible controls",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Desktop right sidebar layout",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Responsive single-column layout",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Unified clear action exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Unified show-results action exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Group size and setting affect relevance order",
       "pass": true,
       "detail": ""
     },
@@ -145,7 +201,7 @@
       "detail": ""
     },
     {
-      "name": "Main iframe points to v20 core",
+      "name": "Main iframe points to v20.1 core",
       "pass": true,
       "detail": ""
     },
@@ -160,17 +216,22 @@
       "detail": ""
     },
     {
-      "name": "storyos.html inline JS syntax",
+      "name": "storyos.html JS syntax",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "index.html inline JS syntax",
+      "name": "index.html JS syntax",
       "pass": true,
       "detail": ""
     },
     {
-      "name": "book-viewer.html inline JS syntax",
+      "name": "book-viewer.html JS syntax",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "storyos-unified-controls.js JS syntax",
       "pass": true,
       "detail": ""
     },
