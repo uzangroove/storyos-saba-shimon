@@ -16,16 +16,20 @@ export async function POST(request: Request) {
     const operators = await supabaseRest<any[]>("operators", {}, `auth_user_id=eq.${user.id}&select=id&limit=1`);
     if (!operators[0]) return NextResponse.json({ error: "לא נמצא מפעיל לחשבון זה" }, { status: 403 });
 
-    const existing = await supabaseRest<any[]>("attendance_reports", {}, `session_id=eq.${sessionId}&operator_id=eq.${operators[0].id}&select=id,check_in_at,status&limit=1`);
+    const existing = await supabaseRest<any[]>("attendance_reports", {}, `session_id=eq.${sessionId}&operator_id=eq.${operators[0].id}&select=id,check_in_at,check_out_at,status&limit=1`);
     if (!existing[0]?.check_in_at) return NextResponse.json({ error: "לא נמצא דיווח כניסה פתוח" }, { status: 409 });
+    if (existing[0].check_out_at || existing[0].status === "CHECKED_OUT") {
+      return NextResponse.json({ error: "היציאה למפגש זה כבר דווחה" }, { status: 409 });
+    }
 
     const checkoutAt = new Date();
     const minutes = Math.max(0, Math.round((checkoutAt.getTime() - new Date(existing[0].check_in_at).getTime()) / 60000));
     const rows = await supabaseRest<any[]>("attendance_reports", {
       method: "PATCH",
       body: JSON.stringify({ status: "CHECKED_OUT", check_out_at: checkoutAt.toISOString(), actual_minutes: minutes, check_out_latitude: body.latitude ?? null, check_out_longitude: body.longitude ?? null }),
-    }, `id=eq.${existing[0].id}`);
-    return NextResponse.json({ attendance: rows[0] ?? null, actualMinutes: minutes });
+    }, `id=eq.${existing[0].id}&check_out_at=is.null`);
+    if (!rows[0]) return NextResponse.json({ error: "הדיווח כבר נסגר או השתנה" }, { status: 409 });
+    return NextResponse.json({ attendance: rows[0], actualMinutes: minutes });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "שגיאה בדיווח יציאה" }, { status: 500 });
   }
