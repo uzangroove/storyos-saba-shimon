@@ -21,7 +21,11 @@ export default function ManagementPage() {
           <h1>ניהול גנים ומסגרות</h1>
           <p>מאגר לקוחות, אנשי קשר, התקשרויות, לוחות פעילות ומעקב.</p>
         </div>
-        <a className="back-button" href="/">חזרה ל־StoryOS</a>
+        <div className="header-actions">
+          <a className="back-button" href="/management/calendar">לוח תשפ״ז</a>
+          <a className="back-button" href="/operator">מסך מפעיל</a>
+          <a className="back-button" href="/">חזרה ל־StoryOS</a>
+        </div>
       </header>
 
       <section className="stats-grid" aria-label="סיכום מאגר">
