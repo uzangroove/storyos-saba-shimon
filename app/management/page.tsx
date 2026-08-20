@@ -35,7 +35,7 @@ export default function ManagementPage() {
         <div className="table-toolbar">
           <div>
             <h2>רשימת מסגרות</h2>
-            <p>Seed ראשוני מרשימת כרמיאל. בהמשך הנתונים ייטענו ישירות מ־Supabase.</p>
+            <p>לחיצה על שם המסגרת פותחת כרטיס גן מלא.</p>
           </div>
           <div className="toolbar-actions">
             <button disabled>+ גן חדש</button>
@@ -48,7 +48,7 @@ export default function ManagementPage() {
             <tbody>
               {institutions.map((item) => (
                 <tr key={item.legacySourceId}>
-                  <td><strong>{item.name}</strong><small> #{item.legacySourceId}</small></td>
+                  <td><a className="institution-link" href={`/management/institutions/${item.legacySourceId}`}><strong>{item.name}</strong><small> #{item.legacySourceId}</small></a></td>
                   <td>{item.typeRaw}</td><td>{item.neighborhood ?? "—"}</td><td>{item.address ?? "—"}</td>
                   <td>{item.phone ?? "—"}</td><td><span className="status-chip">{statusLabel(item.verificationRaw)}</span></td>
                   <td><span className="crm-chip">פוטנציאלי</span></td>
