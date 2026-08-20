@@ -5,7 +5,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 project_root="$(cd "${script_dir}/.." && pwd)"
 
 # Production on Netlify is a static Story OS deployment from /public.
-# Do not invoke the Vinext/Cloudflare/OpenAI-hosting toolchain there.
+# Deploy Previews also copy the isolated V21 visual-QA pages into public/v21-preview.
 if [[ "${NETLIFY:-}" == "true" ]]; then
   echo "Netlify static Story OS build: validating public files..."
 
@@ -20,6 +20,13 @@ if [[ "${NETLIFY:-}" == "true" ]]; then
       exit 1
     fi
   done
+
+  # Never alter the V20 production surface. These files live under an isolated preview path.
+  if [[ -d "${project_root}/preview-v21" ]]; then
+    rm -rf "${project_root}/public/v21-preview"
+    cp -R "${project_root}/preview-v21" "${project_root}/public/v21-preview"
+    echo "V21 visual QA pages copied to public/v21-preview/."
+  fi
 
   echo "Preparing the 30 StoryOS story-hour covers for direct download..."
   node "${project_root}/scripts/package-story-covers.mjs"
