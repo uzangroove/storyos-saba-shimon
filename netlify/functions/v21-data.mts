@@ -1,7 +1,7 @@
 async function supabase(path: string) {
-  const url = Netlify.env.get("SUPABASE_URL");
+  const url = "https://apkkochvspxjopoftpad.supabase.co";
   const secret = Netlify.env.get("SUPABASE_SERVICE_ROLE_KEY") || Netlify.env.get("SUPABASE_SECRET_KEY");
-  if (!url || !secret) throw new Error("Supabase environment is not configured");
+  if (!secret) throw new Error("Supabase secret key is not configured");
 
   const response = await fetch(`${url}/rest/v1/${path}`, {
     headers: {
