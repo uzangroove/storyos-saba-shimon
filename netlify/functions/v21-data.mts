@@ -1,5 +1,3 @@
-import type { Config, Context } from "@netlify/functions";
-
 async function supabase(path: string) {
   const url = Netlify.env.get("SUPABASE_URL");
   const secret = Netlify.env.get("SUPABASE_SERVICE_ROLE_KEY") || Netlify.env.get("SUPABASE_SECRET_KEY");
@@ -16,7 +14,7 @@ async function supabase(path: string) {
   return response.json();
 }
 
-export default async (_req: Request, _context: Context) => {
+export default async (_req: Request) => {
   try {
     const [institutions, keren, sessions] = await Promise.all([
       supabase("institutions?select=id,name,neighborhood,phone,crm_status,verification_status&order=name.asc&limit=120"),
@@ -47,6 +45,6 @@ export default async (_req: Request, _context: Context) => {
   }
 };
 
-export const config: Config = {
+export const config = {
   path: "/api/v21-data",
 };
