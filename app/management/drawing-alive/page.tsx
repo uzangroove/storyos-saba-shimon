@@ -1,5 +1,6 @@
 import manifest from "../../../data/gan-arava-drawing-alive.json";
 import { firebaseGsUri } from "../../../lib/media/firebase-storage";
+import FirebaseDiscoveryButton from "./FirebaseDiscoveryButton";
 
 const statusLabel: Record<string, string> = {
   READY: "מוכן",
@@ -53,6 +54,7 @@ export default function DrawingAlivePilotPage() {
                 <th>תמונה</th>
                 <th>וידאו</th>
                 <th>מודל</th>
+                <th>איתור ב־Firebase</th>
               </tr>
             </thead>
             <tbody>
@@ -67,6 +69,7 @@ export default function DrawingAlivePilotPage() {
                     <td><code>{firebaseGsUri({ provider: "firebase", bucket: manifest.garden.storageBucket, path: `${prefix}/${child.after}` })}</code></td>
                     <td><code>{firebaseGsUri({ provider: "firebase", bucket: manifest.garden.storageBucket, path: `${prefix}/${child.video}` })}</code></td>
                     <td><code>{firebaseGsUri({ provider: "firebase", bucket: manifest.garden.storageBucket, path: `${prefix}/${child.model}` })}</code></td>
+                    <td>{child.status === "READY" ? <FirebaseDiscoveryButton childSlug={child.slug} /> : <span>—</span>}</td>
                   </tr>
                 );
               })}
@@ -78,8 +81,10 @@ export default function DrawingAlivePilotPage() {
       <section className="management-card">
         <h2>חיבור מדיה</h2>
         <p>
-          כתובות <code>gs://</code> נשמרות כמזהי אחסון בלבד. כדי להציג בפועל תמונה, MP4 או GLB בדפדפן,
-          נחבר בשלב הבא הרשאת Firebase או Download URL מאובטח — בלי להפוך את כל ה־Bucket לציבורי.
+          כתובות <code>gs://</code> נשמרות כמזהי אחסון בלבד. נוסף כעת מנגנון סריקה מאובטח שמאתר את הקבצים הקיימים ב־Firebase לפי שם הילד ושמות הקבצים, בלי להפוך את ה־Bucket לציבורי.
+        </p>
+        <p>
+          לאחר הגדרת Service Account בצד השרת, הכפתור <strong>מצא מדיה ב-Firebase</strong> יבדוק בפועל אילו קבצים קיימים עבור בן ויחזיר את נתיבי האובייקטים האמיתיים.
         </p>
       </section>
     </main>
