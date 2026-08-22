@@ -1,0 +1,39 @@
+{
+  "module": "drawing_alive",
+  "garden": {
+    "name": "גן ערבה",
+    "slug": "gan-arava",
+    "teacherName": "שגית",
+    "storageProvider": "firebase",
+    "storageBucket": "saba-ganim-arava.firebasestorage.app",
+    "session": {
+      "number": 1,
+      "slug": "session-01",
+      "theme": "ציור חופשי"
+    }
+  },
+  "children": [
+    {"order":1,"name":"בן","slug":"ben","before":"ben_before.jpg","after":"ben_after.png","video":"ben_video.mp4","model":"ben_3dmodel.glb","status":"READY"},
+    {"order":2,"name":"איילון","slug":"eylon","before":"eylon_before.jpg","after":"eylon_after.png","video":"eylon_video.mp4","model":"eylon_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":3,"name":"גיא","slug":"guy","before":"guy_before.jpg","after":"guy_after.png","video":"guy_video.mp4","model":"guy_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":4,"name":"דורי","slug":"dori","before":"dori_before.jpg","after":"dori_after.png","video":"dori_video.mp4","model":"dori_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":5,"name":"הודיה","slug":"odaya","before":"odaya_before.jpg","after":"odaya_after.png","video":"odaya_video.mp4","model":"odaya_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":6,"name":"טובה","slug":"vova","before":"vova_before.jpg","after":"vova_after.png","video":"vova_video.mp4","model":"vova_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":7,"name":"ז'רה","slug":"jera","before":"jera_before.jpg","after":"jera_after.png","video":"jera_video.mp4","model":"jera_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":8,"name":"טומי","slug":"tomy","before":"tomy_before.jpg","after":"tomy_after.png","video":"tomy_video.mp4","model":"tomy_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":9,"name":"יואב","slug":"yoav","before":"yoav_before.jpg","after":"yoav_after.png","video":"yoav_video.mp4","model":"yoav_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":10,"name":"ליאב","slug":"liav","before":"liav_before.jpg","after":"liav_after.png","video":"liav_video.mp4","model":"liav_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":11,"name":"לני","slug":"leny","before":"leny_before.jpg","after":"leny_after.png","video":"leny_video.mp4","model":"leny_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":12,"name":"מריאן","slug":"mariane","before":"mariane_before.jpg","after":"mariane_after.png","video":"mariane_video.mp4","model":"mariane_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":13,"name":"נלי","slug":"nely","before":"nely_before.jpg","after":"nely_after.png","video":"nely_video.mp4","model":"nely_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":14,"name":"עומר ב","slug":"omer-b","before":"omer_b_before.jpg","after":"omer_b_after.png","video":"omer_b_video.mp4","model":"omer_b_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":15,"name":"עומר ו","slug":"omer-vav","before":"omer_vav_before.jpg","after":"omer_vav_after.png","video":"omer_vav_video.mp4","model":"omer_vav_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":16,"name":"צופיה","slug":"tsofia","before":"tsofia_before.jpg","after":"tsofia_after.png","video":"tsofia_video.mp4","model":"tsofia_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":17,"name":"רום","slug":"rom","before":"rom_before.jpg","after":"rom_after.png","video":"rom_video.mp4","model":"rom_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":18,"name":"רון","slug":"ron","before":"ron_before.jpg","after":"ron_after.png","video":"ron_video.mp4","model":"ron_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":19,"name":"רפאל","slug":"rafael","before":"rafael_before.jpg","after":"rafael_after.png","video":"rafael_video.mp4","model":"rafael_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":20,"name":"שיר","slug":"shir","before":"shir_before.jpg","after":"shir_after.png","video":"shir_video.mp4","model":"shir_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":21,"name":"תום","slug":"tom","before":"tom_before.jpg","after":"tom_after.png","video":"tom_video.mp4","model":"tom_3dmodel.glb","status":"PENDING_MEDIA"},
+    {"order":22,"name":"תמר","slug":"tamar","before":"tamar_before.jpg","after":"tamar_after.png","video":"tamar_video.mp4","model":"tamar_3dmodel.glb","status":"PENDING_MEDIA"}
+  ]
+}
