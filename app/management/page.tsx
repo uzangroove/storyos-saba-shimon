@@ -22,6 +22,7 @@ export default function ManagementPage() {
           <p>מאגר לקוחות, אנשי קשר, התקשרויות, לוחות פעילות ומעקב.</p>
         </div>
         <div className="header-actions">
+          <a className="back-button" href="/management/drawing-alive">פיילוט גן ערבה</a>
           <a className="back-button" href="/management/calendar">לוח תשפ״ז</a>
           <a className="back-button" href="/operator">מסך מפעיל</a>
           <a className="back-button" href="/">חזרה ל־StoryOS</a>
