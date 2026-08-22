@@ -2,6 +2,7 @@ import { createSign } from "node:crypto";
 
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const STORAGE_SCOPE = "https://www.googleapis.com/auth/devstorage.read_only";
+const DEFAULT_FIREBASE_STORAGE_BUCKET = "saba-ganim-arava.firebasestorage.app";
 
 function base64Url(value: string | Buffer) {
   const buffer = Buffer.isBuffer(value) ? value : Buffer.from(value, "utf8");
@@ -15,9 +16,9 @@ function base64Url(value: string | Buffer) {
 function readFirebaseServerEnv() {
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
   const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-  const bucket = process.env.FIREBASE_STORAGE_BUCKET;
+  const bucket = process.env.FIREBASE_STORAGE_BUCKET || DEFAULT_FIREBASE_STORAGE_BUCKET;
 
-  if (!clientEmail || !privateKey || !bucket) {
+  if (!clientEmail || !privateKey) {
     throw new Error("FIREBASE_SERVER_CONFIG_MISSING");
   }
 
@@ -102,9 +103,5 @@ export async function findFirebaseObjectsForChild(terms: string[]) {
 }
 
 export function firebaseServerReady() {
-  return Boolean(
-    process.env.FIREBASE_CLIENT_EMAIL &&
-      process.env.FIREBASE_PRIVATE_KEY &&
-      process.env.FIREBASE_STORAGE_BUCKET,
-  );
+  return Boolean(process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY);
 }
