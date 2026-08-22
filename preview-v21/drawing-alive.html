@@ -1,10 +1,135 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StoryOS V21 · גן ערבה</title><link rel="stylesheet" href="/v21-preview/v21.css"><style>.viewer-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.viewer-panel{background:#fff;border:1px solid #e4ded2;border-radius:18px;padding:14px;min-height:280px}.viewer-panel h3{margin-top:0}.viewer-panel img,.viewer-panel video{width:100%;max-height:360px;object-fit:contain;border-radius:12px;background:#f4f1ea}.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}.compare figure{margin:0}.compare figcaption{font-size:13px;color:#64708a;margin-bottom:6px}.model-box{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;gap:12px;background:#f4f1ea;border-radius:12px;padding:16px}.child-btn{border:1px solid #dfd7ca;background:#fff;border-radius:10px;padding:7px 10px;cursor:pointer}.child-btn.active{background:#eef8ff;border-color:#7ebce9}.okmark{color:#1f7a55;font-weight:700}.missmark{color:#9a6b00}.loading{opacity:.7}@media(max-width:850px){.viewer-grid,.compare{grid-template-columns:1fr}}</style></head><body><main class="wrap"><header class="top"><div><div class="eyebrow">StoryOS V21 · כשהציור קם לתחייה</div><h1>פיילוט גן ערבה</h1><p>מפגש 1 · ציור חופשי · גננת: שגית</p></div><nav class="nav"><a class="btn" href="/v21-preview/management.html">חזרה לניהול</a><a class="btn" href="/">StoryOS</a></nav></header><div class="notice" id="firebaseState">בודק חיבור Firebase…</div><section class="grid4"><article class="card stat"><strong>22</strong><span>ילדים בגן</span></article><article class="card stat"><strong id="readyCount">—</strong><span>ילדים עם 4/4</span></article><article class="card stat"><strong>4</strong><span>סוגי תוצרים לילד</span></article><article class="card stat"><strong>Firebase</strong><span>אחסון מדיה פרטי</span></article></section><section class="card"><div class="section-title"><div><h2>ילדי גן ערבה</h2><span class="muted">לחיצה על ילד פותחת את המדיה שלו בחלון התצוגה.</span></div></div><div class="table-wrap"><table class="table"><thead><tr><th>#</th><th>שם</th><th>קבצים</th><th>ציור</th><th>תמונה</th><th>וידאו</th><th>מודל</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="8">טוען נתוני Firebase…</td></tr></tbody></table></div></section><section class="card"><div class="section-title"><div><h2 id="viewerTitle">תצוגת ילד</h2><span class="muted" id="viewerNote">בחר ילד מהרשימה</span></div></div><div class="viewer-grid"><div class="viewer-panel"><h3>השוואה: ציור מקורי / תוצאה</h3><div class="compare"><figure><figcaption>ציור מקורי</figcaption><div id="beforeBox" class="model-box">אין קובץ להצגה</div></figure><figure><figcaption>תמונה אחרי</figcaption><div id="afterBox" class="model-box">אין קובץ להצגה</div></figure></div></div><div class="viewer-panel"><h3>וידאו</h3><div id="videoBox" class="model-box">אין וידאו להצגה</div></div><div class="viewer-panel"><h3>מודל תלת־ממד</h3><div id="modelBox" class="model-box">אין מודל להצגה</div></div><div class="viewer-panel"><h3>מידע</h3><div id="metaBox" class="model-box">בחר ילד כדי לראות סטטוס</div></div></div></section><section class="card"><h2>פרטיות ואבטחה</h2><p>ה־Preview מוגן בסיסמה. קישורי המדיה נוצרים לזמן קצר בלבד ופוקעים אוטומטית. אין גישה ציבורית קבועה לקבצי הילדים.</p></section><div class="footer">StoryOS V21 · Gan Arava Pilot · ללא Merge ל־main</div></main><script>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>StoryOS V21 · גן ערבה</title>
+  <link rel="stylesheet" href="/v21-preview/v21.css">
+  <style>
+    .compact-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0 12px}.compact-stats .card{padding:10px 12px;min-height:auto}.compact-stats strong{font-size:1.35rem}.child-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}.child-toolbar select{min-width:220px;border:1px solid #dfd7ca;border-radius:12px;padding:10px 12px;background:#fff;font:inherit}.viewer-shell{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.85fr);gap:12px;align-items:start}.viewer-panel{background:#fff;border:1px solid #e4ded2;border-radius:16px;padding:12px}.viewer-panel h3{margin:0 0 8px;font-size:1rem}.media-stage{height:320px;background:#f4f1ea;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center}.media-stage img,.media-stage video{width:100%;height:100%;object-fit:contain;background:#f4f1ea}.side-stack{display:grid;gap:12px}.side-stack .media-stage{height:210px}.compare-stage{position:relative;height:320px;background:#f4f1ea;border-radius:12px;overflow:hidden;direction:ltr}.compare-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#f4f1ea}.compare-after{clip-path:inset(0 50% 0 0)}.compare-divider{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25);pointer-events:none}.compare-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid #bbb;display:grid;place-items:center;pointer-events:none;font-weight:700}.compare-label{position:absolute;top:8px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.9);font-size:12px;font-weight:700;z-index:3}.compare-label.before{left:8px}.compare-label.after{right:8px}.slider-control{width:100%;margin-top:8px;direction:ltr}.empty-stage{height:100%;width:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;color:#64708a}.meta-line{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.status-pill{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;background:#eef8ff;border:1px solid #cfe6f8;font-size:13px}.okmark{color:#1f7a55;font-weight:700}.missmark{color:#9a6b00}.table-toggle{margin-top:12px}.table-toggle summary{cursor:pointer;font-weight:700;padding:10px 12px;background:#fff;border:1px solid #e4ded2;border-radius:12px;list-style:none}.table-toggle[open] summary{margin-bottom:8px}.table-wrap.compact-table{max-height:280px;overflow:auto}.child-row-btn{border:1px solid #dfd7ca;background:#fff;border-radius:9px;padding:5px 8px;cursor:pointer}.child-row-btn.active{background:#eef8ff;border-color:#7ebce9}.privacy-note{font-size:12px;color:#64708a;margin-top:8px}.quick-nav{display:flex;gap:6px;align-items:center}.quick-nav button{border:1px solid #dfd7ca;background:#fff;border-radius:10px;padding:8px 10px;cursor:pointer}@media(max-width:950px){.viewer-shell{grid-template-columns:1fr}.side-stack{grid-template-columns:1fr 1fr}.side-stack .media-stage{height:190px}}@media(max-width:680px){.compact-stats{grid-template-columns:repeat(2,1fr)}.child-toolbar{position:sticky;top:0;z-index:15;background:#f8f4ed;padding:8px 0}.child-toolbar select{flex:1;min-width:150px}.viewer-panel{padding:10px}.media-stage,.compare-stage{height:250px}.side-stack{grid-template-columns:1fr}.side-stack .media-stage{height:200px}.top{margin-bottom:6px}.top p{margin-bottom:0}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">StoryOS V21 · כשהציור קם לתחייה</div>
+      <h1>פיילוט גן ערבה</h1>
+      <p>מפגש 1 · ציור חופשי · גננת: שגית</p>
+    </div>
+    <nav class="nav"><a class="btn" href="/v21-preview/management.html">חזרה לניהול</a><a class="btn" href="/">StoryOS</a></nav>
+  </header>
+
+  <div class="notice" id="firebaseState">בודק חיבור Firebase…</div>
+
+  <section class="compact-stats">
+    <article class="card stat"><strong>22</strong><span>ילדים</span></article>
+    <article class="card stat"><strong id="readyCount">—</strong><span>עם 4/4</span></article>
+    <article class="card stat"><strong id="currentCount">—</strong><span>לקבצים של הילד</span></article>
+    <article class="card stat"><strong>Firebase</strong><span>מדיה פרטית</span></article>
+  </section>
+
+  <section class="viewer-panel">
+    <div class="child-toolbar">
+      <strong>בחר ילד:</strong>
+      <select id="childSelect" aria-label="בחירת ילד"></select>
+      <div class="quick-nav"><button id="prevBtn" type="button">הקודם</button><button id="nextBtn" type="button">הבא</button></div>
+      <span class="status-pill" id="viewerNote">טוען…</span>
+    </div>
+
+    <div class="viewer-shell">
+      <div class="viewer-panel">
+        <h3>לפני / אחרי — סליידר</h3>
+        <div id="compareBox" class="compare-stage"><div class="empty-stage">בחר ילד כדי להציג השוואה</div></div>
+        <input id="compareSlider" class="slider-control" type="range" min="0" max="100" value="50" aria-label="סליידר השוואה לפני ואחרי">
+      </div>
+
+      <div class="side-stack">
+        <div class="viewer-panel">
+          <h3>וידאו</h3>
+          <div id="videoBox" class="media-stage"><div class="empty-stage">אין וידאו להצגה</div></div>
+        </div>
+        <div class="viewer-panel">
+          <h3>מודל תלת־ממד</h3>
+          <div id="modelBox" class="media-stage"><div class="empty-stage">אין מודל להצגה</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="meta-line" style="margin-top:10px"><span class="status-pill" id="metaBox">בחר ילד</span></div>
+    <div class="privacy-note">המדיה נטענת בקישורים זמניים בלבד. הקישורים פוקעים אוטומטית.</div>
+  </section>
+
+  <details class="table-toggle">
+    <summary>פתח טבלת מצב של כל 22 הילדים</summary>
+    <div class="table-wrap compact-table">
+      <table class="table">
+        <thead><tr><th>#</th><th>שם</th><th>קבצים</th><th>ציור</th><th>תמונה</th><th>וידאו</th><th>מודל</th><th></th></tr></thead>
+        <tbody id="rows"><tr><td colspan="8">טוען נתוני Firebase…</td></tr></tbody>
+      </table>
+    </div>
+  </details>
+
+  <div class="footer">StoryOS V21 · Gan Arava Pilot · ללא Merge ל־main</div>
+</main>
+
+<script>
 const kids=[['בן','ben'],['איילון','eylon'],['גיא','guy'],['דורי','dori'],['הודיה','odaya'],['טובה','vova'],["ז'רה",'jera'],['טומי','tomy'],['יואב','yoav'],['ליאב','liav'],['לני','leny'],['מריאן','mariane'],['נלי','nely'],['עומר ב','omer-b'],['עומר ו','omer-vav'],['צופיה','tsofia'],['רום','rom'],['רון','ron'],['רפאל','rafael'],['שיר','shir'],['תום','tom'],['תמר','tamar']];
 const bySlug=Object.fromEntries(kids.map(k=>[k[1],k[0]]));
-let statusData={};let current=null;
+let statusData={};
+let currentIndex=0;
+let currentRequest=0;
+const select=document.getElementById('childSelect');
+select.innerHTML=kids.map(k=>`<option value="${k[1]}">${k[0]}</option>`).join('');
+
 function mark(v){return v?'<span class="okmark">✓</span>':'<span class="missmark">—</span>'}
-async function loadStatus(){try{const r=await fetch('/api/v21-firebase-discover?child=all',{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'שגיאה');statusData=Object.fromEntries((d.children||[]).map(x=>[x.child,x]));readyCount.textContent=(d.children||[]).filter(x=>x.ready).length;firebaseState.innerHTML='<b>Firebase מחובר:</b> הנתונים נטענו מהאחסון הפרטי.';rows.innerHTML=kids.map((k,i)=>{const s=statusData[k[1]]||{matchedCount:0,files:{}};const f=s.files||{};const names=Object.keys(f);return `<tr><td>${i+1}</td><td><b>${k[0]}</b></td><td><b>${s.matchedCount||0}/4</b></td><td>${mark(names.some(n=>n.includes('_before')&&f[n]))}</td><td>${mark(names.some(n=>n.includes('_after')&&f[n]))}</td><td>${mark(names.some(n=>n.includes('_video')&&f[n]))}</td><td>${mark(names.some(n=>n.includes('_3dmodel')&&f[n]))}</td><td><button class="child-btn" data-slug="${k[1]}" onclick="openChild('${k[1]}',this)">הצג</button></td></tr>`}).join('');}catch(e){firebaseState.innerHTML='<b>שגיאת Firebase:</b> '+String(e.message||e);rows.innerHTML='<tr><td colspan="8">לא ניתן לטעון קבצים</td></tr>';}}
-function setBox(id,html){document.getElementById(id).innerHTML=html}
-async function openChild(slug,btn){current=slug;document.querySelectorAll('.child-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');viewerTitle.textContent='תצוגת '+(bySlug[slug]||slug);viewerNote.textContent='טוען קישורים מוגנים…';setBox('beforeBox','טוען…');setBox('afterBox','טוען…');setBox('videoBox','טוען…');setBox('modelBox','טוען…');setBox('metaBox','טוען…');try{const r=await fetch('/api/v21-firebase-media?child='+encodeURIComponent(slug),{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'שגיאה');if(current!==slug)return;const m=d.media||{};setBox('beforeBox',m.before?`<img src="${m.before.url}" alt="ציור מקורי">`:'אין ציור מקורי');setBox('afterBox',m.after?`<img src="${m.after.url}" alt="תמונה אחרי">`:'אין תמונה אחרי');setBox('videoBox',m.video?`<video src="${m.video.url}" controls playsinline preload="metadata"></video>`:'אין וידאו');setBox('modelBox',m.model?`<a class="btn" href="${m.model.url}" target="_blank" rel="noopener">פתח קובץ GLB</a><span class="muted">צפיין 3D מוטמע יתווסף בשלב הבא</span>`:'אין מודל GLB');const count=Object.values(m).filter(Boolean).length;setBox('metaBox',`<div><b>${count}/4 קבצים נמצאו</b><br><span class="muted">הקישורים תקפים לכ־${Math.round((d.expiresSeconds||600)/60)} דקות.</span></div>`);viewerNote.textContent='קבצים פרטיים מ־Firebase';}catch(e){viewerNote.textContent='שגיאה בטעינת המדיה';setBox('beforeBox','לא נטען');setBox('afterBox','לא נטען');setBox('videoBox','לא נטען');setBox('modelBox','לא נטען');setBox('metaBox',String(e.message||e));}}
-loadStatus().then(()=>{const first=kids.find(k=>statusData[k[1]]&&statusData[k[1]].matchedCount>0);if(first){const b=document.querySelector(`[data-slug="${first[1]}"]`);openChild(first[1],b)}});
-</script></body></html>
+function escapeAttr(v){return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function mediaKeyMatches(files,needle){return Object.keys(files||{}).some(n=>n.includes(needle)&&files[n])}
+function updateSlider(){const value=Number(compareSlider.value);const after=document.getElementById('compareAfter');const divider=document.getElementById('compareDivider');const handle=document.getElementById('compareHandle');if(after)after.style.clipPath=`inset(0 ${100-value}% 0 0)`;if(divider)divider.style.left=value+'%';if(handle)handle.style.left=value+'%'}
+compareSlider.addEventListener('input',updateSlider);
+
+function renderComparison(before,after){
+  if(before&&after&&before.url!==after.url&&before.name!==after.name){
+    compareBox.innerHTML=`<img src="${escapeAttr(before.url)}" alt="ציור מקורי"><img id="compareAfter" class="compare-after" src="${escapeAttr(after.url)}" alt="תמונה אחרי"><span class="compare-label before">לפני</span><span class="compare-label after">אחרי</span><div id="compareDivider" class="compare-divider"></div><div id="compareHandle" class="compare-handle">↔</div>`;
+    compareSlider.disabled=false;compareSlider.value=50;updateSlider();return;
+  }
+  if(before&&!after){compareBox.innerHTML=`<img src="${escapeAttr(before.url)}" alt="ציור מקורי"><span class="compare-label before">לפני</span><div class="compare-label after">תמונת אחרי לא נמצאה</div>`;compareSlider.disabled=true;return;}
+  if(after&&!before){compareBox.innerHTML=`<img src="${escapeAttr(after.url)}" alt="תמונה אחרי"><span class="compare-label after">אחרי</span><div class="empty-stage" style="position:absolute;bottom:8px;left:8px;right:8px;height:auto;background:rgba(255,255,255,.9);border-radius:8px;padding:6px">ציור מקורי לא נמצא — לא מציג את תמונת ה״אחרי״ במקום ה״לפני״</div>`;compareSlider.disabled=true;return;}
+  compareBox.innerHTML='<div class="empty-stage">לא נמצאו תמונות להשוואה</div>';compareSlider.disabled=true;
+}
+
+async function loadStatus(){
+  try{
+    const r=await fetch('/api/v21-firebase-discover?child=all',{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'שגיאה');
+    statusData=Object.fromEntries((d.children||[]).map(x=>[x.child,x]));
+    readyCount.textContent=(d.children||[]).filter(x=>x.ready).length;
+    firebaseState.innerHTML='<b>Firebase מחובר:</b> נתוני המדיה נטענו מהאחסון הפרטי.';
+    rows.innerHTML=kids.map((k,i)=>{const s=statusData[k[1]]||{matchedCount:0,files:{}};const f=s.files||{};return `<tr><td>${i+1}</td><td><b>${k[0]}</b></td><td><b>${s.matchedCount||0}/4</b></td><td>${mark(mediaKeyMatches(f,'_before'))}</td><td>${mark(mediaKeyMatches(f,'_after'))}</td><td>${mark(mediaKeyMatches(f,'_video'))}</td><td>${mark(mediaKeyMatches(f,'_3dmodel'))}</td><td><button class="child-row-btn" data-slug="${k[1]}" type="button" onclick="chooseChild('${k[1]}')">הצג</button></td></tr>`}).join('');
+  }catch(e){firebaseState.innerHTML='<b>שגיאת Firebase:</b> '+String(e.message||e);rows.innerHTML='<tr><td colspan="8">לא ניתן לטעון קבצים</td></tr>';}
+}
+
+async function openCurrent(){
+  const slug=kids[currentIndex][1];const name=kids[currentIndex][0];select.value=slug;
+  document.querySelectorAll('.child-row-btn').forEach(b=>b.classList.toggle('active',b.dataset.slug===slug));
+  viewerNote.textContent='טוען '+name+'…';currentCount.textContent='—';metaBox.textContent='טוען קישורים מוגנים…';videoBox.innerHTML='<div class="empty-stage">טוען…</div>';modelBox.innerHTML='<div class="empty-stage">טוען…</div>';compareBox.innerHTML='<div class="empty-stage">טוען…</div>';
+  const requestId=++currentRequest;
+  try{
+    const r=await fetch('/api/v21-firebase-media?child='+encodeURIComponent(slug),{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'שגיאה');if(requestId!==currentRequest)return;
+    const m=d.media||{};
+    renderComparison(m.before,m.after);
+    videoBox.innerHTML=m.video?`<video src="${escapeAttr(m.video.url)}" controls playsinline preload="metadata"></video>`:'<div class="empty-stage">אין וידאו</div>';
+    modelBox.innerHTML=m.model?`<div class="empty-stage"><a class="btn" href="${escapeAttr(m.model.url)}" target="_blank" rel="noopener">פתח מודל GLB</a><br><span class="muted">צפיין 3D מוטמע בשלב הבא</span></div>`:'<div class="empty-stage">אין מודל GLB</div>';
+    const count=Object.values(m).filter(Boolean).length;currentCount.textContent=count+'/4';metaBox.innerHTML=`<b>${name}</b> · ${count}/4 קבצים · קישורים לכ־${Math.round((d.expiresSeconds||600)/60)} דקות`;
+    viewerNote.textContent=name+' · מדיה פרטית מ־Firebase';
+  }catch(e){if(requestId!==currentRequest)return;viewerNote.textContent='שגיאה בטעינת '+name;metaBox.textContent=String(e.message||e);compareBox.innerHTML='<div class="empty-stage">לא נטען</div>';videoBox.innerHTML='<div class="empty-stage">לא נטען</div>';modelBox.innerHTML='<div class="empty-stage">לא נטען</div>';}
+}
+
+function chooseChild(slug){const idx=kids.findIndex(k=>k[1]===slug);if(idx>=0){currentIndex=idx;openCurrent();window.scrollTo({top:Math.max(0,document.querySelector('.viewer-panel').offsetTop-12),behavior:'smooth'});}}
+select.addEventListener('change',()=>chooseChild(select.value));
+prevBtn.addEventListener('click',()=>{currentIndex=(currentIndex-1+kids.length)%kids.length;openCurrent()});
+nextBtn.addEventListener('click',()=>{currentIndex=(currentIndex+1)%kids.length;openCurrent()});
+
+loadStatus().then(()=>{const idx=kids.findIndex(k=>statusData[k[1]]&&statusData[k[1]].matchedCount>0);currentIndex=idx>=0?idx:0;openCurrent()});
+</script>
+</body>
+</html>
