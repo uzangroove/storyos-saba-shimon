@@ -6,6 +6,7 @@ import {
   findFirebaseObjectsForChild,
   firebaseServerReady,
 } from "../../../../../lib/media/firebase-service-account";
+import { createFirebaseSignedUrl } from "../../../../../lib/media/firebase-signed-url";
 
 async function requireAdmin() {
   const accessToken = (await cookies()).get("storyos_access_token")?.value;
@@ -66,6 +67,20 @@ export async function GET(request: Request) {
     ];
     const objects = await findFirebaseObjectsForChild(fileTerms);
 
+    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL!;
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY!;
+    const bucket = process.env.FIREBASE_STORAGE_BUCKET ?? manifest.garden.storageBucket;
+    const matches = objects.map((object) => ({
+      ...object,
+      previewUrl: createFirebaseSignedUrl({
+        bucket,
+        path: object.name,
+        clientEmail,
+        privateKey,
+        expiresSeconds: 600,
+      }),
+    }));
+
     return NextResponse.json({
       ok: true,
       child: { name: child.name, slug: child.slug },
@@ -76,7 +91,8 @@ export async function GET(request: Request) {
         video: child.video,
         model: child.model,
       },
-      matches: objects,
+      previewExpiresSeconds: 600,
+      matches,
     });
   } catch {
     return NextResponse.json(
