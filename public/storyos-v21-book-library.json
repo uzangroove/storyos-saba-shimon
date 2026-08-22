@@ -1,0 +1,7 @@
+{
+  "version": "21.3.0",
+  "updatedAt": "2026-08-22",
+  "expectedStoryBookCount": 16,
+  "approvedIds": ["s01","s02","s03","s04","s05","s06","s07","s08","s10","s11","s14","s15","s17","s23","s24","s30"],
+  "note": "StoryOS V21 approved story-library manifest. Other activity programs remain unchanged."
+}
