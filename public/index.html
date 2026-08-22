@@ -13,23 +13,30 @@
     .shell-btn{position:fixed;top:18px;z-index:9999;border:1px solid #dfd7ca;color:#fff;border-radius:14px;padding:11px 16px;box-shadow:0 5px 16px rgba(37,43,62,.18);font:700 16px Arial,"Noto Sans Hebrew",sans-serif;cursor:pointer;white-space:nowrap}
     #scannedBookViewerBtn{left:18px;background:linear-gradient(135deg,#6c50e0,#7d67ed)}
     #managementBtn{left:170px;background:linear-gradient(135deg,#1f7a55,#39a878)}
+    #ganAravaBtn{left:300px;background:linear-gradient(135deg,#e78419,#f3aa31)}
     .shell-btn:hover{filter:brightness(1.04)}
-    @media(max-width:760px){.shell-btn{top:auto;bottom:16px;font-size:14px;padding:10px 13px}#scannedBookViewerBtn{left:16px}#managementBtn{left:148px}}
+    @media(max-width:760px){
+      .shell-btn{top:auto;bottom:16px;font-size:14px;padding:10px 13px}
+      #scannedBookViewerBtn{left:16px}
+      #managementBtn{left:148px}
+      #ganAravaBtn{top:16px;bottom:auto;left:auto;right:16px}
+    }
   </style>
 </head>
 <body>
   <button id="scannedBookViewerBtn" class="shell-btn" type="button">📖 תצוגת ספר</button>
   <button id="managementBtn" class="shell-btn" type="button">⚙️ ניהול V21</button>
-  <iframe id="storyosFrame" src="/storyos.html?v=21.3.0" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <button id="ganAravaBtn" class="shell-btn" type="button">🎨 פיילוט גן ערבה</button>
+  <iframe id="storyosFrame" src="/storyos.html?v=21.3.1" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
   <script>
     const storyosFrame = document.getElementById('storyosFrame');
     storyosFrame.addEventListener('load', () => {
       const doc = storyosFrame.contentDocument;
       if (!doc) return;
       const scripts = [
-        ['v21ApprovedBookLibraryLoader','/storyos-v21-book-library.js?v=21.3.0'],
-        ['v20UnifiedControlsLoader','/storyos-unified-controls.js?v=21.3.0'],
-        ['v21LiveUxLoader','/storyos-live-ux.js?v=21.3.0']
+        ['v21ApprovedBookLibraryLoader','/storyos-v21-book-library.js?v=21.3.1'],
+        ['v20UnifiedControlsLoader','/storyos-unified-controls.js?v=21.3.1'],
+        ['v21LiveUxLoader','/storyos-live-ux.js?v=21.3.1']
       ];
       for (const [id,src] of scripts) {
         if (doc.getElementById(id)) continue;
@@ -40,10 +47,13 @@
       }
     });
     document.getElementById('scannedBookViewerBtn').addEventListener('click', () => {
-      window.location.href = '/book-flip-viewer.html?v=21.3.0';
+      window.location.href = '/book-flip-viewer.html?v=21.3.1';
     });
     document.getElementById('managementBtn').addEventListener('click', () => {
       window.location.href = '/v21-preview/';
+    });
+    document.getElementById('ganAravaBtn').addEventListener('click', () => {
+      window.location.href = '/v21-preview/drawing-alive.html';
     });
   </script>
 </body>
