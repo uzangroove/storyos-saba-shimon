@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "rosterId": "gan-arava-2026-2027",
+  "institutionId": "gan-arava",
+  "schoolYearId": "2026-2027",
+  "children": [
+    {"id":"ga-child-001","slug":"ben","displayName":"בן","sortOrder":1,"active":true,"aliases":["ben","בן"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-002","slug":"eylon","displayName":"איילון","sortOrder":2,"active":true,"aliases":["eylon","איילון","אילון"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-003","slug":"guy","displayName":"גיא","sortOrder":3,"active":true,"aliases":["guy","גיא"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-004","slug":"dori","displayName":"דורי","sortOrder":4,"active":true,"aliases":["dori","דורי"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-005","slug":"odaya","displayName":"הודיה","sortOrder":5,"active":true,"aliases":["odaya","הודיה"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-006","slug":"vova","displayName":"טובה","sortOrder":6,"active":true,"aliases":["vova","וובה","טובה"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-007","slug":"jera","displayName":"ז'רה","sortOrder":7,"active":true,"aliases":["jera","ז'רה","זרה"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-008","slug":"tomy","displayName":"טומי","sortOrder":8,"active":true,"aliases":["tomy","tomi","טומי"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-009","slug":"yoav","displayName":"יואב","sortOrder":9,"active":true,"aliases":["yoav","יואב"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-010","slug":"liav","displayName":"ליאב","sortOrder":10,"active":true,"aliases":["liav","ליאב"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-011","slug":"leny","displayName":"לני","sortOrder":11,"active":true,"aliases":["leny","lenny","לני"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-012","slug":"mariane","displayName":"מריאן","sortOrder":12,"active":true,"aliases":["mariane","marian","מריאן"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-013","slug":"nely","displayName":"נלי","sortOrder":13,"active":true,"aliases":["nely","nelly","נלי"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-014","slug":"omer-b","displayName":"עומר ב","sortOrder":14,"active":true,"aliases":["omer_b","omer-b","עומר ב"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-015","slug":"omer-vav","displayName":"עומר ו","sortOrder":15,"active":true,"aliases":["omer_vav","omer-vav","עומר ו"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-016","slug":"tsofia","displayName":"צופיה","sortOrder":16,"active":true,"aliases":["tsofia","tzofia","צופיה"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-017","slug":"rom","displayName":"רום","sortOrder":17,"active":true,"aliases":["rom","רום"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-018","slug":"ron","displayName":"רון","sortOrder":18,"active":true,"aliases":["ron","רון"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-019","slug":"rafael","displayName":"רפאל","sortOrder":19,"active":true,"aliases":["rafael","רפאל"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-020","slug":"shir","displayName":"שיר","sortOrder":20,"active":true,"aliases":["shir","שיר"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-021","slug":"tom","displayName":"תום","sortOrder":21,"active":true,"aliases":["tom","תום"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}},
+    {"id":"ga-child-022","slug":"tamar","displayName":"תמר","sortOrder":22,"active":true,"aliases":["tamar","תמר"],"privacy":{"publicDisplay":false,"displayMode":"FIRST_NAME_ONLY"}}
+  ]
+}
