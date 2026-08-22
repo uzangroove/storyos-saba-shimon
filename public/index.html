@@ -20,15 +20,16 @@
 <body>
   <button id="scannedBookViewerBtn" class="shell-btn" type="button">📖 תצוגת ספר</button>
   <button id="managementBtn" class="shell-btn" type="button">⚙️ ניהול V21</button>
-  <iframe id="storyosFrame" src="/storyos.html?v=21.2.0" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=21.3.0" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
   <script>
     const storyosFrame = document.getElementById('storyosFrame');
     storyosFrame.addEventListener('load', () => {
       const doc = storyosFrame.contentDocument;
       if (!doc) return;
       const scripts = [
-        ['v20UnifiedControlsLoader','/storyos-unified-controls.js?v=21.2.0'],
-        ['v21LiveUxLoader','/storyos-live-ux.js?v=21.2.0']
+        ['v21ApprovedBookLibraryLoader','/storyos-v21-book-library.js?v=21.3.0'],
+        ['v20UnifiedControlsLoader','/storyos-unified-controls.js?v=21.3.0'],
+        ['v21LiveUxLoader','/storyos-live-ux.js?v=21.3.0']
       ];
       for (const [id,src] of scripts) {
         if (doc.getElementById(id)) continue;
@@ -39,7 +40,7 @@
       }
     });
     document.getElementById('scannedBookViewerBtn').addEventListener('click', () => {
-      window.location.href = '/book-flip-viewer.html?v=21.2.0';
+      window.location.href = '/book-flip-viewer.html?v=21.3.0';
     });
     document.getElementById('managementBtn').addEventListener('click', () => {
       window.location.href = '/v21-preview/';
