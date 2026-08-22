@@ -10,32 +10,33 @@
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f4ed}
     #storyosFrame{display:block;width:100%;height:100dvh;border:0;background:#f8f4ed}
-    #scannedBookViewerBtn{
-      position:fixed;top:18px;left:18px;z-index:9999;border:1px solid #dfd7ca;
-      background:linear-gradient(135deg,#6c50e0,#7d67ed);color:#fff;border-radius:14px;
-      padding:11px 16px;box-shadow:0 5px 16px rgba(37,43,62,.18);
-      font:700 16px Arial,"Noto Sans Hebrew",sans-serif;cursor:pointer;white-space:nowrap
-    }
+    #scannedBookViewerBtn{position:fixed;top:18px;left:18px;z-index:9999;border:1px solid #dfd7ca;background:linear-gradient(135deg,#6c50e0,#7d67ed);color:#fff;border-radius:14px;padding:11px 16px;box-shadow:0 5px 16px rgba(37,43,62,.18);font:700 16px Arial,"Noto Sans Hebrew",sans-serif;cursor:pointer;white-space:nowrap}
     #scannedBookViewerBtn:hover{filter:brightness(1.04)}
     @media(max-width:760px){#scannedBookViewerBtn{top:auto;bottom:16px;left:16px;font-size:14px;padding:10px 13px}}
   </style>
 </head>
 <body>
   <button id="scannedBookViewerBtn" type="button" title="פתיחת הספר בתצוגת דפדוף">📖 תצוגת ספר</button>
-  <iframe id="storyosFrame" src="/storyos.html?v=21.0.0" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=21.1.0" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
   <script>
     const storyosFrame = document.getElementById('storyosFrame');
     storyosFrame.addEventListener('load', () => {
       const doc = storyosFrame.contentDocument;
-      if (!doc || doc.getElementById('v20UnifiedControlsLoader')) return;
-      const script = doc.createElement('script');
-      script.id = 'v20UnifiedControlsLoader';
-      script.src = '/storyos-unified-controls.js?v=21.0.0';
-      doc.body.appendChild(script);
+      if (!doc) return;
+      const scripts = [
+        ['v20UnifiedControlsLoader','/storyos-unified-controls.js?v=21.1.0'],
+        ['v21LiveUxLoader','/storyos-live-ux.js?v=21.1.0']
+      ];
+      for (const [id,src] of scripts) {
+        if (doc.getElementById(id)) continue;
+        const script = doc.createElement('script');
+        script.id = id;
+        script.src = src;
+        doc.body.appendChild(script);
+      }
     });
-
     document.getElementById('scannedBookViewerBtn').addEventListener('click', () => {
-      window.location.href = '/book-flip-viewer.html?v=21.0.0';
+      window.location.href = '/book-flip-viewer.html?v=21.1.0';
     });
   </script>
 </body>
