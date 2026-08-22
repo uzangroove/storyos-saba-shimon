@@ -119,16 +119,10 @@ function classifyMedia(objects: Array<{ name: string; contentType?: string; size
   let before = images.find(o => hasAny(o.name, beforeTerms)) || null;
   let after = images.find(o => hasAny(o.name, afterTerms) && o.name !== before?.name) || null;
 
-  if (!before) {
-    before = images.find(o => ["jpg", "jpeg"].includes(ext(o.name)) && o.name !== after?.name) || null;
-  }
-  if (!after) {
-    after = images.find(o => ext(o.name) === "png" && o.name !== before?.name) || null;
-  }
-
+  if (!before) before = images.find(o => ["jpg", "jpeg"].includes(ext(o.name)) && o.name !== after?.name) || null;
+  if (!after) after = images.find(o => ext(o.name) === "png" && o.name !== before?.name) || null;
   if (!before && images.length >= 2) before = images[0];
   if (!after && images.length >= 2) after = images.find(o => o.name !== before?.name) || null;
-
   if (before && after && before.name === after.name) after = null;
 
   return {
@@ -152,8 +146,12 @@ export default async (req: Request) => {
     const found = classifyMedia(candidates);
 
     const media = Object.fromEntries(Object.entries(found).map(([kind, object]) => [kind, object ? {
-      kind, name: object.name, contentType: object.contentType || null, size: object.size || null,
-      updated: object.updated || null, url: signedUrl(object.name, 600),
+      kind,
+      name: object.name,
+      contentType: object.contentType || null,
+      size: object.size || null,
+      updated: object.updated || null,
+      url: kind === "model" ? `/api/v21-firebase-model?child=${encodeURIComponent(child)}` : signedUrl(object.name, 600),
     } : null]));
 
     return Response.json({
