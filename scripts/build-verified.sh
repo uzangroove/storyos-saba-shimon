@@ -5,7 +5,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 project_root="$(cd "${script_dir}/.." && pwd)"
 
 # Production on Netlify is a static Story OS deployment from /public.
-# Do not invoke the Vinext/Cloudflare/OpenAI-hosting toolchain there.
+# Deploy Previews also copy the isolated V21 visual-QA pages into public/v21-preview.
 if [[ "${NETLIFY:-}" == "true" ]]; then
   echo "Netlify static Story OS build: validating public files..."
 
@@ -21,7 +21,41 @@ if [[ "${NETLIFY:-}" == "true" ]]; then
     fi
   done
 
-  echo "Static Story OS files are ready in public/."
+  # Never alter the V20 production surface. These files live under an isolated preview path.
+  if [[ -d "${project_root}/preview-v21" ]]; then
+    rm -rf "${project_root}/public/v21-preview"
+    cp -R "${project_root}/preview-v21" "${project_root}/public/v21-preview"
+    echo "V21 visual QA pages copied to public/v21-preview/."
+  fi
+
+  echo "Preparing the 30 StoryOS story-hour covers for direct download..."
+  node "${project_root}/scripts/package-story-covers.mjs"
+
+  downloads_dir="${project_root}/public/downloads"
+  archive_path="${downloads_dir}/storyos-30-covers.zip"
+  rm -f "${archive_path}"
+
+  if command -v zip >/dev/null 2>&1; then
+    (
+      cd "${downloads_dir}"
+      zip -q -r "storyos-30-covers.zip" "storyos-30-covers"
+    )
+  else
+    echo "The Netlify build image does not provide the zip command." >&2
+    exit 1
+  fi
+
+  cover_count="$(find "${downloads_dir}/storyos-30-covers" -maxdepth 1 -type f | wc -l | tr -d ' ')"
+  if [[ "${cover_count}" != "30" ]]; then
+    echo "Expected 30 packaged covers, found ${cover_count}." >&2
+    exit 1
+  fi
+  if [[ ! -s "${archive_path}" ]]; then
+    echo "Cover ZIP was not created." >&2
+    exit 1
+  fi
+
+  echo "Static Story OS files are ready in public/. 30-cover ZIP created successfully."
   exit 0
 fi
 

@@ -1,0 +1,13 @@
+{
+  "schoolYear": "תשפ״ז 2026–2027",
+  "calendarKey": "IL_OFFICIAL_JEWISH_KINDERGARTEN_2026_2027",
+  "sector": "חברה יהודית · חינוך רשמי · גני ילדים",
+  "status": "PENDING_OFFICIAL_DATES",
+  "schoolYearStart": "2026-09-01",
+  "schoolYearEnd": "2027-06-30",
+  "sourceName": "משרד החינוך – לוח חופשות / חוזר מנכ״ל",
+  "sourceUrl": "https://pop.education.gov.il/maagal_hashana/vacation-schedule/",
+  "verifiedAt": null,
+  "notes": "בדיקת 20.08.2026: עמוד משרד החינוך מאשר פתיחת שנת תשפ״ז ב-01.09.2026 ומפנה ללוחות תשפ״ז, אך ברשומה הזמינה למערכת טרם התקבל פירוט מלא ומאומת של מועדי החופשות לחברה היהודית בגני הילדים. אין להמציא תאריכים; הרשימה תעודכן רק ממקור רשמי מפורט.",
+  "holidays": []
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "seedKey": "first-annual-kindergarten-contract",
+    "institutionName": "גן קרן",
+    "neighborhood": "גבעת רם",
+    "schoolYear": "תשפ״ז 2026–2027",
+    "activityName": null,
+    "contractType": "ANNUAL",
+    "weekday": 2,
+    "weekdayLabel": "שלישי",
+    "startTime": "09:00",
+    "endTime": "09:45",
+    "validFrom": "2026-09-01",
+    "validTo": "2027-06-30",
+    "agreedPrice": null,
+    "pricingModel": null,
+    "operatorName": "סבא שמעון",
+    "status": "ACTIVE",
+    "notes": "Seed ראשון להתקשרות שנתית. יש להשלים פעילות, מחיר ופרטי מוסד מדויקים לפני כתיבה ל-Supabase."
+  }
+]

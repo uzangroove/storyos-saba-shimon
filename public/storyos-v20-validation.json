@@ -1,0 +1,18 @@
+{
+  "version": 20,
+  "generatedAt": "2026-08-18T07:40:50.991Z",
+  "totalItems": 88,
+  "musicItems": 22,
+  "programs": {
+    "כשהציור קם לתחייה": 22,
+    "עולם קטן, קסם גדול": 9,
+    "שיר נולד בגן": 22,
+    "שעת סיפור והמחשה": 30,
+    "תיאטרון בובות": 5
+  },
+  "uniquePrograms": 5,
+  "duplicateIds": [],
+  "hasMusic01": true,
+  "hasMusic22": true,
+  "pass": true
+}

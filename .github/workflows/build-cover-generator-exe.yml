@@ -1,0 +1,72 @@
+name: Build Cover Generator EXE
+
+on:
+  push:
+    branches:
+      - release/storyos-v20
+    paths:
+      - tools/cover-generator/cover_generator_gui.py
+      - .github/workflows/build-cover-generator-exe.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller google-genai openpyxl pillow
+
+      - name: Build EXE
+        shell: pwsh
+        run: |
+          pyinstaller `
+            --noconfirm `
+            --clean `
+            --onefile `
+            --windowed `
+            --name "CoverGenerator-Saba-Shimon" `
+            tools/cover-generator/cover_generator_gui.py
+
+      - name: Package release folder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path release-cover-generator | Out-Null
+          Copy-Item "dist/CoverGenerator-Saba-Shimon.exe" "release-cover-generator/יצירת כריכות - סבא שמעון.exe"
+          @"
+          StoryOS - מחולל כריכות לסבא שמעון
+
+          קבצים שצריך לשים ליד קובץ ה-EXE:
+          1. reference_saba_morris.png
+          2. פרומפטים_לתמונות_סבא_שמעון_ומוריס.xlsx
+
+          בהפעלה הראשונה:
+          - פתח את התוכנה
+          - הזן את מפתח Gemini API בשדה המתאים
+          - ודא שהנתיבים נכונים
+          - לחץ 'התחל יצירת כריכות'
+
+          התמונות נשמרות כברירת מחדל בתיקייה output_images ליד קובץ ה-EXE.
+          "@ | Out-File -FilePath "release-cover-generator/README.txt" -Encoding utf8
+
+      - name: Upload Windows EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StoryOS-Cover-Generator-Windows
+          path: release-cover-generator/
+          if-no-files-found: error
+          retention-days: 30
