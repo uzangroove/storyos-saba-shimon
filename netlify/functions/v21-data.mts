@@ -1,16 +1,27 @@
 async function supabase(path: string) {
-  const url = "https://apkkochvspxjopoftpad.supabase.co";
-  const secret = Netlify.env.get("SUPABASE_SERVICE_ROLE_KEY") || Netlify.env.get("SUPABASE_SECRET_KEY");
+  const url = Netlify.env.get("SUPABASE_URL") || "https://apkkochvspxjopoftpad.supabase.co";
+  const secret = Netlify.env.get("SUPABASE_SECRET_KEY") || Netlify.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!secret) throw new Error("Supabase secret key is not configured");
 
-  const response = await fetch(`${url}/rest/v1/${path}`, {
-    headers: {
-      apikey: secret,
-      Authorization: `Bearer ${secret}`,
-      Accept: "application/json",
-    },
-  });
-  if (!response.ok) throw new Error(`Supabase request failed: ${response.status} ${await response.text()}`);
+  const headers: Record<string, string> = {
+    apikey: secret,
+    Accept: "application/json",
+  };
+
+  // Supabase's current sb_secret_* keys are opaque API keys, not JWTs.
+  // Sending them as Authorization: Bearer makes PostgREST try to parse them
+  // as a JWT and can produce PGRST303 / JWT validation errors.
+  // Legacy service_role keys are JWTs and still require the Bearer header.
+  if (!secret.startsWith("sb_secret_") && !secret.startsWith("sb_publishable_")) {
+    headers.Authorization = `Bearer ${secret}`;
+  }
+
+  const response = await fetch(`${url}/rest/v1/${path}`, { headers });
+  if (!response.ok) {
+    const body = await response.text();
+    console.error("StoryOS Supabase request failed", response.status, body);
+    throw new Error(`Supabase request failed: ${response.status}`);
+  }
   return response.json();
 }
 
