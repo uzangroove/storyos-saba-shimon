@@ -1,43 +1,57 @@
-function resolveSupabaseUrl() {
-  const configured = Netlify.env.get("SUPABASE_URL")?.replace(/\/$/, "");
-  if (configured) return configured;
+function candidateSupabaseUrls() {
+  const urls: string[] = [];
+  const add = (value?: string | null) => {
+    const normalized = value?.replace(/\/$/, "");
+    if (normalized && !urls.includes(normalized)) urls.push(normalized);
+  };
+
+  add(Netlify.env.get("SUPABASE_URL"));
 
   const databaseUrl = Netlify.env.get("DATABASE_URL");
   if (databaseUrl) {
     try {
       const parsed = new URL(databaseUrl);
       const directHostMatch = parsed.hostname.match(/^db\.([a-z0-9]+)\.supabase\.co$/i);
-      if (directHostMatch?.[1]) return `https://${directHostMatch[1]}.supabase.co`;
+      if (directHostMatch?.[1]) add(`https://${directHostMatch[1]}.supabase.co`);
 
       const poolerUserMatch = decodeURIComponent(parsed.username || "").match(/^postgres\.([a-z0-9]+)$/i);
-      if (poolerUserMatch?.[1]) return `https://${poolerUserMatch[1]}.supabase.co`;
+      if (poolerUserMatch?.[1]) add(`https://${poolerUserMatch[1]}.supabase.co`);
     } catch {
-      // Fall through to the known preview project URL.
+      // Keep trying the explicit and known project URLs below.
     }
   }
 
-  return "https://apkkochvspxjopoftpad.supabase.co";
+  add("https://apkkochvspxjopoftpad.supabase.co");
+  return urls;
 }
 
-async function supabase(path: string) {
-  const url = resolveSupabaseUrl();
-  const secret = Netlify.env.get("SUPABASE_SECRET_KEY") || Netlify.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!secret) throw new Error("Supabase secret key is not configured");
-
+function supabaseHeaders(secret: string) {
   const headers: Record<string, string> = {
     apikey: secret,
     Accept: "application/json",
-    "User-Agent": "StoryOS-V21-Netlify-Function/1.0",
+    "User-Agent": "StoryOS-V21-Netlify-Backend/1.1",
   };
 
-  // New sb_secret_* keys are opaque API keys and belong only in `apikey`.
-  // Legacy service_role keys are JWTs and require Authorization: Bearer.
+  // Opaque sb_secret_* keys belong in `apikey` only.
+  // Legacy service_role keys are JWTs and also require Authorization: Bearer.
   if (!secret.startsWith("sb_secret_") && !secret.startsWith("sb_publishable_")) {
     headers.Authorization = `Bearer ${secret}`;
   }
+  return headers;
+}
 
-  const response = await fetch(`${url}/rest/v1/${path}`, { headers });
-  if (!response.ok) {
+async function supabase(path: string) {
+  const secret = Netlify.env.get("SUPABASE_SECRET_KEY") || Netlify.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!secret) throw new Error("SUPABASE_SERVER_KEY_MISSING");
+
+  const urls = candidateSupabaseUrls();
+  const attempts: Array<{ host: string; status: number }> = [];
+
+  for (const url of urls) {
+    const response = await fetch(`${url}/rest/v1/${path}`, { headers: supabaseHeaders(secret) });
+    if (response.ok) return response.json();
+
+    attempts.push({ host: new URL(url).hostname, status: response.status });
     const body = await response.text();
     console.error("StoryOS Supabase request failed", {
       status: response.status,
@@ -45,12 +59,15 @@ async function supabase(path: string) {
       body,
     });
 
-    if (response.status === 401) {
-      throw new Error("SUPABASE_AUTH_401");
+    // Only fail over to another project URL for authentication/not-found style failures.
+    if (![401, 403, 404].includes(response.status)) {
+      throw new Error(`SUPABASE_HTTP_${response.status}`);
     }
-    throw new Error(`Supabase request failed: ${response.status}`);
   }
-  return response.json();
+
+  const all401 = attempts.length > 0 && attempts.every((attempt) => attempt.status === 401);
+  if (all401) throw new Error("SUPABASE_KEY_PROJECT_MISMATCH_401");
+  throw new Error(`SUPABASE_CONNECTION_FAILED_${attempts.map((a) => a.status).join("_") || "UNKNOWN"}`);
 }
 
 export default async (_req: Request) => {
@@ -64,6 +81,8 @@ export default async (_req: Request) => {
     const rows = Array.isArray(institutions) ? institutions : [];
     const sessionRows = Array.isArray(sessions) ? sessions : [];
     return Response.json({
+      ok: true,
+      apiVersion: "v21-data-1.1",
       institutions: rows,
       stats: {
         institutions: rows.length,
@@ -80,7 +99,10 @@ export default async (_req: Request) => {
       },
     });
   } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
+    return Response.json({
+      error: error instanceof Error ? error.message : "UNKNOWN_ERROR",
+      apiVersion: "v21-data-1.1",
+    }, { status: 500 });
   }
 };
 
