@@ -1,17 +1,37 @@
+function resolveSupabaseUrl() {
+  const configured = Netlify.env.get("SUPABASE_URL")?.replace(/\/$/, "");
+  if (configured) return configured;
+
+  const databaseUrl = Netlify.env.get("DATABASE_URL");
+  if (databaseUrl) {
+    try {
+      const parsed = new URL(databaseUrl);
+      const directHostMatch = parsed.hostname.match(/^db\.([a-z0-9]+)\.supabase\.co$/i);
+      if (directHostMatch?.[1]) return `https://${directHostMatch[1]}.supabase.co`;
+
+      const poolerUserMatch = decodeURIComponent(parsed.username || "").match(/^postgres\.([a-z0-9]+)$/i);
+      if (poolerUserMatch?.[1]) return `https://${poolerUserMatch[1]}.supabase.co`;
+    } catch {
+      // Fall through to the known preview project URL.
+    }
+  }
+
+  return "https://apkkochvspxjopoftpad.supabase.co";
+}
+
 async function supabase(path: string) {
-  const url = Netlify.env.get("SUPABASE_URL") || "https://apkkochvspxjopoftpad.supabase.co";
+  const url = resolveSupabaseUrl();
   const secret = Netlify.env.get("SUPABASE_SECRET_KEY") || Netlify.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!secret) throw new Error("Supabase secret key is not configured");
 
   const headers: Record<string, string> = {
     apikey: secret,
     Accept: "application/json",
+    "User-Agent": "StoryOS-V21-Netlify-Function/1.0",
   };
 
-  // Supabase's current sb_secret_* keys are opaque API keys, not JWTs.
-  // Sending them as Authorization: Bearer makes PostgREST try to parse them
-  // as a JWT and can produce PGRST303 / JWT validation errors.
-  // Legacy service_role keys are JWTs and still require the Bearer header.
+  // New sb_secret_* keys are opaque API keys and belong only in `apikey`.
+  // Legacy service_role keys are JWTs and require Authorization: Bearer.
   if (!secret.startsWith("sb_secret_") && !secret.startsWith("sb_publishable_")) {
     headers.Authorization = `Bearer ${secret}`;
   }
@@ -19,7 +39,15 @@ async function supabase(path: string) {
   const response = await fetch(`${url}/rest/v1/${path}`, { headers });
   if (!response.ok) {
     const body = await response.text();
-    console.error("StoryOS Supabase request failed", response.status, body);
+    console.error("StoryOS Supabase request failed", {
+      status: response.status,
+      projectHost: new URL(url).hostname,
+      body,
+    });
+
+    if (response.status === 401) {
+      throw new Error("SUPABASE_AUTH_401");
+    }
     throw new Error(`Supabase request failed: ${response.status}`);
   }
   return response.json();
