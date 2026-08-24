@@ -1,0 +1,47 @@
+name: V22 V21 foundation integration checks
+
+on:
+  push:
+    branches:
+      - integration/v22-v21-foundation
+
+permissions:
+  contents: read
+
+jobs:
+  validate-foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: integration/v22-v21-foundation
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify V22 runtime stayed intact
+        run: node scripts/smoke-test-v22.mjs
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Verify PostgreSQL schema generation
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/storyos
+        run: npx drizzle-kit generate --name=v22_foundation_ci
+
+      - name: Build application
+        env:
+          NETLIFY: "true"
+        run: npm run build
+
+      - name: Confirm integration branch only
+        run: test "${GITHUB_REF_NAME}" = "integration/v22-v21-foundation"
