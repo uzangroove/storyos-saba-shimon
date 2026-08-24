@@ -10,8 +10,7 @@ on:
       - public/book-viewer.html
       - public/storyos-unified-controls.js
       - public/storyos-v22-validation.json
-      - scripts/inline-storyos-v20.mjs
-      - scripts/smoke-test-v20.mjs
+      - scripts/smoke-test-v22.mjs
       - scripts/package-story-covers.mjs
       - scripts/build-verified.sh
       - package.json
@@ -30,10 +29,8 @@ jobs:
           ref: release/storyos-v22-production
           fetch-depth: 0
 
-      - name: Validate stable StoryOS core
-        run: |
-          node scripts/inline-storyos-v20.mjs
-          node scripts/smoke-test-v20.mjs
+      - name: Run non-mutating StoryOS v22 smoke test
+        run: node scripts/smoke-test-v22.mjs
 
       - name: Package and verify 30 story-hour covers
         run: |
@@ -57,15 +54,11 @@ jobs:
           grep -q '"id":"music22"' public/storyos.html
           grep -q '"expectedPrograms": 5' public/storyos-v22-validation.json
           grep -q '"expectedRuntimeItems": 88' public/storyos-v22-validation.json
-          grep -q '"שעת סיפור בהמחשה": 30' public/storyos-v22-validation.json
+          grep -q '"שעת סיפור והמחשה": 30' public/storyos-v22-validation.json
           grep -q '"כשהציור קם לתחייה": 22' public/storyos-v22-validation.json
           grep -q '"תיאטרון בובות": 5' public/storyos-v22-validation.json
           grep -q '"עולם קטן, קסם גדול": 9' public/storyos-v22-validation.json
           grep -q '"שיר נולד בגן": 22' public/storyos-v22-validation.json
-          grep -q '"totalItems": 88' public/storyos-v20-validation.json
-          grep -q '"pass": true' public/storyos-v20-validation.json
-          grep -q '"pass": true' public/storyos-v20-smoke-report.json
 
       - name: Confirm main was not targeted
-        run: |
-          test "${GITHUB_REF_NAME}" = "release/storyos-v22-production"
+        run: test "${GITHUB_REF_NAME}" = "release/storyos-v22-production"
