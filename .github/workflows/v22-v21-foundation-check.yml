@@ -4,6 +4,19 @@ on:
   push:
     branches:
       - integration/v22-v21-foundation
+  pull_request:
+    branches:
+      - release/storyos-v22-production
+    paths:
+      - .env.example
+      - db/**
+      - drizzle.config.ts
+      - package.json
+      - scripts/smoke-test-v22.mjs
+      - public/**
+      - app/**
+      - lib/**
+      - .github/workflows/v22-v21-foundation-check.yml
 
 permissions:
   contents: read
@@ -12,10 +25,9 @@ jobs:
   validate-foundation:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout integration branch
+      - name: Checkout preview commit
         uses: actions/checkout@v4
         with:
-          ref: integration/v22-v21-foundation
           fetch-depth: 0
 
       - name: Setup Node
@@ -43,5 +55,11 @@ jobs:
           NETLIFY: "true"
         run: npm run build
 
-      - name: Confirm integration branch only
-        run: test "${GITHUB_REF_NAME}" = "integration/v22-v21-foundation"
+      - name: Confirm preview target is not main
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "${{ github.base_ref }}" = "release/storyos-v22-production"
+          else
+            test "${GITHUB_REF_NAME}" = "integration/v22-v21-foundation"
+          fi
