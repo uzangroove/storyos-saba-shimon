@@ -24,13 +24,19 @@ Publish directory: `public`
 
 Production promotion must happen only after branch QA and explicit final approval.
 
-## Production content baseline
+## Production content baseline — v22 real runtime
 
-1. שעת סיפור בהמחשה — 16 active books in the current program definition. The repository still contains the older 30-book expansion dataset; do not delete it during v22. Production UI behavior must be verified before merge.
-2. כשהציור קם לתחייה — 22 meetings.
-3. תיאטרון בובות — 5 selected shows.
-4. עולם קטן, קסם גדול — 9 activities.
-5. שיר נולד בגן — 22 meetings.
+The production baseline is aligned to the actual StoryOS runtime dataset currently present on the v22 branch. No content is to be silently removed during release preparation.
+
+1. שעת סיפור בהמחשה — **30 books** in the runtime dataset.
+2. כשהציור קם לתחייה — **22 meetings**.
+3. תיאטרון בובות — **5 selected shows**.
+4. עולם קטן, קסם גדול — **9 activities**.
+5. שיר נולד בגן — **22 meetings**.
+
+Expected total runtime items: **88**.
+
+The previous draft note referring to 16 active Story Hour books is superseded for v22 release preparation because the branch runtime currently exposes all 30 books. If a future curated 16-book subset is desired, it must be implemented as an explicit filter/configuration and must not delete the 30-book master dataset.
 
 ## Preserve from tested releases
 
@@ -42,12 +48,13 @@ Production promotion must happen only after branch QA and explicit final approva
 - activity graphics/assets
 - existing Netlify static publish configuration
 - existing demo/management infrastructure that has already passed user testing
+- complete 30-book Story Hour master dataset
 
 ## Release blockers to verify
 
 - identify exactly where the tested kindergarten/drawing demo integrations live (repository vs external service/config)
 - confirm Supabase/Firebase integration points before changing production wiring
-- reconcile the active 16-book Story Hour program with the legacy 30-book repository dataset without deleting expansion content
+- verify the 30-book Story Hour runtime without deleting or hiding master content
 - run smoke tests after integration
 - verify all five activity entry points and live operation
 - verify Netlify deploy preview
@@ -59,9 +66,10 @@ Production promotion must happen only after branch QA and explicit final approva
 - [ ] each activity opens correct content
 - [ ] RTL layout intact
 - [ ] graphics load without broken assets
+- [ ] total runtime count resolves to 88 items
 
 ### Story Hour
-- [ ] active 16-book program behavior confirmed
+- [ ] 30-book program behavior confirmed
 - [ ] book detail cards work
 - [ ] live 45-minute operation works
 - [ ] PDF/presentation/book viewer works where configured
@@ -86,6 +94,7 @@ Production promotion must happen only after branch QA and explicit final approva
 - [ ] live operation controls work
 
 ### Deployment
+- [ ] visible shell identifies itself as StoryOS v22
 - [ ] Netlify branch deploy ready
 - [ ] no console-blocking errors
 - [ ] main remains untouched until approval
