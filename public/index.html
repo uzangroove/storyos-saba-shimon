@@ -27,7 +27,18 @@
     const storyosFrame = document.getElementById('storyosFrame');
     storyosFrame.addEventListener('load', () => {
       const doc = storyosFrame.contentDocument;
-      if (!doc || doc.getElementById('v22UnifiedControlsLoader')) return;
+      if (!doc) return;
+
+      // v22 release identity: keep the proven v20 core intact while exposing the real production version.
+      doc.title = 'Story OS · סבא שמעון · גרסה 22';
+      const brandSubtitle = doc.querySelector('.brand p');
+      if (brandSubtitle) {
+        brandSubtitle.textContent = brandSubtitle.textContent
+          .replace(/גרסה\s*20(?:\.\d+)?/g, 'גרסה 22')
+          .replace(/ארבעה מסלולי פעילות/g, 'חמישה מסלולי פעילות');
+      }
+
+      if (doc.getElementById('v22UnifiedControlsLoader')) return;
       const script = doc.createElement('script');
       script.id = 'v22UnifiedControlsLoader';
       script.src = '/storyos-unified-controls.js?v=22.0.0';
