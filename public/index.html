@@ -10,26 +10,16 @@
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f4ed}
     #storyosFrame{display:block;width:100%;height:100dvh;border:0;background:#f8f4ed}
-    #scannedBookViewerBtn{
-      position:fixed;top:18px;left:18px;z-index:9999;border:1px solid #dfd7ca;
-      background:linear-gradient(135deg,#6c50e0,#7d67ed);color:#fff;border-radius:14px;
-      padding:11px 16px;box-shadow:0 5px 16px rgba(37,43,62,.18);
-      font:700 16px Arial,"Noto Sans Hebrew",sans-serif;cursor:pointer;white-space:nowrap
-    }
-    #scannedBookViewerBtn:hover{filter:brightness(1.04)}
-    @media(max-width:760px){#scannedBookViewerBtn{top:auto;bottom:16px;left:16px;font-size:14px;padding:10px 13px}}
   </style>
 </head>
 <body>
-  <button id="scannedBookViewerBtn" type="button" title="פתיחת נגן הספר הסרוק של איילת מטיילת">📖 נגן ספר סרוק</button>
-  <iframe id="storyosFrame" src="/storyos.html?v=22.0.0" title="Story OS · סבא שמעון · גרסה 22" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=22.1.0" title="Story OS · סבא שמעון · גרסה 22" allow="fullscreen"></iframe>
   <script>
     const storyosFrame = document.getElementById('storyosFrame');
     storyosFrame.addEventListener('load', () => {
       const doc = storyosFrame.contentDocument;
       if (!doc) return;
 
-      // v22 release identity: keep the proven v20 core intact while exposing the real production version.
       doc.title = 'Story OS · סבא שמעון · גרסה 22';
       const brandSubtitle = doc.querySelector('.brand p');
       if (brandSubtitle) {
@@ -38,15 +28,19 @@
           .replace(/ארבעה מסלולי פעילות/g, 'חמישה מסלולי פעילות');
       }
 
-      if (doc.getElementById('v22UnifiedControlsLoader')) return;
-      const script = doc.createElement('script');
-      script.id = 'v22UnifiedControlsLoader';
-      script.src = '/storyos-unified-controls.js?v=22.0.0';
-      doc.body.appendChild(script);
-    });
+      if (!doc.getElementById('v22UnifiedControlsLoader')) {
+        const controls = doc.createElement('script');
+        controls.id = 'v22UnifiedControlsLoader';
+        controls.src = '/storyos-unified-controls.js?v=22.1.0';
+        doc.body.appendChild(controls);
+      }
 
-    document.getElementById('scannedBookViewerBtn').addEventListener('click', () => {
-      window.location.href = '/book-viewer.html?v=22.0.0';
+      if (!doc.getElementById('v22ProductionLoader')) {
+        const production = doc.createElement('script');
+        production.id = 'v22ProductionLoader';
+        production.src = '/storyos-v22-production.js?v=22.1.0';
+        doc.body.appendChild(production);
+      }
     });
   </script>
 </body>
