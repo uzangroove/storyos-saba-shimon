@@ -1,0 +1,25 @@
+{
+  "release": "22.0.0",
+  "branch": "release/storyos-v22-production",
+  "expectedPrograms": 5,
+  "expectedRuntimeItems": 88,
+  "expectedCounts": {
+    "שעת סיפור והמחשה": 30,
+    "כשהציור קם לתחייה": 22,
+    "תיאטרון בובות": 5,
+    "עולם קטן, קסם גדול": 9,
+    "שיר נולד בגן": 22
+  },
+  "requiredCapabilities": [
+    "five-program-home",
+    "live-operation",
+    "rtl",
+    "pdf-and-image-decks",
+    "persistent-story-decks",
+    "scanned-book-viewer",
+    "unified-controls",
+    "story-hour-csv-export"
+  ],
+  "productionPromotionRequiresApproval": true,
+  "generatedAt": "2026-08-24"
+}
