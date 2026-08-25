@@ -1,7 +1,11 @@
 (() => {
   const $=s=>document.querySelector(s);
-  const VERSION='22.10.0';
+  const VERSION='22.10.1';
   let dragPct=50;
+  let rootActivated=false;
+  let rootObserver=null;
+  let compareObserver=null;
+  let scheduled=false;
 
   function addStyles(){
     if($('#v2210ViewerStyle'))return;
@@ -11,14 +15,11 @@
       body.v2210-child-view main{padding:0!important;max-width:none!important;width:100%!important;height:100dvh!important;overflow:hidden!important}
       body.v2210-child-view #detail{padding:0!important;margin:0!important;max-width:none!important;width:100%!important;height:100dvh!important;overflow:hidden!important}
       body.v2210-child-view #detail>.back,body.v2210-child-view #detail>.hero,body.v2210-child-view #detail>.panel:not(#v229ChildViewer){display:none!important}
-
       #v229ChildViewer.v2210-layout{position:fixed!important;inset:0!important;z-index:999999;background:#f8f4ed!important;margin:0!important;border-radius:0!important;padding:10px!important;display:grid!important;grid-template-columns:168px minmax(0,1fr)!important;grid-template-rows:auto auto minmax(0,1fr) auto!important;gap:8px!important;overflow:hidden!important;box-shadow:none!important}
       #v229ChildViewer.v2210-layout>.v229-viewer-head{grid-column:2!important;margin:0!important;min-height:0!important}
       #v229ChildViewer.v2210-layout>.v229-viewer-head:first-child{grid-row:1!important}
       #v229ChildViewer.v2210-layout>.v229-viewer-head:nth-of-type(2){grid-row:2!important;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 10px}
-      #v229ChildViewer.v2210-layout>.v229-source-note{display:none!important}
-      #v229ChildViewer.v2210-layout #v229OverviewToggle{display:none!important}
-      #v229ChildViewer.v2210-layout #v229Overview{display:none!important}
+      #v229ChildViewer.v2210-layout #v229OverviewToggle,#v229ChildViewer.v2210-layout #v229Overview{display:none!important}
       #v229ChildViewer.v2210-layout #v229ChildBanner{grid-column:1!important;grid-row:1 / 5!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:6px!important;overflow-y:auto!important;overflow-x:hidden!important;padding:8px!important;border-radius:14px!important;background:#f4efff!important;scrollbar-width:thin}
       #v229ChildViewer.v2210-layout .v229-child-btn{width:100%!important;text-align:right!important;white-space:nowrap!important;padding:7px 9px!important;border-radius:10px!important;font-size:.9rem!important}
       #v229ChildViewer.v2210-layout .v229-main-grid{grid-column:2!important;grid-row:3!important;min-height:0!important;height:100%!important;display:grid!important;grid-template-columns:minmax(0,1.22fr) minmax(0,1fr)!important;gap:8px!important;overflow:hidden!important}
@@ -48,6 +49,7 @@
   function exitViewer(){
     document.body.classList.remove('v2210-child-view');
     const root=$('#v229ChildViewer');if(root)root.classList.remove('v2210-layout');
+    compareObserver?.disconnect();compareObserver=null;rootActivated=false;
     if(typeof window.goHome==='function')window.goHome();
   }
 
@@ -63,11 +65,11 @@
 
   function enhanceCompare(){
     const box=$('#v229CompareBox'),wrap=$('#v229AfterWrap');if(!box||!wrap)return;
-    const afterImg=wrap.querySelector('img');if(afterImg?.src){wrap.style.backgroundImage=`url("${afterImg.src.replace(/"/g,'%22')}")`;}
+    const afterImg=wrap.querySelector('img');if(afterImg?.src&&wrap.dataset.v2210Bg!==afterImg.src){wrap.dataset.v2210Bg=afterImg.src;wrap.style.backgroundImage=`url("${afterImg.src.replace(/"/g,'%22')}")`;}
     let line=$('#v2210Divider');if(!line){line=document.createElement('div');line.id='v2210Divider';line.className='v2210-divider';box.appendChild(line)}
     if(box.dataset.v2210Drag!=='1'){
       box.dataset.v2210Drag='1';
-      const move=e=>{const r=box.getBoundingClientRect();const x=(e.clientX-r.left)/Math.max(1,r.width)*100;setComparison(x)};
+      const move=e=>{const r=box.getBoundingClientRect();setComparison((e.clientX-r.left)/Math.max(1,r.width)*100)};
       box.addEventListener('pointerdown',e=>{box.setPointerCapture?.(e.pointerId);move(e)});
       box.addEventListener('pointermove',e=>{if(e.buttons||box.hasPointerCapture?.(e.pointerId))move(e)});
       box.addEventListener('dblclick',()=>setComparison(50));
@@ -75,13 +77,37 @@
     setComparison(dragPct);
   }
 
-  function activate(){
-    const root=$('#v229ChildViewer');if(!root)return;
-    addStyles();document.body.classList.add('v2210-child-view');root.classList.add('v2210-layout');ensureCloseButton(root);enhanceCompare();
+  function scheduleEnhance(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;enhanceCompare()})}
+
+  function watchCompare(root){
+    compareObserver?.disconnect();
+    const host=root.querySelector('#v229CompareHost');if(!host)return;
+    compareObserver=new MutationObserver(scheduleEnhance);
+    compareObserver.observe(host,{childList:true,subtree:true});
+    scheduleEnhance();
   }
 
-  const observer=new MutationObserver(()=>{if($('#v229ChildViewer')){activate();enhanceCompare();}});
-  observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','src','style']});
-  setTimeout(activate,500);
+  function activate(){
+    const root=$('#v229ChildViewer');if(!root)return false;
+    addStyles();
+    if(!rootActivated){
+      rootActivated=true;
+      document.body.classList.add('v2210-child-view');
+      root.classList.add('v2210-layout');
+      ensureCloseButton(root);
+      watchCompare(root);
+      root.addEventListener('click',e=>{if(e.target.closest?.('[data-child-index],#v229PrevChild,#v229NextChild'))setTimeout(scheduleEnhance,120)},{passive:true});
+    }
+    scheduleEnhance();
+    return true;
+  }
+
+  function watchForRoot(){
+    if(activate())return;
+    rootObserver=new MutationObserver(()=>{if(activate()){rootObserver?.disconnect();rootObserver=null}});
+    rootObserver.observe(document.body,{childList:true,subtree:true});
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchForRoot,{once:true});else watchForRoot();
   window.StoryOSViewerLayout={version:VERSION,activate,exit:exitViewer};
 })();
