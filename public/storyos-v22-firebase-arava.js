@@ -2,30 +2,98 @@
   const ADMIN_KEY='storyos_v22_admin_v1';
   const BUCKET='saba-ganim-arava.firebasestorage.app';
   const ARAVA=['אבנר','הודיה','דורי','גיא','בן','אלי','מיכאל','לני','ליאב','יאיר','תומי','זוהר','רון','רום','צופיה','עומרי','עומר ב','נלי','תמר','תום','שיר','רפאל'];
+  const ALIASES={
+    'אבנר':['אבנר','avner','avnar','abner'],
+    'הודיה':['הודיה','hodiya','hodaya','hodia'],
+    'דורי':['דורי','dori','dory'],
+    'גיא':['גיא','guy','gai'],
+    'בן':['בן','ben'],
+    'אלי':['אלי','eli','ely','eylon','alon'],
+    'מיכאל':['מיכאל','michael','michal','mikael'],
+    'לני':['לני','leni','lenny','lani'],
+    'ליאב':['ליאב','liav'],
+    'יאיר':['יאיר','yair','yairi'],
+    'תומי':['תומי','tomi','tommy'],
+    'זוהר':['זוהר','zohar','zoharh'],
+    'רון':['רון','ron'],
+    'רום':['רום','rom'],
+    'צופיה':['צופיה','zofia','sofia','tsofia','tsufia'],
+    'עומרי':['עומרי','omri'],
+    'עומר ב':['עומרב','omerb','omer-b','omer_b','omer2'],
+    'נלי':['נלי','neli','nelly'],
+    'תמר':['תמר','tamar'],
+    'תום':['תום','tom'],
+    'שיר':['שיר','shir'],
+    'רפאל':['רפאל','rafael','refael','raphael']
+  };
   const $=s=>document.querySelector(s);
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function readAdmin(){try{const d=JSON.parse(localStorage.getItem(ADMIN_KEY)||'{}');return {gardens:Array.isArray(d.gardens)?d.gardens:[],teachers:Array.isArray(d.teachers)?d.teachers:[],events:Array.isArray(d.events)?d.events:[]}}catch(_){return {gardens:[],teachers:[],events:[]}}}
   function saveAdmin(d){localStorage.setItem(ADMIN_KEY,JSON.stringify(d))}
   function ensureArava(){const d=readAdmin();let g=d.gardens.find(x=>x.name==='גן ערבה'||x.slug==='gan-arava');if(!g){g={id:'gan-arava',name:'גן ערבה',slug:'gan-arava',area:'כרמיאל',childrenCount:ARAVA.length,children:[...ARAVA],projectId:'saba-ganim-arava',storageBucket:BUCKET,notes:'פעילות מקור · כשהציור קם לתחייה'};d.gardens.unshift(g)}else{g.childrenCount=ARAVA.length;if(!Array.isArray(g.children)||!g.children.length)g.children=[...ARAVA];g.projectId=g.projectId||'saba-ganim-arava';g.storageBucket=g.storageBucket||BUCKET}saveAdmin(d);return g}
   ensureArava();
-  function norm(s){return String(s||'').toLowerCase().replace(/[\s_\-–—()]+/g,'').replace(/[^\p{L}\p{N}]/gu,'')}
-  function classify(name){const n=String(name).toLowerCase();if(/\.(glb|gltf)(\?|$)/i.test(n)||/(model|מודל)/i.test(n))return'model';if(/\.(mp4|webm|mov)(\?|$)/i.test(n)||/(video|movie|animation|סרט)/i.test(n))return'video';if(/(after|3d|render|תלת|אחרי)/i.test(n))return'after';if(/(before|original|drawing|scan|ציור|מקור|לפני)/i.test(n))return'original';if(/\.(png|jpe?g|webp)(\?|$)/i.test(n))return'original';return null}
-  function matchChild(path,child){const p=norm(decodeURIComponent(path)),c=norm(child);return c&&p.includes(c)}
-  function findAsset(items,child,type){const candidates=items.filter(it=>matchChild(it.fullPath||it.name,child)).map(it=>({it,type:classify(it.fullPath||it.name)})).filter(x=>x.type===type);return candidates[0]?.it||null}
 
-  async function waitFirebase(){for(let i=0;i<60;i++){if(window.StoryOSFirebase)return window.StoryOSFirebase;if(i===0)await new Promise(r=>setTimeout(r,120));else await new Promise(r=>setTimeout(r,80));}throw new Error('Firebase client לא נטען');}
+  function norm(s){return String(s||'').toLowerCase().replace(/[\s_\-–—()]+/g,'').replace(/[^\p{L}\p{N}]/gu,'')}
+  function pathTokens(path){return decodeURIComponent(String(path||'')).toLowerCase().split(/[\\/._\-–—\s()]+/).map(norm).filter(Boolean)}
+  function classify(name){
+    const n=decodeURIComponent(String(name||'')).toLowerCase();
+    if(/\.(glb|gltf)(\?|$)/i.test(n)||/(model|מודל)/i.test(n))return'model';
+    if(/\.(mp4|webm|mov)(\?|$)/i.test(n)||/(video|movie|animation|סרט)/i.test(n))return'video';
+    if(/(after|3d|render|תלת|אחרי)/i.test(n))return'after';
+    if(/(before|original|drawing|scan|ציור|מקור|לפני)/i.test(n))return'original';
+    if(/\.jpe?g(\?|$)/i.test(n))return'original';
+    if(/\.(png|webp)(\?|$)/i.test(n))return'after';
+    return null;
+  }
+  function matchChild(path,child){
+    const raw=decodeURIComponent(String(path||'')).toLowerCase();
+    const tokens=pathTokens(raw);
+    const aliases=(ALIASES[child]||[child]).map(norm).filter(Boolean);
+    for(const a of aliases){if(tokens.includes(a))return true;}
+    const compact=norm(raw);
+    return aliases.some(a=>a.length>=4&&compact.includes(a));
+  }
+  function findAsset(items,child,type){
+    const candidates=items.filter(it=>matchChild(it.fullPath||it.name,child)).map(it=>({it,type:classify(it.fullPath||it.name)})).filter(x=>x.type===type);
+    return candidates[0]?.it||null;
+  }
+  function uniqueItems(groups){const map=new Map();for(const item of groups.flat()){const key=item.fullPath||item.name;if(key&&!map.has(key))map.set(key,item)}return [...map.values()]}
+
+  async function waitFirebase(){for(let i=0;i<60;i++){if(window.StoryOSFirebase)return window.StoryOSFirebase;await new Promise(r=>setTimeout(r,i===0?120:80));}throw new Error('Firebase client לא נטען');}
   async function syncFirebase(button){
     button.disabled=true;const old=button.textContent;button.textContent='מתחבר ומסנכרן…';
     try{
       const fb=await waitFirebase();
       const user=await fb.currentUser();if(!user)await fb.signInWithPrompt();
-      let items=[];
-      try{items=await fb.listFiles('gardens/gan-arava');}catch(e){items=await fb.listFiles('');}
+      const [gardenItems,legacyMedia]=await Promise.all([
+        fb.listFiles('gardens/gan-arava').catch(()=>[]),
+        fb.listFiles('MEDIA').catch(()=>[])
+      ]);
+      let items=uniqueItems([gardenItems,legacyMedia]);
+      if(!items.length)items=await fb.listFiles('');
       const detail=$('#detail');if(!detail)throw new Error('מסך הפעילות לא פתוח');
-      const cards=[...detail.querySelectorAll('#v22ArtChildren article')];let loaded=0;
-      for(const card of cards){const child=card.querySelector('h3')?.textContent?.trim();if(!child)continue;for(const type of ['original','after','video','model']){const input=card.querySelector(`[data-type="${type}"]`);const holder=input?.closest('.panel')?.querySelector('[data-preview]');if(!holder)continue;const item=findAsset(items,child,type);if(!item)continue;let mediaUrl='';try{mediaUrl=await fb.getUrl(item.ref||item.fullPath||item.name);}catch(_){}if(type==='video'&&mediaUrl)holder.innerHTML=`<video controls playsinline style="width:100%;max-height:190px;border-radius:10px" src="${mediaUrl}"></video>`;else if(type==='model'&&mediaUrl)holder.innerHTML=`<div style="display:grid;gap:6px"><span class="v22-badge active">✓ מודל קיים ב-Firebase</span><a class="btn small" target="_blank" rel="noopener" href="${mediaUrl}">פתח מודל</a></div>`;else if(mediaUrl)holder.innerHTML=`<img src="${mediaUrl}" alt="${esc(child)}" style="width:100%;max-height:190px;object-fit:contain;border-radius:10px;background:#f7f4ec">`;else continue;loaded++;}}
-      const info=await fb.tokenInfo().catch(()=>null);const note=$('#v224FirebaseStatus');if(note)note.innerHTML=`✓ מחובר כ-${esc(info?.email||'משתמש Firebase')} · נמצאו ${items.length} קבצים והותאמו ${loaded} תוצרים.`;
-    }catch(err){const note=$('#v224FirebaseStatus');if(note)note.innerHTML=`לא ניתן לקרוא את המדיה מ-Firebase: ${esc(err.code||err.message||err)}. אם ההתחברות הצליחה אבל עדיין מתקבל permission-denied, נעדכן את Rules לפי המשתמש המחובר.`}
+      const cards=[...detail.querySelectorAll('#v22ArtChildren article')];let loaded=0,childrenWithMedia=0;const unmatched=[];
+      for(const card of cards){
+        const child=card.querySelector('h3')?.textContent?.trim();if(!child)continue;
+        let childLoaded=0;
+        for(const type of ['original','after','video','model']){
+          const input=card.querySelector(`[data-type="${type}"]`);const holder=input?.closest('.panel')?.querySelector('[data-preview]');if(!holder)continue;
+          const item=findAsset(items,child,type);if(!item)continue;
+          let mediaUrl='';try{mediaUrl=await fb.getUrl(item.ref||item.fullPath||item.name);}catch(_){}
+          if(type==='video'&&mediaUrl)holder.innerHTML=`<video controls playsinline style="width:100%;max-height:190px;border-radius:10px" src="${mediaUrl}"></video>`;
+          else if(type==='model'&&mediaUrl)holder.innerHTML=`<div style="display:grid;gap:6px"><span class="v22-badge active">✓ מודל קיים ב-Firebase</span><a class="btn small" target="_blank" rel="noopener" href="${mediaUrl}">פתח מודל</a></div>`;
+          else if(mediaUrl)holder.innerHTML=`<img src="${mediaUrl}" alt="${esc(child)}" style="width:100%;max-height:190px;object-fit:contain;border-radius:10px;background:#f7f4ec">`;
+          else continue;
+          loaded++;childLoaded++;
+        }
+        if(childLoaded)childrenWithMedia++;else unmatched.push(child);
+      }
+      const info=await fb.tokenInfo().catch(()=>null);const note=$('#v224FirebaseStatus');
+      if(note){
+        const sourceText=`${gardenItems.length} בתיקיית gardens/gan-arava + ${legacyMedia.length} בתיקיית MEDIA`;
+        note.innerHTML=`✓ מחובר כ-${esc(info?.email||'משתמש Firebase')} · נמצאו ${items.length} קבצים (${sourceText}) · הותאמו ${loaded} תוצרים ל-${childrenWithMedia} ילדים.${unmatched.length?` טרם זוהה תוכן עבור: ${esc(unmatched.join(', '))}.`:''}`;
+      }
+    }catch(err){const note=$('#v224FirebaseStatus');if(note)note.innerHTML=`לא ניתן לקרוא את המדיה מ-Firebase: ${esc(err.code||err.message||err)}.`}
     finally{button.disabled=false;button.textContent=old}
   }
 
