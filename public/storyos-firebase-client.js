@@ -1,6 +1,6 @@
 (() => {
   const firebaseConfig = {
-    apiKey: 'AIzaSyDUPykornyuWarT0CB0nuejYCSr54wVIPE',
+    apiKey: 'AIzaSyDUPvkornyuWarT0CBOnueiYCSr54wVTPE',
     authDomain: 'saba-ganim-arava.firebaseapp.com',
     projectId: 'saba-ganim-arava',
     storageBucket: 'saba-ganim-arava.firebasestorage.app',
@@ -62,7 +62,7 @@
   async function getUrl(pathOrRef){ await ready; if(!await currentUser())await signInWithPrompt(); const r=typeof pathOrRef==='string'?state.modules.storageMod.ref(state.storage,pathOrRef):pathOrRef; return state.modules.storageMod.getDownloadURL(r); }
   async function upload(path,file,metadata={}){ await ready; if(!await currentUser())await signInWithPrompt(); const r=state.modules.storageMod.ref(state.storage,path); const snap=await state.modules.storageMod.uploadBytes(r,file,metadata); return {snapshot:snap,url:await state.modules.storageMod.getDownloadURL(snap.ref)}; }
 
-  const api={version:'22.8.0',config:{...firebaseConfig,apiKey:'[client-configured]'},ready:ensureReady,currentUser,tokenInfo,signIn,signInWithPrompt,signOut,listFiles,getUrl,upload};
+  const api={version:'22.8.1',config:{...firebaseConfig,apiKey:'[client-configured]'},ready:ensureReady,currentUser,tokenInfo,signIn,signInWithPrompt,signOut,listFiles,getUrl,upload};
   window.StoryOSFirebase=api;
   boot();
 })();
