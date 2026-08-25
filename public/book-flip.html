@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>StoryOS · ספר בפליפ</title>
+<style>
+:root{--bg:#17191f;--paper:#fffdf8;--ink:#1d2940;--line:#d9d3c9;--primary:#6c50e0;--accent:#f09a29}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);font-family:Arial,"Noto Sans Hebrew",sans-serif;overflow:hidden}button,input{font:inherit}button{cursor:pointer}
+.shell{height:100dvh;display:grid;grid-template-rows:auto 1fr auto;color:#fff}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#0f1116;border-bottom:1px solid #2a2d36}.top h1{font-size:1.15rem;margin:0}.top .actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #454957;background:#222632;color:#fff;border-radius:11px;padding:8px 11px}.btn.primary{background:var(--primary);border-color:#7d67ed}.btn.accent{background:var(--accent);border-color:#ffb752}.stage{display:grid;place-items:center;min-height:0;padding:12px;perspective:2200px}.book{position:relative;width:min(94vw,1500px);height:min(78vh,900px);display:grid;grid-template-columns:1fr 1fr;gap:0;filter:drop-shadow(0 24px 45px rgba(0,0,0,.45));transform-style:preserve-3d}.page{position:relative;background:#eee7dc;overflow:hidden;border:1px solid #bbb2a4;display:grid;place-items:center}.page.left{border-radius:18px 2px 2px 18px;box-shadow:inset -24px 0 28px -26px rgba(0,0,0,.55)}.page.right{border-radius:2px 18px 18px 2px;box-shadow:inset 24px 0 28px -26px rgba(0,0,0,.55)}.page img,.page iframe,.page embed{width:100%;height:100%;object-fit:contain;border:0;background:#fff}.page.empty:after{content:' ';position:absolute;inset:0;background:linear-gradient(135deg,#f3ede4,#fff)}.spine{position:absolute;z-index:5;top:0;bottom:0;left:50%;width:18px;transform:translateX(-50%);background:linear-gradient(90deg,rgba(0,0,0,.16),rgba(255,255,255,.12),rgba(0,0,0,.2));pointer-events:none}.turning-next{animation:turnNext .42s ease}.turning-prev{animation:turnPrev .42s ease}@keyframes turnNext{0%{transform:rotateY(0)}45%{transform:rotateY(-8deg)}100%{transform:rotateY(0)}}@keyframes turnPrev{0%{transform:rotateY(0)}45%{transform:rotateY(8deg)}100%{transform:rotateY(0)}}
+.bottom{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:#0f1116;border-top:1px solid #2a2d36}.page-label{min-width:170px;text-align:center;font-weight:700}.jump{display:flex;gap:6px;align-items:center}.jump input{width:74px;border:1px solid #454957;background:#222632;color:#fff;border-radius:9px;padding:7px;text-align:center}.status{color:#b9c0d0;font-size:.9rem}.error{max-width:760px;padding:24px;background:#fff;color:#8c3434;border-radius:18px;line-height:1.6;text-align:center}.hidden{display:none!important}
+@media(max-width:800px){.book{width:96vw;height:72vh}.top{align-items:flex-start}.top,.bottom{font-size:.9rem}.btn{padding:7px 9px}.page-label{min-width:120px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top"><div><h1 id="title">📖 ספר בפליפ</h1><div id="status" class="status">טוען את הספר השמור…</div></div><div class="actions"><button class="btn" id="backBtn">↩ חזרה להפעלה</button><button class="btn primary" id="fullscreenBtn">⛶ מסך מלא</button></div></div>
+  <main class="stage"><div id="book" class="book hidden"><section id="leftPage" class="page left"></section><section id="rightPage" class="page right"></section><div class="spine"></div></div><div id="error" class="error hidden"></div></main>
+  <div class="bottom"><button class="btn" id="prevBtn">→ זוג קודם</button><button class="btn" id="firstBtn">עמוד ראשון</button><span id="pageLabel" class="page-label">—</span><button class="btn accent" id="nextBtn">זוג הבא ←</button><div class="jump"><label>קפיצה לעמוד <input id="jumpInput" type="number" min="1"></label><button class="btn" id="jumpBtn">עבור</button></div></div>
+</div>
+<script>
+(() => {
+  const params=new URLSearchParams(location.search);const storyId=(params.get('story')||'s15').replace(/[^a-zA-Z0-9_-]/g,'');const bookTitle=(params.get('title')||'אילת מטיילת').slice(0,120);
+  const title=document.getElementById('title'),status=document.getElementById('status'),bookEl=document.getElementById('book'),errorEl=document.getElementById('error'),left=document.getElementById('leftPage'),right=document.getElementById('rightPage'),label=document.getElementById('pageLabel'),jumpInput=document.getElementById('jumpInput');
+  title.textContent='📖 '+bookTitle+' · פליפ';document.title='StoryOS · '+bookTitle+' · פליפ';
+  let deck=null,spread=0,urls=[];
+  function revoke(){urls.forEach(u=>{try{URL.revokeObjectURL(u)}catch(_){}});urls=[]}
+  function openDb(name,version,upgrade){return new Promise((resolve,reject)=>{const r=indexedDB.open(name,version);if(upgrade)r.onupgradeneeded=()=>upgrade(r.result);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+  async function getDeckRecord(){try{const db=await openDb('StoryOS_SabaShimon_Decks',1,db=>{if(!db.objectStoreNames.contains('decks'))db.createObjectStore('decks',{keyPath:'storyId'})});return await new Promise((resolve,reject)=>{const tx=db.transaction('decks','readonly'),r=tx.objectStore('decks').get(storyId);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)})}catch(_){return null}}
+  async function getScannedRecord(){try{const db=await openDb('storyos-scanned-books',1,db=>{if(!db.objectStoreNames.contains('books'))db.createObjectStore('books',{keyPath:'id'})});const ids=[storyId,storyId==='s15'?'ayelet-metayelet':null].filter(Boolean);for(const id of ids){const rec=await new Promise((resolve,reject)=>{const tx=db.transaction('books','readonly'),r=tx.objectStore('books').get(id);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)});if(rec)return rec}return null}catch(_){return null}}
+  async function load(){
+    const d=await getDeckRecord();
+    if(d?.kind==='images'&&Array.isArray(d.slides)&&d.slides.length){deck={kind:'images',pages:d.slides.map(x=>x.blob),count:d.slides.length};return}
+    if(d?.kind==='pdf'&&d.pdfBlob){deck={kind:'pdf',blob:d.pdfBlob,count:Math.max(1,Number(d.pageCount)||1)};return}
+    const s=await getScannedRecord();
+    if(s){const pages=[];if(s.coverBlob)pages.push(s.coverBlob);for(const p of s.pages||[])if(p.imageBlob)pages.push(p.imageBlob);if(pages.length){deck={kind:'images',pages,count:pages.length};return}}
+    throw new Error('הספר קיים במערכת ההפעלה, אבל לא נמצא מאגר דפים שממנו נגן הפליפ יכול לבנות זוגות עמודים. פתח את הספר במצב ההפעלה ושמור/טען את העמודים פעם אחת.');
+  }
+  function makeUrl(blob){const u=URL.createObjectURL(blob);urls.push(u);return u}
+  function pageContent(index){
+    if(index<0||index>=deck.count)return '';
+    if(deck.kind==='images')return `<img alt="עמוד ${index+1}" src="${makeUrl(deck.pages[index])}">`;
+    const base=makeUrl(deck.blob);return `<embed type="application/pdf" src="${base}#page=${index+1}&zoom=page-fit&toolbar=0&navpanes=0&scrollbar=0">`;
+  }
+  function render(dir=''){
+    revoke();const first=spread*2,second=first+1;left.innerHTML=pageContent(first);right.innerHTML=pageContent(second);left.classList.toggle('empty',first>=deck.count);right.classList.toggle('empty',second>=deck.count);bookEl.classList.remove('turning-next','turning-prev');void bookEl.offsetWidth;if(dir)bookEl.classList.add(dir==='next'?'turning-next':'turning-prev');
+    const shown=[];if(first<deck.count)shown.push(first+1);if(second<deck.count)shown.push(second+1);label.textContent=shown.length===2?`עמודים ${shown[0]}–${shown[1]} מתוך ${deck.count}`:shown.length?`עמוד ${shown[0]} מתוך ${deck.count}`:'—';jumpInput.max=deck.count;document.getElementById('prevBtn').disabled=spread<=0;document.getElementById('nextBtn').disabled=second>=deck.count;status.textContent=(deck.kind==='images'?'תמונות שמורות':'PDF שמור')+' · תצוגת שני עמודים';
+  }
+  function goSpread(n,dir){const max=Math.max(0,Math.ceil(deck.count/2)-1);spread=Math.max(0,Math.min(max,n));render(dir)}
+  document.getElementById('prevBtn').onclick=()=>goSpread(spread-1,'prev');document.getElementById('nextBtn').onclick=()=>goSpread(spread+1,'next');document.getElementById('firstBtn').onclick=()=>goSpread(0,'prev');document.getElementById('jumpBtn').onclick=()=>{const n=Math.max(1,Number(jumpInput.value)||1);goSpread(Math.floor((n-1)/2),n-1>spread*2?'next':'prev')};jumpInput.onkeydown=e=>{if(e.key==='Enter')document.getElementById('jumpBtn').click()};
+  document.getElementById('fullscreenBtn').onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(_){}};
+  document.getElementById('backBtn').onclick=()=>{history.length>1?history.back():location.href='/'};
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')document.getElementById('prevBtn').click();if(e.key==='ArrowLeft')document.getElementById('nextBtn').click();if(e.key==='Home')document.getElementById('firstBtn').click()});window.addEventListener('beforeunload',revoke);
+  (async()=>{try{await load();bookEl.classList.remove('hidden');render()}catch(err){status.textContent='לא ניתן לפתוח פליפ';errorEl.textContent=err.message||String(err);errorEl.classList.remove('hidden')}})();
+})();
+</script>
+</body>
+</html>
