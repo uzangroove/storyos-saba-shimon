@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-  <iframe id="storyosFrame" src="/storyos.html?v=22.3.0" title="Story OS · סבא שמעון · גרסה 22" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=22.4.0" title="Story OS · סבא שמעון · גרסה 22" allow="fullscreen"></iframe>
   <script>
     const storyosFrame = document.getElementById('storyosFrame');
     storyosFrame.addEventListener('load', () => {
@@ -28,26 +28,19 @@
           .replace(/ארבעה מסלולי פעילות/g, 'חמישה מסלולי פעילות');
       }
 
-      if (!doc.getElementById('v22UnifiedControlsLoader')) {
-        const controls = doc.createElement('script');
-        controls.id = 'v22UnifiedControlsLoader';
-        controls.src = '/storyos-unified-controls.js?v=22.3.0';
-        doc.body.appendChild(controls);
-      }
+      const loadScript = (id, src) => {
+        if (doc.getElementById(id)) return;
+        const s = doc.createElement('script');
+        s.id = id;
+        s.src = src;
+        doc.body.appendChild(s);
+      };
 
-      if (!doc.getElementById('v22ProductionLoader')) {
-        const production = doc.createElement('script');
-        production.id = 'v22ProductionLoader';
-        production.src = '/storyos-v22-production.js?v=22.3.0';
-        doc.body.appendChild(production);
-      }
-
-      if (!doc.getElementById('v22AravaLoader')) {
-        const arava = doc.createElement('script');
-        arava.id = 'v22AravaLoader';
-        arava.src = '/storyos-v22-arava.js?v=22.3.0';
-        doc.body.appendChild(arava);
-      }
+      loadScript('v22UnifiedControlsLoader','/storyos-unified-controls.js?v=22.4.0');
+      loadScript('v22ProductionLoader','/storyos-v22-production.js?v=22.4.0');
+      loadScript('v22AravaLoader','/storyos-v22-arava.js?v=22.4.0');
+      loadScript('v22FirebaseAravaLoader','/storyos-v22-firebase-arava.js?v=22.4.0');
+      loadScript('v22FlipFixLoader','/storyos-v22-flip-fix.js?v=22.4.0');
     });
   </script>
 </body>
