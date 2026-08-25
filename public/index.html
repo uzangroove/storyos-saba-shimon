@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-  <iframe id="storyosFrame" src="/storyos.html?v=22.1.0" title="Story OS · סבא שמעון · גרסה 22" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=22.2.0" title="Story OS · סבא שמעון · גרסה 22" allow="fullscreen"></iframe>
   <script>
     const storyosFrame = document.getElementById('storyosFrame');
     storyosFrame.addEventListener('load', () => {
@@ -31,14 +31,14 @@
       if (!doc.getElementById('v22UnifiedControlsLoader')) {
         const controls = doc.createElement('script');
         controls.id = 'v22UnifiedControlsLoader';
-        controls.src = '/storyos-unified-controls.js?v=22.1.0';
+        controls.src = '/storyos-unified-controls.js?v=22.2.0';
         doc.body.appendChild(controls);
       }
 
       if (!doc.getElementById('v22ProductionLoader')) {
         const production = doc.createElement('script');
         production.id = 'v22ProductionLoader';
-        production.src = '/storyos-v22-production.js?v=22.1.0';
+        production.src = '/storyos-v22-production.js?v=22.2.0';
         doc.body.appendChild(production);
       }
     });
