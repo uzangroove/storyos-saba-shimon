@@ -1,10 +1,10 @@
 (() => {
-  const VERSION='22.28.0';
+  const VERSION='22.33.0';
   const DRAW='כשהציור קם לתחייה';
   const PUPPET='תיאטרון בובות';
   const LITTLE='עולם קטן, קסם גדול';
   const MUSIC='שיר נולד בגן';
-  const MEETING_COUNT=22;
+  const MEETING_COUNT=37;
   const CONTENT_LIMITS={
     [DRAW]:6,
     [PUPPET]:5,
@@ -57,23 +57,21 @@
     let rows=stories.filter(x=>x?.program===program);
     const keep=CONTENT_LIMITS[program]||0;
 
-    // Normalize visible numbering to 1..22 regardless of legacy source numbering.
+    // Normalize visible numbering to 1..37 regardless of legacy source numbering.
     rows.forEach((item,i)=>{item.num=i+1;});
 
-    // Keep content only through the requested limit; everything after that becomes an empty meeting shell.
+    // Keep content only through the approved range; all later meetings remain empty shells.
     rows.forEach((item,i)=>{
       const num=i+1;
       if(num>keep)clearToBlank(item,program,num);
     });
 
-    // Add missing empty meetings until meeting 22 exists.
+    // Add missing empty meetings until meeting 37 exists.
     rows=stories.filter(x=>x?.program===program);
     for(let num=rows.length+1;num<=MEETING_COUNT;num++){
       const id=`${program===DRAW?'art':program===PUPPET?'puppet':program===LITTLE?'little':'music'}-blank-${String(num).padStart(2,'0')}`;
       stories.push(blankTemplate(program,num,id));
     }
-
-    // If legacy data ever contains more than 22, leave it in memory but exclude it from display.
   }
 
   function installFilter(){
