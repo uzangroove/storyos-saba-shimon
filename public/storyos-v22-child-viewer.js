@@ -50,7 +50,11 @@
 
   function ensureModelViewer(){if(customElements.get('model-viewer')||$('#v229ModelViewerScript'))return;const s=document.createElement('script');s.id='v229ModelViewerScript';s.type='module';s.src='https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js';document.head.appendChild(s)}
 
-  function releaseUrls(){for(const u of objectUrls){try{URL.revokeObjectURL(u)}catch(_){}}objectUrls=[]}
+  function releaseUrls(){
+    if(objectUrls.length<48)return;
+    const old=objectUrls.splice(0,Math.max(0,objectUrls.length-24));
+    setTimeout(()=>{for(const u of old){try{URL.revokeObjectURL(u)}catch(_){}}},15000);
+  }
   function blobUrl(blob){const u=URL.createObjectURL(blob);objectUrls.push(u);return u}
 
   async function localAsset(child,type){
@@ -72,7 +76,10 @@
     const hit=items.find(x=>basename(x.fullPath||x.name)===wanted);if(!hit)return null;
     try{const url=await window.StoryOSFirebase.getUrl(hit.ref||hit.fullPath||hit.name);return {url,source:'firebase',name:wanted,path:hit.fullPath||hit.name}}catch(_){return null}
   }
-  async function resolveAsset(child,type,interactive=false){return await localAsset(child,type)||await firebaseAsset(child,type,interactive)}
+  async function resolveAsset(child,type,interactive=false){
+    if(activeGarden===GARDEN){const legacy=await firebaseAsset(child,type,interactive);if(legacy)return legacy;return await localAsset(child,type)}
+    return await localAsset(child,type)||await firebaseAsset(child,type,interactive)
+  }
 
   async function saveUpload(child,type,file){try{if(window.StoryOSMediaHub){await window.StoryOSMediaHub.putArtAsset(activeGarden,child,type,file,file.name);return true}}catch(_){}return false}
 
@@ -129,5 +136,5 @@
   }
 
   const observer=new MutationObserver(()=>activateIfArava());observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});setTimeout(activateIfArava,250);
-  window.StoryOSChildViewer={manifest:MANIFEST,open:activateIfArava,version:'22.9.0'};
+  window.StoryOSChildViewer={manifest:MANIFEST,open:activateIfArava,version:'22.23.0'};
 })();
