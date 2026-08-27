@@ -1,10 +1,10 @@
 (() => {
-  const VERSION='22.18.0';
+  const VERSION='22.21.0';
   const ADMIN_KEY='storyos_v22_admin_v1';
   const BUCKET='saba-ganim-arava.firebasestorage.app';
   const FIREBASE_ROOT=`https://storage.googleapis.com/${BUCKET}`;
   const $=s=>document.querySelector(s);
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   const items=[
     {id:'story-hour',program:'שעת סיפור והמחשה',title:'שעת סיפור בהמחשה',file:'storyos/ui/home/activities/storytelling.png',fallback:'📖'},
     {id:'drawing-alive',program:'כשהציור קם לתחייה',title:'כשהציור קם לתחייה',file:'storyos/ui/home/activities/drawing-alive.png',fallback:'🎨'},
@@ -13,7 +13,7 @@
     {id:'music-garden',program:'שיר נולד בגן',title:'שיר נולד בגן',file:'storyos/ui/home/activities/music-garden.png',fallback:'🎵'},
     {id:'gardens',program:null,title:'גנים',file:'storyos/ui/home/activities/gardens.png',fallback:'🏡'}
   ];
-  const BRAND='storyos/ui/home/branding/saba-shimon-logo.png';
+  const BRAND='LOGO/logo_personal.png';
 
   function loadAdmin(){try{const d=JSON.parse(localStorage.getItem(ADMIN_KEY)||'{}');return {gardens:Array.isArray(d.gardens)?d.gardens:[],teachers:Array.isArray(d.teachers)?d.teachers:[],events:Array.isArray(d.events)?d.events:[]}}catch(_){return {gardens:[],teachers:[],events:[]}}}
   function direct(path){return `${FIREBASE_ROOT}/${path.split('/').map(encodeURIComponent).join('/')}`}
