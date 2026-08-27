@@ -1,11 +1,12 @@
 (() => {
-  const VERSION='22.27.0';
+  const VERSION='22.28.0';
   const DRAW='כשהציור קם לתחייה';
   const PUPPET='תיאטרון בובות';
   const LITTLE='עולם קטן, קסם גדול';
   const MUSIC='שיר נולד בגן';
   const MEETING_COUNT=22;
-  const ACTIVITY_LIMITS={
+  const CONTENT_LIMITS={
+    [DRAW]:6,
     [PUPPET]:5,
     [LITTLE]:5,
     [MUSIC]:5
@@ -13,52 +14,111 @@
 
   function getStories(){try{return Array.isArray(STORIES)?STORIES:[]}catch(_){return[]}}
 
-  function normalizeLittleWorld(){
-    const rows=getStories().filter(x=>x?.program===LITTLE);
-    rows.forEach((item,i)=>{
-      if(i<5){item.num=i+1;item.__v2227ActivityNo=i+1;}
-    });
+  function blankTemplate(program,num,id){
+    return {
+      id,
+      num,
+      title:`מפגש ${num}`,
+      author:'',
+      age:'',
+      duration:'',
+      score:0,
+      themes:[],
+      season:'',
+      summary:'',
+      message:'',
+      puppets:[],
+      props:[],
+      wow:'',
+      questions:[],
+      purchase:'',
+      timeline:[],
+      attention:{},
+      inclusion:[],
+      packing:[],
+      cover:'',
+      cover_source:'placeholder',
+      category:'',
+      program,
+      __v2228Blank:true
+    };
   }
 
-  function buildProgramStructure(){
+  function clearToBlank(item,program,num){
+    const id=item?.id||`blank-${program}-${num}`;
+    const blank=blankTemplate(program,num,id);
+    for(const k of Object.keys(item||{}))delete item[k];
+    Object.assign(item,blank);
+    return item;
+  }
+
+  function ensureProgram(program){
     const stories=getStories();
-    const structure={};
-    for(const program of [DRAW,PUPPET,LITTLE,MUSIC]){
-      const rows=stories.filter(x=>x?.program===program);
-      const visibleLimit=program===DRAW?22:(ACTIVITY_LIMITS[program]||rows.length);
-      const activities=rows.slice(0,visibleLimit).map((item,i)=>({activityNo:i+1,id:item.id,title:item.title||'',sourceNum:item.num}));
-      const meetings=Array.from({length:MEETING_COUNT},(_,i)=>{
-        const no=i+1;
-        const activity=program===DRAW?activities[i]:(no<=activities.length?activities[no-1]:null);
-        return {meetingNo:no,activityNo:activity?.activityNo||null,activityId:activity?.id||null,title:activity?.title||'',blank:!activity};
-      });
-      structure[program]={program,meetingCount:MEETING_COUNT,activityCount:activities.length,activities,meetings};
+    let rows=stories.filter(x=>x?.program===program);
+    const keep=CONTENT_LIMITS[program]||0;
+
+    // Normalize visible numbering to 1..22 regardless of legacy source numbering.
+    rows.forEach((item,i)=>{item.num=i+1;});
+
+    // Keep content only through the requested limit; everything after that becomes an empty meeting shell.
+    rows.forEach((item,i)=>{
+      const num=i+1;
+      if(num>keep)clearToBlank(item,program,num);
+    });
+
+    // Add missing empty meetings until meeting 22 exists.
+    rows=stories.filter(x=>x?.program===program);
+    for(let num=rows.length+1;num<=MEETING_COUNT;num++){
+      const id=`${program===DRAW?'art':program===PUPPET?'puppet':program===LITTLE?'little':'music'}-blank-${String(num).padStart(2,'0')}`;
+      stories.push(blankTemplate(program,num,id));
     }
-    return structure;
+
+    // If legacy data ever contains more than 22, leave it in memory but exclude it from display.
   }
 
   function installFilter(){
-    if(window.__v2227ContentFilter||typeof window.filtered!=='function')return false;
+    if(window.__v2228ContentFilter||typeof window.filtered!=='function')return;
     const base=window.filtered;
     window.filtered=function(){
       const rows=base();
       const seen={};
       return rows.filter(item=>{
         const p=item?.program||'';
-        if(p===DRAW)return true;
-        if(!(p in ACTIVITY_LIMITS))return true;
+        if(!(p in CONTENT_LIMITS))return true;
         seen[p]=(seen[p]||0)+1;
-        return seen[p]<=ACTIVITY_LIMITS[p];
+        return seen[p]<=MEETING_COUNT;
       });
     };
-    window.__v2227ContentFilter=true;
-    return true;
+    window.__v2228ContentFilter=true;
+  }
+
+  function structure(){
+    const stories=getStories();
+    const out={};
+    for(const program of [DRAW,PUPPET,LITTLE,MUSIC]){
+      const rows=stories.filter(x=>x?.program===program).slice(0,MEETING_COUNT);
+      out[program]={
+        program,
+        meetingCount:MEETING_COUNT,
+        contentThrough:CONTENT_LIMITS[program],
+        meetings:rows.map((item,i)=>({
+          meetingNo:i+1,
+          id:item.id,
+          title:item.title||`מפגש ${i+1}`,
+          blank:!!item.__v2228Blank
+        }))
+      };
+    }
+    return out;
   }
 
   function apply(){
-    normalizeLittleWorld();
+    ensureProgram(DRAW);
+    ensureProgram(PUPPET);
+    ensureProgram(LITTLE);
+    ensureProgram(MUSIC);
     installFilter();
-    window.StoryOSProgramStructure=buildProgramStructure();
+    window.StoryOSProgramStructure=structure();
     try{if(typeof window.render==='function')window.render()}catch(_){}
     return window.StoryOSProgramStructure;
   }
@@ -70,5 +130,5 @@
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-  window.StoryOSContentWindow={version:VERSION,meetingCount:MEETING_COUNT,activityLimits:ACTIVITY_LIMITS,apply,getStructure:()=>window.StoryOSProgramStructure||buildProgramStructure()};
+  window.StoryOSContentWindow={version:VERSION,meetingCount:MEETING_COUNT,contentLimits:CONTENT_LIMITS,apply,getStructure:()=>window.StoryOSProgramStructure||structure()};
 })();
