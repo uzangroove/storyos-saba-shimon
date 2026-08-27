@@ -1,11 +1,13 @@
 (() => {
-  const VERSION='22.29.0';
+  const VERSION='22.30.0';
 
   function addStyles(){
-    if(document.getElementById('v2229NoSideMenuStyle'))return;
+    if(document.getElementById('v2230NoSideMenuStyle'))return;
     const s=document.createElement('style');
-    s.id='v2229NoSideMenuStyle';
+    s.id='v2230NoSideMenuStyle';
     s.textContent=`
+      /* Keep the filter controls in the DOM for program navigation logic,
+         but never show the right-side chooser UI. */
       #v20UnifiedControls{display:none!important}
       #todayPlanner{display:none!important}
       .dashboard-wrap>.controls{display:none!important}
@@ -18,19 +20,12 @@
     document.head.appendChild(s);
   }
 
-  function removeAsideAndExpand(){
+  function hideSideMenuAndExpand(){
     addStyles();
     const aside=document.getElementById('v20UnifiedControls');
-    if(aside)aside.remove();
-
-    const layout=document.querySelector('.v20-main-layout');
-    const dashboard=document.querySelector('.dashboard-wrap');
-    if(layout&&dashboard&&dashboard.parentElement===layout){
-      const parent=layout.parentElement;
-      if(parent){
-        parent.insertBefore(dashboard,layout);
-        layout.remove();
-      }
+    if(aside){
+      aside.hidden=true;
+      aside.setAttribute('aria-hidden','true');
     }
 
     const planner=document.getElementById('todayPlanner');
@@ -40,12 +35,12 @@
   }
 
   function boot(){
-    removeAsideAndExpand();
-    setTimeout(removeAsideAndExpand,250);
-    setTimeout(removeAsideAndExpand,900);
-    document.addEventListener('click',()=>setTimeout(removeAsideAndExpand,40),true);
+    hideSideMenuAndExpand();
+    setTimeout(hideSideMenuAndExpand,250);
+    setTimeout(hideSideMenuAndExpand,900);
+    document.addEventListener('click',()=>setTimeout(hideSideMenuAndExpand,40),true);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-  window.StoryOSNoSideMenu={version:VERSION,apply:removeAsideAndExpand};
+  window.StoryOSNoSideMenu={version:VERSION,apply:hideSideMenuAndExpand};
 })();
