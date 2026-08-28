@@ -9,36 +9,63 @@
 <body>
 <iframe id="storyosFrame" src="/storyos.html?v=22.35.0" title="Story OS · סבא שמעון · גרסה 22.35" allow="fullscreen"></iframe>
 <script>
-const storyosFrame=document.getElementById('storyosFrame');storyosFrame.addEventListener('load',()=>{const doc=storyosFrame.contentDocument;if(!doc)return;doc.title='Story OS · סבא שמעון · גרסה 22.35';const brandSubtitle=doc.querySelector('.brand p');if(brandSubtitle)brandSubtitle.textContent=brandSubtitle.textContent.replace(/גרסה\s*20(?:\.\d+)?/g,'גרסה 22.35').replace(/גרסה\s*22(?:\.\d+)?(?:\.\d+)?/g,'גרסה 22.35').replace(/ארבעה מסלולי פעילות/g,'חמישה מסלולי פעילות');const loadScript=(id,src)=>{if(doc.getElementById(id))return;const s=doc.createElement('script');s.id=id;s.src=src;doc.body.appendChild(s)};
-loadScript('v22CORSHotfixLoader','/storyos-v22-cors-hotfix.js?v=22.35.0');
-loadScript('v22FirebaseClientLoader','/storyos-firebase-client.js?v=22.35.0');
-loadScript('v22MediaHubLoader','/storyos-media-hub.js?v=22.35.0');
-loadScript('v22CloudMediaLoader','/storyos-v22-cloud-media.js?v=22.35.0');
-loadScript('v22FlatMediaLoader','/storyos-v22-flat-media.js?v=22.35.0');
-loadScript('v22UnifiedControlsLoader','/storyos-unified-controls.js?v=22.35.0');
-loadScript('v22ProductionLoader','/storyos-v22-production.js?v=22.35.0');
-loadScript('v22AravaLoader','/storyos-v22-arava.js?v=22.35.0');
-loadScript('v22FirebaseAravaLoader','/storyos-v22-firebase-arava.js?v=22.35.0');
-loadScript('v22ChildViewerLoader','/storyos-v22-child-viewer.js?v=22.35.0');
-loadScript('v22AravaMediaFixLoader','/storyos-v22-arava-media-fix.js?v=22.35.0');
-loadScript('v22ViewerLayoutLoader','/storyos-v22-viewer-layout.js?v=22.35.0');
-loadScript('v22CompareFixLoader','/storyos-v22-compare-fix.js?v=22.35.0');
-loadScript('v22CompareOverlayFixLoader','/storyos-v22-compare-overlay-fix.js?v=22.35.0');
-loadScript('v22GardenTemplateLoader','/storyos-v22-garden-template.js?v=22.35.0');
-loadScript('v22WeeklyManagementLoader','/storyos-v22-weekly-management.js?v=22.35.0');
-loadScript('v22GardenCatalogLoader','/storyos-v22-garden-catalog.js?v=22.35.0');
-loadScript('v22GardenDashboardLoader','/storyos-v22-garden-dashboard.js?v=22.35.0');
-loadScript('v22ContentBindingLoader','/storyos-v22-content-binding.js?v=22.35.0');
-loadScript('v22ContentWindowLoader','/storyos-v22-content-window.js?v=22.35.0');
-loadScript('v22SchoolCalendarLoader','/storyos-v22-school-calendar.js?v=22.35.0');
-loadScript('v22FlipFixLoader','/storyos-v22-flip-fix.js?v=22.35.0');
-loadScript('v22FlipHotfixLoader','/storyos-v22-flip-hotfix.js?v=22.35.0');
-loadScript('v22HomeLauncherLoader','/storyos-v22-home-launcher.js?v=22.35.0');
-loadScript('v22HomeStyleFixLoader','/storyos-v22-home-style-fix.js?v=22.35.0');
-loadScript('v22BrandingLoader','/storyos-v22-branding.js?v=22.35.0');
-loadScript('v22NavigationHotfixLoader','/storyos-v22-navigation-hotfix.js?v=22.35.0');
-loadScript('v22NoSideMenuLoader','/storyos-v22-no-side-menu.js?v=22.35.0');
-loadScript('v22FullExcelExportLoader','/storyos-v22-full-excel-export-v2232.js?v=22.35.0');
-loadScript('v22ReportingSyncLoader','/storyos-v22-reporting-sync.js?v=22.35.0');
-loadScript('v22ReportingLinkFixLoader','/storyos-v22-reporting-link-fix.js?v=22.35.0');});
+const storyosFrame=document.getElementById('storyosFrame');
+storyosFrame.addEventListener('load',()=>{
+  const doc=storyosFrame.contentDocument;
+  if(!doc)return;
+  doc.title='Story OS · סבא שמעון · גרסה 22.35';
+  const brandSubtitle=doc.querySelector('.brand p');
+  if(brandSubtitle)brandSubtitle.textContent=brandSubtitle.textContent
+    .replace(/גרסה\s*20(?:\.\d+)?/g,'גרסה 22.35')
+    .replace(/גרסה\s*22(?:\.\d+)?(?:\.\d+)?/g,'גרסה 22.35')
+    .replace(/ארבעה מסלולי פעילות/g,'חמישה מסלולי פעילות');
+
+  // סדר הטעינה כאן קובע התנהגות — חלק מהסקריפטים מסתמכים על אלה שלפניהם
+  // (למשל compare-overlay-fix על compare-fix, flip-hotfix על flip-fix).
+  // async=false נועד לשמר את סדר ההרצה בדיוק לפי הרשימה, גם כשהקבצים
+  // חוזרים מהרשת בסדר אחר. גרסה אחת (VERSION) במקום 29 מחרוזות נפרדות.
+  const VERSION = '22.35.0';
+  const SCRIPTS = [
+    ['v22CORSHotfixLoader', '/storyos-v22-cors-hotfix.js'],
+    ['v22FirebaseClientLoader', '/storyos-firebase-client.js'],
+    ['v22MediaHubLoader', '/storyos-media-hub.js'],
+    ['v22CloudMediaLoader', '/storyos-v22-cloud-media.js'],
+    ['v22FlatMediaLoader', '/storyos-v22-flat-media.js'],
+    ['v22UnifiedControlsLoader', '/storyos-unified-controls.js'],
+    ['v22ProductionLoader', '/storyos-v22-production.js'],
+    ['v22AravaLoader', '/storyos-v22-arava.js'],
+    ['v22FirebaseAravaLoader', '/storyos-v22-firebase-arava.js'],
+    ['v22ChildViewerLoader', '/storyos-v22-child-viewer.js'],
+    ['v22AravaMediaFixLoader', '/storyos-v22-arava-media-fix.js'],
+    ['v22ViewerLayoutLoader', '/storyos-v22-viewer-layout.js'],
+    ['v22CompareFixLoader', '/storyos-v22-compare-fix.js'],
+    ['v22CompareOverlayFixLoader', '/storyos-v22-compare-overlay-fix.js'],
+    ['v22GardenTemplateLoader', '/storyos-v22-garden-template.js'],
+    ['v22WeeklyManagementLoader', '/storyos-v22-weekly-management.js'],
+    ['v22GardenCatalogLoader', '/storyos-v22-garden-catalog.js'],
+    ['v22GardenDashboardLoader', '/storyos-v22-garden-dashboard.js'],
+    ['v22ContentBindingLoader', '/storyos-v22-content-binding.js'],
+    ['v22ContentWindowLoader', '/storyos-v22-content-window.js'],
+    ['v22SchoolCalendarLoader', '/storyos-v22-school-calendar.js'],
+    ['v22FlipFixLoader', '/storyos-v22-flip-fix.js'],
+    ['v22FlipHotfixLoader', '/storyos-v22-flip-hotfix.js'],
+    ['v22HomeLauncherLoader', '/storyos-v22-home-launcher.js'],
+    ['v22HomeStyleFixLoader', '/storyos-v22-home-style-fix.js'],
+    ['v22BrandingLoader', '/storyos-v22-branding.js'],
+    ['v22NavigationHotfixLoader', '/storyos-v22-navigation-hotfix.js'],
+    ['v22NoSideMenuLoader', '/storyos-v22-no-side-menu.js'],
+    ['v22FullExcelExportLoader', '/storyos-v22-full-excel-export-v2232.js'],
+    ['v22ReportingSyncLoader', '/storyos-v22-reporting-sync.js'],
+    ['v22ReportingLinkFixLoader', '/storyos-v22-reporting-link-fix.js'],
+  ];
+  const loadScript=(id,src)=>{
+    if(doc.getElementById(id))return;
+    const s=doc.createElement('script');
+    s.id=id;
+    s.src=src+'?v='+VERSION;
+    s.async=false;
+    doc.body.appendChild(s);
+  };
+  SCRIPTS.forEach(([id,src])=>loadScript(id,src));
+});
 </script></body></html>
