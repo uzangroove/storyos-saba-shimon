@@ -1,0 +1,26 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // StoryOS unified media root. Any signed-in Firebase user can read/write.
+    // Tighten later to custom claims (admin/operator) when roles are introduced.
+    match /storyos/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Legacy Gan Arava folders remain readable for migration by authenticated users.
+    // New uploads should NOT be written here; v22.12 writes only under /storyos/.
+    match /MEDIA/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    match /gardens/gan-arava/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Everything else is denied by default.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

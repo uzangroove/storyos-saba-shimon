@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>StoryOS · פליפ אמיתי RTL</title>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<script src="/storyos-media-hub.js?v=22.7.0"></script>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#17191f;font-family:Arial,"Noto Sans Hebrew",sans-serif;color:#fff}.shell{height:100dvh;display:grid;grid-template-rows:52px 1fr 56px}.top,.bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:#0f1116}.top{border-bottom:1px solid #30343f}.bottom{justify-content:center;border-top:1px solid #30343f;flex-wrap:wrap}.top h1{font-size:1.05rem;margin:0}.status{font-size:.85rem;color:#bbc1d0}.btn{border:1px solid #4a4f5f;background:#242936;color:#fff;border-radius:10px;padding:8px 11px;cursor:pointer;font:inherit}.btn.primary{background:#6c50e0}.stage{display:grid;place-items:center;min-height:0;overflow:hidden;padding:10px;direction:ltr}.book-wrap{position:relative;width:100%;height:100%;display:grid;place-items:center}.flip-book{display:none}.page{background:#fffdf8;overflow:hidden;box-shadow:inset 0 0 22px rgba(0,0,0,.08);border:1px solid #cfc8bd}.page img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}.page.blank{background:linear-gradient(135deg,#f6f0e7,#fff)}.page-cover{background:#eee7dc}.error{direction:rtl;max-width:760px;background:#fff;color:#8b3434;padding:24px;border-radius:16px;line-height:1.55}.hidden{display:none!important}.label{min-width:200px;text-align:center;font-weight:700}@media(max-width:700px){.shell{grid-template-rows:50px 1fr 88px}.top h1{font-size:.9rem}.status{display:none}.btn{padding:7px 9px}.label{min-width:120px;font-size:.9rem}}
+</style>
+</head>
+<body><div class="shell">
+<div class="top"><div><h1 id="title">📖 פליפ</h1><div id="status" class="status">טוען…</div></div><div><button id="back" class="btn">✕ חזרה להפעלה</button> <button id="full" class="btn primary">⛶ מסך מלא</button></div></div>
+<main class="stage"><div class="book-wrap"><div id="book" class="flip-book"></div><div id="error" class="error hidden"></div></div></main>
+<div class="bottom"><button id="prev" class="btn">→ קודם</button><button id="first" class="btn">כריכה</button><span id="label" class="label">—</span><button id="next" class="btn">הבא ←</button></div>
+</div>
+<script>
+(async()=>{
+ const p=new URLSearchParams(location.search),storyId=(p.get('story')||'s15').replace(/[^a-zA-Z0-9_-]/g,''),bookTitle=(p.get('title')||'אילת מטיילת').slice(0,120);
+ const book=document.getElementById('book'),status=document.getElementById('status'),label=document.getElementById('label'),error=document.getElementById('error');document.getElementById('title').textContent='📖 '+bookTitle+' · פליפ RTL';
+ const urls=[];const url=b=>{const u=URL.createObjectURL(b);urls.push(u);return u};
+ function legacyDb(name,store,key){return new Promise(resolve=>{let r;try{r=indexedDB.open(name)}catch(_){return resolve(null)}r.onsuccess=()=>{const db=r.result;if(!db.objectStoreNames.contains(store))return resolve(null);const q=db.transaction(store,'readonly').objectStore(store).get(key);q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>resolve(null)};r.onerror=()=>resolve(null)});}
+ async function loadRecord(){if(window.StoryOSMediaHub){await StoryOSMediaHub.syncLegacy().catch(()=>{});let r=await StoryOSMediaHub.getBook(storyId);if(r)return r;if(storyId==='s15'){r=await StoryOSMediaHub.getBook('ayelet-metayelet');if(r)return r;}}
+  const d=await legacyDb('StoryOS_SabaShimon_Decks','decks',storyId);if(d?.kind==='images'&&d.slides?.length)return {kind:'images',pages:d.slides.map(x=>({blob:x.blob}))};const s=await legacyDb('storyos-scanned-books','books',storyId==='s15'?'ayelet-metayelet':storyId);if(s){const pages=[];if(s.coverBlob)pages.push({blob:s.coverBlob});for(const x of s.pages||[])if(x.imageBlob)pages.push({blob:x.imageBlob});if(pages.length)return {kind:'images',pages};}return null;}
+ try{
+  const rec=await loadRecord();if(!rec)throw new Error('לא נמצאו עמודי הספר במאגר המדיה המאוחד.');if(rec.kind!=='images'||!rec.pages?.length)throw new Error('פליפ אמיתי דורש עמודים כתמונות. PDF ימשיך לעבוד בנגן הרגיל עד שיומר לעמודים.');
+  // RTL workaround for StPageFlip: reverse the physical page order and start from the last page.
+  // This keeps the original cover as the single starting page, then uses flipPrev so the cover opens left-to-right.
+  const rtlPages=[...rec.pages].reverse();
+  rtlPages.forEach((pg,i)=>{const el=document.createElement('div');el.className='page'+(i===rtlPages.length-1?' page-cover':'');const img=document.createElement('img');img.src=url(pg.blob);img.alt=i===rtlPages.length-1?'כריכה':'עמוד';el.appendChild(img);book.appendChild(el)});
+  book.style.display='block';
+  if(!window.St?.PageFlip)throw new Error('מנוע PageFlip לא נטען.');
+  const stage=document.querySelector('.stage');const h=Math.max(300,stage.clientHeight-20),w=Math.max(220,Math.min(650,Math.floor(h*.72)));
+  const startIndex=rtlPages.length-1;
+  const flip=new St.PageFlip(book,{width:w,height:h,size:'stretch',minWidth:220,maxWidth:720,minHeight:300,maxHeight:1000,maxShadowOpacity:.55,showCover:true,startPage:startIndex,mobileScrollSupport:false,usePortrait:true,flippingTime:850,drawShadow:true,autoSize:true,clickEventForward:true});
+  flip.loadFromHTML(document.querySelectorAll('.page'));
+  // Some builds ignore startPage after loadFromHTML; force the book to the RTL cover after initialization.
+  setTimeout(()=>{try{flip.turnToPage(startIndex)}catch(_){try{flip.flip(startIndex,'top')}catch(__){}}},60);
+  function logicalPage(){const i=flip.getCurrentPageIndex(),n=flip.getPageCount();return Math.max(0,Math.min(rec.pages.length-1,n-1-i));}
+  function update(){const logical=logicalPage();const total=rec.pages.length;if(logical===0){label.textContent='כריכה';status.textContent=`PageFlip RTL · כריכה סגורה · ${total} עמודים`;}else{const first=logical;const second=Math.min(total-1,logical+1);label.textContent=second>first?`עמודים ${first}–${second} מתוך ${total-1}`:`עמוד ${first} מתוך ${total-1}`;status.textContent=`PageFlip RTL · דפדוף משמאל לימין · ${total} עמודים`;}}
+  flip.on('flip',update);flip.on('init',()=>{setTimeout(update,80)});
+  // For a Hebrew/RTL book, forward means moving to the previous physical StPageFlip index.
+  document.getElementById('next').onclick=()=>flip.flipPrev('top');
+  document.getElementById('prev').onclick=()=>flip.flipNext('top');
+  document.getElementById('first').onclick=()=>{try{flip.flip(startIndex,'top')}catch(_){flip.turnToPage(startIndex)}};
+  window.addEventListener('resize',()=>flip.update());
+ }catch(e){error.textContent=e.message||String(e);error.classList.remove('hidden');status.textContent='שגיאה בטעינת הפליפ'}
+ document.getElementById('back').onclick=()=>history.length>1?history.back():location.href='/';document.getElementById('full').onclick=async()=>{try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch(_){}};window.addEventListener('beforeunload',()=>urls.forEach(URL.revokeObjectURL));
+})();
+</script></body></html>

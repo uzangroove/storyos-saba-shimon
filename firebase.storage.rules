@@ -1,0 +1,25 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // StoryOS canonical cloud media. Only authenticated users can read/write.
+    match /storyos/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Legacy Gan Arava locations remain readable during migration.
+    // No new writes should go here after v22.12.
+    match /MEDIA/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    match /gardens/gan-arava/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Everything else is denied by default.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

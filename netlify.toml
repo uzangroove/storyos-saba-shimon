@@ -1,6 +1,10 @@
 [build]
   publish = "public"
 
+[[edge_functions]]
+  function = "firebase-media"
+  path = "/firebase-media"
+
 [[headers]]
   for = "/*"
   [headers.values]

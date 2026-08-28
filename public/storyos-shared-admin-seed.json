@@ -1,0 +1,44 @@
+{
+  "version": "22.35.0",
+  "gardens": [
+    {
+      "id": "garden-goren",
+      "name": "גן גורן",
+      "weeklyDay": "שלישי",
+      "weeklyTime": "09:00",
+      "duration": "45 דקות",
+      "active": true,
+      "source": "shared-seed"
+    },
+    {
+      "id": "garden-ovda",
+      "name": "גן עובדה",
+      "weeklyDay": "ראשון",
+      "weeklyTime": "12:00",
+      "duration": "45 דקות",
+      "active": true,
+      "source": "shared-seed"
+    }
+  ],
+  "teachers": [],
+  "recurringSchedules": [
+    {
+      "id": "schedule-goren-2026-27",
+      "garden": "גן גורן",
+      "day": "שלישי",
+      "time": "09:00",
+      "duration": "45 דקות",
+      "meetingCount": 37,
+      "schoolYear": "2026-2027"
+    },
+    {
+      "id": "schedule-ovda-2026-27",
+      "garden": "גן עובדה",
+      "day": "ראשון",
+      "time": "12:00",
+      "duration": "45 דקות",
+      "meetingCount": 37,
+      "schoolYear": "2026-2027"
+    }
+  ]
+}
