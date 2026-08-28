@@ -1,11 +1,8 @@
 (() => {
   const $=s=>document.querySelector(s);
   const VERSION='22.24.0';
-  let dragPct=50;
   let activeRoot=null;
   let rootObserver=null;
-  let compareObserver=null;
-  let scheduled=false;
 
   function addStyles(){
     if($('#v2210ViewerStyle'))return;
@@ -32,9 +29,6 @@
       #v229ChildViewer.v2210-layout .v229-after-wrap{inset:0 auto 0 0!important;height:100%!important;width:50%;overflow:hidden!important;border:0!important;box-shadow:none!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;background-color:transparent!important}
       #v229ChildViewer.v2210-layout .v229-after-wrap>img{display:none!important}
       #v229ChildViewer.v2210-layout .v229-slider,#v229ChildViewer.v2210-layout .v229-labels{display:none!important}
-      .v2210-divider{position:absolute!important;top:0!important;bottom:0!important;width:5px!important;background:#fff!important;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 12px rgba(0,0,0,.5)!important;z-index:20!important;transform:translateX(-2px)!important;pointer-events:auto!important;cursor:ew-resize!important;touch-action:none!important}
-      .v2210-divider::before{content:'↔';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#2b3550;border:1px solid #bbb;font-weight:900;font-size:21px;box-shadow:0 3px 12px rgba(0,0,0,.25);pointer-events:auto!important;cursor:ew-resize!important}
-      #v2210HitArea{position:absolute;top:0;bottom:0;width:60px;transform:translateX(-30px);z-index:25;cursor:ew-resize;touch-action:none;background:transparent}
       #v229ChildViewer.v2210-layout .v229-video{width:100%!important;height:100%!important;aspect-ratio:auto!important;object-fit:contain!important;background:#111!important;border-radius:10px!important}
       #v229ChildViewer.v2210-layout .v229-model-wrap{height:auto!important;min-height:0!important;border-radius:10px!important}
       #v229ChildViewer.v2210-layout .v229-model-toolbar{flex:0 0 auto!important;margin-top:5px!important;gap:4px!important}
@@ -50,7 +44,7 @@
   function exitViewer(){
     document.body.classList.remove('v2210-child-view');
     if(activeRoot)activeRoot.classList.remove('v2210-layout');
-    compareObserver?.disconnect();compareObserver=null;activeRoot=null;
+    activeRoot=null;
     if(typeof window.goHome==='function')window.goHome();
   }
 
@@ -59,49 +53,17 @@
     const btn=document.createElement('button');btn.className='btn v2210-close';btn.type='button';btn.textContent='← חזרה למרכז הפעילויות';btn.onclick=exitViewer;head.appendChild(btn);
   }
 
-  function setComparison(pct){
-    dragPct=Math.max(0,Math.min(100,pct));
-    const wrap=$('#v229AfterWrap'),line=$('#v2210Divider'),hit=$('#v2210HitArea');
-    if(wrap){wrap.style.setProperty('width','100%','important');wrap.style.setProperty('clip-path',`inset(0 ${100-dragPct}% 0 0)`,'important')}
-    if(line)line.style.left=dragPct+'%';if(hit)hit.style.left=dragPct+'%';
-  }
-
-  function enhanceCompare(){
-    const box=$('#v229CompareBox'),wrap=$('#v229AfterWrap');if(!box||!wrap)return;
-    const afterImg=wrap.querySelector('img');if(afterImg?.src&&wrap.dataset.v2210Bg!==afterImg.src){wrap.dataset.v2210Bg=afterImg.src;wrap.style.backgroundImage=`url("${afterImg.src.replace(/"/g,'%22')}")`}
-    let line=$('#v2210Divider');if(!line){line=document.createElement('div');line.id='v2210Divider';line.className='v2210-divider';box.appendChild(line)}
-    let hit=$('#v2210HitArea');if(!hit){hit=document.createElement('div');hit.id='v2210HitArea';box.appendChild(hit)}
-    if(box.dataset.v221024Drag!=='1'){
-      box.dataset.v221024Drag='1';let dragging=false,pid=null;
-      const move=e=>{const r=box.getBoundingClientRect();setComparison((e.clientX-r.left)/Math.max(1,r.width)*100)};
-      const down=e=>{dragging=true;pid=e.pointerId;e.preventDefault();try{box.setPointerCapture(pid)}catch(_){}move(e)};
-      const drag=e=>{if(!dragging)return;e.preventDefault();move(e)};
-      const up=e=>{if(!dragging)return;dragging=false;try{box.releasePointerCapture(pid)}catch(_){}pid=null};
-      box.addEventListener('pointerdown',down,true);box.addEventListener('pointermove',drag,true);box.addEventListener('pointerup',up,true);box.addEventListener('pointercancel',up,true);
-      line.addEventListener('pointerdown',down,true);hit.addEventListener('pointerdown',down,true);
-      box.addEventListener('dblclick',e=>{e.preventDefault();setComparison(50)},true);
-    }
-    setComparison(dragPct);
-  }
-
-  function scheduleEnhance(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;enhanceCompare()})}
-  function watchCompare(root){compareObserver?.disconnect();const host=root.querySelector('#v229CompareHost');if(!host)return;compareObserver=new MutationObserver(scheduleEnhance);compareObserver.observe(host,{childList:true,subtree:true});scheduleEnhance()}
-
   function activate(){
     const root=$('#v229ChildViewer');if(!root)return false;
     addStyles();
     if(activeRoot!==root){
-      compareObserver?.disconnect();compareObserver=null;
       activeRoot=root;
       document.body.classList.add('v2210-child-view');
       root.classList.add('v2210-layout');
       ensureCloseButton(root);
-      watchCompare(root);
-      root.addEventListener('click',e=>{if(e.target.closest?.('[data-child-index],#v229PrevChild,#v229NextChild'))setTimeout(scheduleEnhance,120)},{passive:true});
     }else if(!root.classList.contains('v2210-layout')){
       root.classList.add('v2210-layout');document.body.classList.add('v2210-child-view');
     }
-    scheduleEnhance();
     return true;
   }
 
@@ -113,5 +75,8 @@
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchForRoot,{once:true});else watchForRoot();
-  window.StoryOSViewerLayout={version:VERSION,activate,exit:exitViewer,setComparison};
+  // compare-slider ownership moved entirely to storyos-v22-compare-overlay-fix.js
+  // (see that file's header comment); this file now only owns the surrounding
+  // full-screen viewer layout/grid and the close button.
+  window.StoryOSViewerLayout={version:VERSION,activate,exit:exitViewer};
 })();
