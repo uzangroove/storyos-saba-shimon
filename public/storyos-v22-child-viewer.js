@@ -87,14 +87,23 @@
     const detail=$('#detail');if(!detail)return null;let root=$('#v229ChildViewer');if(root)return root;
     ensureStyles();ensureModelViewer();
     root=document.createElement('section');root.id='v229ChildViewer';root.className='panel';root.innerHTML=`
-      <div class="v229-viewer-head"><div><h2>תצוגת תוצרי ילד · פעילות 1</h2><div class="v229-source-note">ציור מקורי → תלת־ממד → סרטון → מודל. בגן ערבה נטענים קבצי הדוגמה; בגנים אחרים אותה תבנית נשארת ריקה.</div></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button id="v229ConnectFirebase" class="btn">☁ התחבר למדיה</button><button id="v229OverviewToggle" class="btn">כל הילדים</button></div></div>
+      <div class="v229-viewer-head" id="v229TopMenu"><div class="v229-garden-mgmt" id="v229GardenMgmt"></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button id="v229ConnectFirebase" class="btn">☁ התחבר למדיה</button><button id="v229OverviewToggle" class="btn">כל הילדים</button></div></div>
       <div id="v229ChildBanner" class="v229-child-banner"></div><div id="v229Overview" class="v229-overview"></div>
-      <div class="v229-viewer-head"><button id="v229PrevChild" class="btn">→ ילד קודם</button><h2 id="v229ChildName"></h2><button id="v229NextChild" class="btn primary">ילד הבא ←</button></div>
+      <div class="v229-viewer-head" id="v229ChildNav"><button id="v229PrevChild" class="btn">→ ילד קודם</button><h2 id="v229ChildName"></h2><button id="v229NextChild" class="btn primary">ילד הבא ←</button></div>
       <div class="v229-main-grid">
         <div class="v229-card"><h3>לפני / אחרי</h3><div id="v229CompareHost"></div><div class="v229-model-toolbar"><label class="btn small">העלה לפני<input class="v229-upload" id="v229UploadOriginal" type="file" accept="image/*"></label><label class="btn small">העלה אחרי<input class="v229-upload" id="v229UploadAfter" type="file" accept="image/*"></label><button class="btn small" id="v229FullCompare">⛶ מסך מלא</button></div></div>
-        <div class="v229-media-grid"><div class="v229-card"><h3>סרטון</h3><div id="v229VideoHost"></div><div class="v229-model-toolbar"><label class="btn small">העלה סרטון<input class="v229-upload" id="v229UploadVideo" type="file" accept="video/*"></label><button class="btn small" id="v229FullVideo">⛶ מסך מלא</button></div></div><div class="v229-card"><h3>מודל 3D</h3><div id="v229ModelHost" class="v229-model-wrap"></div><div class="v229-model-toolbar"><label class="btn small">העלה GLB<input class="v229-upload" id="v229UploadModel" type="file" accept=".glb,.gltf,model/gltf-binary"></label><button class="btn small" id="v229AutoRotate">סיבוב אוטומטי</button><button class="btn small" id="v229ResetModel">איפוס תצוגה</button><button class="btn small" id="v229FullModel">⛶ מסך מלא</button></div></div></div>
+        <div class="v229-card"><h3>סרטון</h3><div id="v229VideoHost"></div><div class="v229-model-toolbar"><label class="btn small">העלה סרטון<input class="v229-upload" id="v229UploadVideo" type="file" accept="video/*"></label><button class="btn small" id="v229FullVideo">⛶ מסך מלא</button></div></div>
+        <div class="v229-card"><h3>מודל 3D</h3><div id="v229ModelHost" class="v229-model-wrap"></div><div class="v229-model-toolbar"><label class="btn small">העלה GLB<input class="v229-upload" id="v229UploadModel" type="file" accept=".glb,.gltf,model/gltf-binary"></label><button class="btn small" id="v229AutoRotate">סיבוב אוטומטי</button><button class="btn small" id="v229ResetModel">איפוס תצוגה</button><button class="btn small" id="v229FullModel">⛶ מסך מלא</button></div></div>
       </div><div id="v229MediaStatus" class="v229-status"></div>`;
+    // מעבירים (לא משכפלים) את פקדי ניהול הגן של arava.js — בורר הגן, "פתח
+    // פעילות לגן" ו"+ גן חדש בניהול" — לתוך התפריט העליון הקבוע של המציג הזה,
+    // כדי שיישארו נגישים תמיד. בלי זה, ה-CSS למטה שמסתיר כל פאנל אחר בתוך
+    // #detail (כדי לפנות את כל המסך למציג) היה מסתיר גם אותם לגמרי, בלי שום
+    // דרך חזרה אליהם מתוך תצוגת הילד.
     const childrenPanel=[...detail.querySelectorAll('.panel')].find(p=>p.querySelector('#v22ArtChildren'));
+    const gardenRow=detail.querySelector('#v22ArtGarden')?.closest('div')||null;
+    const mgmtHost=root.querySelector('#v229GardenMgmt');
+    if(gardenRow&&mgmtHost)mgmtHost.appendChild(gardenRow);
     if(childrenPanel){childrenPanel.style.display='none';childrenPanel.parentNode.insertBefore(root,childrenPanel)}else detail.appendChild(root);
     return root;
   }

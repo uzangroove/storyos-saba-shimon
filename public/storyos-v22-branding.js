@@ -72,7 +72,15 @@
     window.addEventListener('storyos-firebase-auth',()=>setTimeout(refresh,0));
     document.addEventListener('click',()=>setTimeout(syncVisibility,80),true);
     setInterval(syncVisibility,1200);
-    document.querySelectorAll('.v2218-footer').forEach(el=>el.textContent=`גרסה ${VERSION.replace(/\.0$/,'')} · מסך כניסה נקי`);
+    document.querySelectorAll('.v2218-footer').forEach(el=>{
+      // לא להשתמש ב-textContent: זה מוחק גם את כפתור ⚙ ניהול שקיים בתוך
+      // ה-footer (הוסף על ידי storyos-v22-home-launcher.js) כי textContent
+      // מחליף את כל הילדים, לא רק את הטקסט. שומרים את הכפתור אם הוא קיים
+      // ומעדכנים רק את הטקסט שלפניו.
+      const adminLink=el.querySelector('#v2218AdminLink');
+      el.textContent=`גרסה ${VERSION.replace(/\.0$/,'')} · מסך כניסה נקי`;
+      if(adminLink){el.append(' · ',adminLink)}
+    });
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
