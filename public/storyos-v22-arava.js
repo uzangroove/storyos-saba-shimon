@@ -25,7 +25,40 @@
     return current;
   }
 
-  function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(ART_DB,1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(ART_STORE))db.createObjectStore(ART_STORE,{keyPath:'key'});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
+  let dbPromise=null;
+  function openDB(){
+    // ממוזמן (memoized): כמה קריאות ל-getAsset/putAsset קורות כמעט תמיד יחד
+    // (למשל 4 סוגי קבצים לאותו ילד בבת אחת) — אם כל אחת הייתה פותחת חיבור
+    // משלה בנפרד, קריאה אחת יכולה להתחיל שדרוג גרסה (self-heal למטה) בזמן
+    // שקריאה מקבילה אחרת עדיין מבקשת את הגרסה הישנה, מה שגורם לשגיאת
+    // "requested version is less than existing version". שיתוף אותה
+    // Promise בין כל הקוראים פותר את זה לגמרי.
+    if(dbPromise)return dbPromise;
+    dbPromise=new Promise((resolve,reject)=>{
+      const req=indexedDB.open(ART_DB,1);
+      req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(ART_STORE))db.createObjectStore(ART_STORE,{keyPath:'key'});};
+      req.onsuccess=()=>{
+        const db=req.result;
+        // הגנה: אם המסד כבר קיים בגרסה 1 בלי ה-object store (יכול לקרות אם
+        // נוצר פעם על ידי נתיב קוד אחר, או session קודמת שנקטעה), onupgradeneeded
+        // למעלה לא ירוץ שוב באותה גרסה — וכל קריאה עתידית ל-transaction() הייתה
+        // קורסת עם NotFoundError. כאן מזהים את זה ומתקנים בעצמנו על ידי פתיחה
+        // מחדש בגרסה גבוהה יותר, מה שכן מפעיל onupgradeneeded.
+        if(!db.objectStoreNames.contains(ART_STORE)){
+          const currentVersion=db.version;
+          db.close();
+          const upgradeReq=indexedDB.open(ART_DB,currentVersion+1);
+          upgradeReq.onupgradeneeded=()=>{const udb=upgradeReq.result;if(!udb.objectStoreNames.contains(ART_STORE))udb.createObjectStore(ART_STORE,{keyPath:'key'});};
+          upgradeReq.onsuccess=()=>resolve(upgradeReq.result);
+          upgradeReq.onerror=()=>{dbPromise=null;reject(upgradeReq.error);};
+          return;
+        }
+        resolve(db);
+      };
+      req.onerror=()=>{dbPromise=null;reject(req.error);};
+    });
+    return dbPromise;
+  }
   async function putAsset(garden,child,type,file){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(ART_STORE,'readwrite');tx.objectStore(ART_STORE).put({key:`${garden}|${child}|${type}`,garden,child,type,name:file.name,blob:file,updatedAt:Date.now()});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}
   async function getAsset(garden,child,type){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(ART_STORE,'readonly');const req=tx.objectStore(ART_STORE).get(`${garden}|${child}|${type}`);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);});}
 
