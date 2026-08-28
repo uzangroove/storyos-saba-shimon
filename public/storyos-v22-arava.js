@@ -81,7 +81,24 @@
     const gardenNames=admin.gardens.map(g=>g.name).filter(Boolean);const selected=gardenNames.includes(defaultGarden)?defaultGarden:(gardenNames[0]||'גן ערבה');
     const isArava=selected==='גן ערבה';const garden=admin.gardens.find(g=>g.name===selected)||{};const count=Math.max(1,Number(garden.childrenCount)||22);const children=isArava?ARAVA_CHILDREN:Array.from({length:count},(_,i)=>`ילד/ה ${i+1}`);
     detail.innerHTML=`<button class="btn back" onclick="goHome()">← חזרה למרכז ההפעלה</button><section class="hero"><div><h2 style="margin:0">כשהציור קם לתחייה · פעילות 1</h2><p>${isArava?'גן ערבה · פעילות המקור':'תבנית חדשה לגן'} · ציור לפני ואחרי, סרטון ומודל</p></div><div class="score"><b>1</b><br>פעילות ראשונה</div></section><section class="panel" style="margin-top:12px"><div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap"><label style="font-weight:700">בחר גן<br><select id="v22ArtGarden" style="min-width:220px;border:1px solid var(--line);border-radius:12px;padding:10px">${gardenNames.map(n=>`<option ${n===selected?'selected':''}>${esc(n)}</option>`).join('')}</select></label><button id="v22ArtOpen" class="btn primary">פתח פעילות לגן</button><button id="v22ArtAddGarden" class="btn">+ גן חדש בניהול</button></div><p style="color:var(--muted)">${isArava?'גן ערבה הוא דוגמת הייחוס. התוכן שייך לגן הזה בלבד.':'זהו עותק ריק של אותה תבנית. אין בו שום תוכן של גן ערבה והוא מוכן לקלוט את תוצרי הילדים.'}</p></section><section class="panel" style="margin-top:12px"><h3>מהלך הפעילות</h3><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><div><b>1. לפני</b><br>הציור המקורי</div><div><b>2. אחרי</b><br>גרסת תלת־ממד</div><div><b>3. סרטון</b><br>הציור קם לתחייה</div><div><b>4. מודל</b><br>קובץ GLB לתצוגה/שמירה</div></div></section><section class="panel" style="margin-top:12px"><h3>תוצרי הילדים · ${esc(selected)}</h3><div id="v22ArtChildren" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">${children.map((c,i)=>`<article class="card" style="min-height:0"><h3 style="margin:0 0 8px">${esc(c)}</h3><div data-art-grid="${i}" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="panel" style="padding:8px"><b>לפני</b><div data-preview="original"></div>${assetInput(selected,c,'original','העלה ציור','image/*')}</div><div class="panel" style="padding:8px"><b>אחרי</b><div data-preview="after"></div>${assetInput(selected,c,'after','העלה תלת־ממד','image/*')}</div><div class="panel" style="padding:8px"><b>סרטון</b><div data-preview="video"></div>${assetInput(selected,c,'video','העלה סרטון','video/*')}</div><div class="panel" style="padding:8px"><b>מודל</b><div data-preview="model"></div>${assetInput(selected,c,'model','העלה GLB','.glb,.gltf,model/gltf-binary')}</div></div></article>`).join('')}</div></section>`;
-    $('#v22ArtOpen').onclick=()=>openArtGardenActivity($('#v22ArtGarden').value);$('#v22ArtAddGarden').onclick=()=>{document.getElementById('v22AdminBtn')?.click();setTimeout(()=>window.v22AdminGo?.('gardens'),50)};
+    $('#v22ArtOpen').onclick=()=>openArtGardenActivity($('#v22ArtGarden').value);
+    $('#v22ArtAddGarden').onclick=()=>{
+      // כמו בתיקון המקביל למסך הבית (v2218Home): פאנל הניהול הוא z-index:1000,
+      // בעוד ש-#v229ChildViewer במצב מסך-מלא הוא z-index:999999 — בלי להסתיר
+      // אותו קודם, הפאנל היה נפתח מתחתיו, בלתי-נראה ובלתי-לחיץ. מוסיפים מחלקה
+      // שמכבה תצוגה זמנית (לא מסירים v2210-layout עצמה, כדי לא לאבד את מצב
+      // התצוגה הפנימי), ומשחזרים ברגע שפאנל הניהול נסגר — בלי קשר לאיך נסגר.
+      const viewer=document.getElementById('v229ChildViewer');
+      viewer?.classList.add('v2210-hidden-for-admin');
+      const btn=document.getElementById('v22AdminBtn');
+      if(!btn){viewer?.classList.remove('v2210-hidden-for-admin');return}
+      btn.click();
+      setTimeout(()=>window.v22AdminGo?.('gardens'),50);
+      const restoreObserver=new MutationObserver(()=>{
+        if(!document.querySelector('.v22-admin-modal')){viewer?.classList.remove('v2210-hidden-for-admin');restoreObserver.disconnect()}
+      });
+      restoreObserver.observe(document.body,{childList:true});
+    };
     const cards=[...detail.querySelectorAll('#v22ArtChildren article')];
     for(let i=0;i<cards.length;i++){const child=children[i];for(const type of ['original','after','video','model']){const holder=cards[i].querySelector(`[data-preview="${type}"]`);holder.innerHTML=await assetPreview(selected,child,type)}}
     detail.querySelectorAll('[data-art-upload]').forEach(inp=>inp.onchange=async()=>{const file=inp.files?.[0];if(!file)return;await putAsset(inp.dataset.garden,inp.dataset.child,inp.dataset.type,file);openArtGardenActivity(selected)});
