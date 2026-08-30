@@ -19,11 +19,11 @@
 </head>
 <body>
   <div id="bootScreen" aria-live="polite"><div class="box"><b>StoryOS · סבא שמעון</b><span>טוען את סביבת העבודה…</span></div></div>
-  <iframe id="storyosFrame" src="/storyos.html?v=22.38-cleanup" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=22.39-cleanup" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
 <script>
 (() => {
   'use strict';
-  const VERSION='22.38-cleanup';
+  const VERSION='22.39-cleanup';
   const frame=document.getElementById('storyosFrame');
   const boot=document.getElementById('bootScreen');
 
@@ -73,8 +73,6 @@
     if(!doc){frame.style.visibility='visible';boot.classList.add('ready');return}
     normalizeIdentity(doc);
 
-    // שלב 1: ליבת האתחול בלבד. מסך הבית נבנה לפני שאר המודולים ולכן
-    // הממשק הישן לעולם לא נחשף למשתמש בזמן העלייה.
     const CORE=[
       ['v22CORSHotfixLoader','/storyos-v22-cors-hotfix.js'],
       ['v22FirebaseClientLoader','/storyos-firebase-client.js'],
@@ -87,8 +85,6 @@
     await loadGroup(doc,CORE);
     revealWhenHomeReady(doc);
 
-    // שלב 2: פיצ'רים שאינם נדרשים לציור הראשון של מסך הבית.
-    // הם נטענים ברקע אחרי שהמשתמש כבר רואה את הממשק הנכון.
     const FEATURES=[
       ['v22MediaHubLoader','/storyos-media-hub.js'],
       ['v22CloudMediaLoader','/storyos-v22-cloud-media.js'],
@@ -112,8 +108,7 @@
       ['v22KarmielGardens2Loader','/data/karmiel-gardens-2.js'],
       ['v22KarmielGardens3Loader','/data/karmiel-gardens-3.js'],
       ['v22KarmielGardenPickerLoader','/storyos-v22-karmiel-garden-picker.js'],
-      ['v22FlipFixLoader','/storyos-v22-flip-fix.js'],
-      ['v22FlipHotfixLoader','/storyos-v22-flip-hotfix.js'],
+      ['v22FlipLoader','/storyos-v22-flip.js'],
       ['v22NavigationHotfixLoader','/storyos-v22-navigation-hotfix.js'],
       ['v22FullExcelExportLoader','/storyos-v22-full-excel-export-v2232.js'],
       ['v22ReportingSyncLoader','/storyos-v22-reporting-sync.js'],
@@ -121,7 +116,7 @@
       ['v22ActivitySheetLoader','/storyos-v22-activity-sheet.js']
     ];
     await loadGroup(doc,FEATURES);
-    console.info('[StoryOS] consolidated boot completed');
+    console.info('[StoryOS] consolidated boot completed v22.39-cleanup');
   });
 })();
 </script>
