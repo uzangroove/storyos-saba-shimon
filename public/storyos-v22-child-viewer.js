@@ -1,7 +1,11 @@
 (() => {
+  'use strict';
+  const VERSION='22.42.0';
   const ADMIN_KEY='storyos_v22_admin_v1';
   const GARDEN='גן ערבה';
   const SLUG='gan-arava';
+  const PROXY_PATH='/firebase-media';
+  const LEGACY_STEM_ALIAS={'איילון':'אילון','טובה':'וובה'};
   const MANIFEST=[
     {name:'בן',before:'ben_before.jpg',after:'ben_after.png',video:'ben_video.mp4',model:'ben_3dmodel.glb'},
     {name:'איילון',before:'eylon_before.jpg',after:'eylon_after.png',video:'eylon_video.mp4',model:'eylon_3dmodel.glb'},
@@ -56,6 +60,8 @@
     setTimeout(()=>{for(const u of old){try{URL.revokeObjectURL(u)}catch(_){}}},15000);
   }
   function blobUrl(blob){const u=URL.createObjectURL(blob);objectUrls.push(u);return u}
+  function isFirebaseMedia(url){try{const u=new URL(url,location.href);return u.hostname==='firebasestorage.googleapis.com'||u.hostname==='storage.googleapis.com'}catch(_){return false}}
+  function proxyMedia(url){if(!url||String(url).startsWith(PROXY_PATH)||!isFirebaseMedia(url))return url;return `${PROXY_PATH}?url=${encodeURIComponent(url)}`}
 
   async function localAsset(child,type){
     try{const hub=window.StoryOSMediaHub;if(hub){const rec=await hub.getArtAsset(activeGarden,child,type);if(rec?.blob)return {url:blobUrl(rec.blob),source:'local',name:rec.name||''}}}catch(_){}
@@ -64,6 +70,8 @@
   function basename(path){return String(path||'').split('/').pop()?.toLowerCase()||''}
   function manifestRow(child){return MANIFEST.find(x=>x.name===child)||null}
   function fileFor(row,type){return type==='original'?row?.before:type==='after'?row?.after:type==='video'?row?.video:row?.model}
+  function legacyFileFor(child,type){const stem=LEGACY_STEM_ALIAS[child]||child;return type==='original'?`${stem}.jpg`:type==='after'?`${stem} תלת מימד.png`:type==='video'?`${stem}.mp4`:''}
+  function candidateNames(child,type){const names=[];const modern=fileFor(manifestRow(child),type);const legacy=legacyFileFor(child,type);for(const n of [modern,legacy]){const v=String(n||'').toLowerCase();if(v&&!names.includes(v))names.push(v)}return names}
 
   async function ensureFirebaseItems(interactive=false){
     if(firebaseItems)return firebaseItems;
@@ -71,13 +79,13 @@
     try{let user=await fb.currentUser();if(!user&&interactive)user=await fb.signInWithPrompt();if(!user)return null;let items=[];for(const prefix of ['gardens/gan-arava','MEDIA']){try{items.push(...await fb.listFiles(prefix))}catch(_){}}if(!items.length){try{items=await fb.listFiles('')}catch(_){}}firebaseItems=items;return items}catch(_){return null}
   }
   async function firebaseAsset(child,type,interactive=false){
-    const row=manifestRow(child);const wanted=fileFor(row,type)?.toLowerCase();if(!wanted)return null;
+    const wanted=candidateNames(child,type);if(!wanted.length)return null;
     const items=await ensureFirebaseItems(interactive);if(!items?.length)return null;
-    const hit=items.find(x=>basename(x.fullPath||x.name)===wanted);if(!hit)return null;
-    try{const url=await window.StoryOSFirebase.getUrl(hit.ref||hit.fullPath||hit.name);return {url,source:'firebase',name:wanted,path:hit.fullPath||hit.name}}catch(_){return null}
+    const hit=items.find(x=>wanted.includes(basename(x.fullPath||x.name)));if(!hit)return null;
+    try{const url=await window.StoryOSFirebase.getUrl(hit.ref||hit.fullPath||hit.name);return {url:proxyMedia(url),source:'firebase',name:basename(hit.fullPath||hit.name),path:hit.fullPath||hit.name}}catch(_){return null}
   }
   async function resolveAsset(child,type,interactive=false){
-    if(activeGarden===GARDEN){const legacy=await firebaseAsset(child,type,interactive);if(legacy)return legacy;return await localAsset(child,type)}
+    if(activeGarden===GARDEN){const firebase=await firebaseAsset(child,type,interactive);if(firebase)return firebase;return await localAsset(child,type)}
     return await localAsset(child,type)||await firebaseAsset(child,type,interactive)
   }
 
@@ -95,11 +103,6 @@
         <div class="v229-card"><h3>סרטון</h3><div id="v229VideoHost"></div><div class="v229-model-toolbar"><label class="btn small">העלה סרטון<input class="v229-upload" id="v229UploadVideo" type="file" accept="video/*"></label><button class="btn small" id="v229FullVideo">⛶ מסך מלא</button></div></div>
         <div class="v229-card"><h3>מודל 3D</h3><div id="v229ModelHost" class="v229-model-wrap"></div><div class="v229-model-toolbar"><label class="btn small">העלה GLB<input class="v229-upload" id="v229UploadModel" type="file" accept=".glb,.gltf,model/gltf-binary"></label><button class="btn small" id="v229AutoRotate">סיבוב אוטומטי</button><button class="btn small" id="v229ResetModel">איפוס תצוגה</button><button class="btn small" id="v229FullModel">⛶ מסך מלא</button></div></div>
       </div><div id="v229MediaStatus" class="v229-status"></div>`;
-    // מעבירים (לא משכפלים) את פקדי ניהול הגן של arava.js — בורר הגן, "פתח
-    // פעילות לגן" ו"+ גן חדש בניהול" — לתוך התפריט העליון הקבוע של המציג הזה,
-    // כדי שיישארו נגישים תמיד. בלי זה, ה-CSS למטה שמסתיר כל פאנל אחר בתוך
-    // #detail (כדי לפנות את כל המסך למציג) היה מסתיר גם אותם לגמרי, בלי שום
-    // דרך חזרה אליהם מתוך תצוגת הילד.
     const childrenPanel=[...detail.querySelectorAll('.panel')].find(p=>p.querySelector('#v22ArtChildren'));
     const gardenRow=detail.querySelector('#v22ArtGarden')?.closest('div')||null;
     const mgmtHost=root.querySelector('#v229GardenMgmt');
@@ -145,5 +148,5 @@
   }
 
   const observer=new MutationObserver(()=>activateIfArava());observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});setTimeout(activateIfArava,250);
-  window.StoryOSChildViewer={manifest:MANIFEST,open:activateIfArava,version:'22.23.0'};
+  window.StoryOSChildViewer={manifest:MANIFEST,open:activateIfArava,proxyMedia,version:VERSION};
 })();
