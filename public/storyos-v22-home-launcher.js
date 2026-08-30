@@ -4,7 +4,7 @@
   const ADMIN_KEY='storyos_v22_admin_v1';
   const BUCKET='saba-ganim-arava.firebasestorage.app';
   const FIREBASE_ROOT=`https://storage.googleapis.com/${BUCKET}`;
-  const BRAND_DATA='data:image/webp;base64,UklGRipsAABXRUJQVlA4WAoAAAAQAAAANAEA8wEAQUxQSDMWAAAB/yckSPD/eGtEpO4TkiTJbSQJCWB0C0lSEFh3YH4P3uF9w+fXW8JX1+vK/ieD+f78fPyd4aT6Jc0RzTmq3cP3qvR4Y/9dIuLQ9PpmM4z4Yz1j3lP1krh8/6g9+F7tP2P1mN7lQ8fhswq5zK4P/9V4Gx2e3tDxK6nT6J4mSx7vG6dkZfGv9q0Hn8J+o8uXm6d/HK6/2A9k2Yx7e1uN4ZQm3qj3J7t7b4c9nQz7g3n7c0uYy0f7m0o1x8p0+Y4W6Wl3zS2e+2C3R4O5iT3D6U4h9S2hN0X8i8f1O1bJ8u3g7y8cZl9o4k8f2mHkV8a7Wm3q0Tn4w5f0X4V8H9W6H9k1v7V7P0r3f6l4uVv9u8j9g8d7h+qv9G0b4f8g9i4j8f2b7j8w9f6q8o7f5m9l8v7f6s8r9n8v9w8j9i9k8l9m8n9o9p8q9r8s9t8u9v8w9x8y9z8A9B8C9D8E9F8G9H8I9J8K9L8M9N8O9P8Q9R8S9T8U9V8W9X8Y9Z8a9b8c9d8e9f8g9h8i9j8k9l8m9n8o9p8q9r8s9t8u9v8w9x8y9z8+9/9AA==';
+  const BRAND_SRC='/saba-shimon-morris.svg';
   const $=s=>document.querySelector(s);
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const items=[
@@ -72,7 +72,7 @@
     addStyles();
     const root=document.createElement('section');
     root.id='v2218Home';root.setAttribute('aria-label','מסך ראשי StoryOS');
-    root.innerHTML=`<div class="v2218-wrap"><div class="v2218-brand"><img class="v2218-logo" id="v2218BrandLogo" src="${BRAND_DATA}" alt="סבא שמעון ומוריס"><h1>StoryOS · סבא שמעון</h1><p>בחר פעילות או גן כדי להתחיל</p></div><div class="v2218-grid">${items.map(tileMarkup).join('')}</div><div class="v2218-footer">גרסה 22 · מסך כניסה נקי · <button type="button" class="v2218-admin-link" id="v2218AdminLink">⚙ ניהול</button></div></div>`;
+    root.innerHTML=`<div class="v2218-wrap"><div class="v2218-brand"><img class="v2218-logo" id="v2218BrandLogo" src="${BRAND_SRC}" alt="סבא שמעון ומוריס"><h1>StoryOS · סבא שמעון</h1><p>בחר פעילות או גן כדי להתחיל</p></div><div class="v2218-grid">${items.map(tileMarkup).join('')}</div><div class="v2218-footer">גרסה 22 · מסך כניסה נקי · <button type="button" class="v2218-admin-link" id="v2218AdminLink">⚙ ניהול</button></div></div>`;
     document.body.appendChild(root);
     root.querySelector('#v2218AdminLink')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();root.classList.add('v2218-hidden');if(!ensureAdmin()){console.warn('StoryOS admin button unavailable');root.classList.remove('v2218-hidden');return}const restoreObserver=new MutationObserver(()=>{if(!document.querySelector('.v22-admin-modal')){root.classList.remove('v2218-hidden');restoreObserver.disconnect()}});restoreObserver.observe(document.body,{childList:true})});
     root.querySelectorAll('[data-home-id]').forEach(b=>b.onclick=()=>{const it=items.find(x=>x.id===b.dataset.homeId);if(!it)return;if(it.id==='gardens')openGardens();else openProgram(it.program)});
