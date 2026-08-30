@@ -19,11 +19,11 @@
 </head>
 <body>
   <div id="bootScreen" aria-live="polite"><div class="box"><b>StoryOS · סבא שמעון</b><span>טוען את סביבת העבודה…</span></div></div>
-  <iframe id="storyosFrame" src="/storyos.html?v=22.41-cleanup" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=22.42-cleanup" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
 <script>
 (() => {
   'use strict';
-  const VERSION='22.41-cleanup';
+  const VERSION='22.42-cleanup';
   const frame=document.getElementById('storyosFrame');
   const boot=document.getElementById('bootScreen');
 
@@ -74,7 +74,6 @@
     normalizeIdentity(doc);
 
     const CORE=[
-      ['v22CORSHotfixLoader','/storyos-v22-cors-hotfix.js'],
       ['v22FirebaseClientLoader','/storyos-firebase-client.js'],
       ['v22ProductionLoader','/storyos-v22-production.js'],
       ['v22HomeLauncherLoader','/storyos-v22-home-launcher.js'],
@@ -91,7 +90,6 @@
       ['v22AravaLoader','/storyos-v22-arava.js'],
       ['v22FirebaseAravaLoader','/storyos-v22-firebase-arava.js'],
       ['v22ChildViewerLoader','/storyos-v22-child-viewer.js'],
-      ['v22AravaMediaFixLoader','/storyos-v22-arava-media-fix.js'],
       ['v22ViewerLayoutLoader','/storyos-v22-viewer-layout.js'],
       ['v22CompareOverlayFixLoader','/storyos-v22-compare-overlay-fix.js'],
       ['v22GardenTemplateLoader','/storyos-v22-garden-template.js'],
@@ -112,7 +110,7 @@
       ['v22ActivitySheetLoader','/storyos-v22-activity-sheet.js']
     ];
     await loadGroup(doc,FEATURES);
-    console.info('[StoryOS] consolidated boot completed v22.41-cleanup');
+    console.info('[StoryOS] consolidated boot completed v22.42-cleanup');
   });
 })();
 </script>
