@@ -1,72 +1,129 @@
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
-  <title>Story OS · סבא שמעון · גרסה 22.38</title>
-  <style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f4ed}#storyosFrame{display:block;width:100%;height:100dvh;border:0;background:#f8f4ed}</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Story OS · סבא שמעון · v22 cleanup</title>
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f4ed}
+    #storyosFrame{display:block;width:100%;height:100dvh;border:0;background:#f8f4ed;visibility:hidden}
+    #bootScreen{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle at 50% 0,#fff 0,#fbf7ef 42%,#f2eadf 100%);font-family:Arial,"Noto Sans Hebrew",sans-serif;color:#1d2940}
+    #bootScreen .box{text-align:center;padding:24px}
+    #bootScreen b{display:block;font-size:1.45rem;margin-bottom:8px}
+    #bootScreen span{color:#6a7180}
+    #bootScreen.ready{display:none}
+  </style>
 </head>
 <body>
-<iframe id="storyosFrame" src="/storyos.html?v=22.38.0" title="Story OS · סבא שמעון · גרסה 22.38" allow="fullscreen"></iframe>
+  <div id="bootScreen" aria-live="polite"><div class="box"><b>StoryOS · סבא שמעון</b><span>טוען את סביבת העבודה…</span></div></div>
+  <iframe id="storyosFrame" src="/storyos.html?v=22.38-cleanup" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
 <script>
-const storyosFrame=document.getElementById('storyosFrame');
-storyosFrame.addEventListener('load',()=>{
-  const doc=storyosFrame.contentDocument;
-  if(!doc)return;
-  doc.title='Story OS · סבא שמעון · גרסה 22.38';
-  const brandSubtitle=doc.querySelector('.brand p');
-  if(brandSubtitle)brandSubtitle.textContent=brandSubtitle.textContent
-    .replace(/גרסה\s*20(?:\.\d+)?/g,'גרסה 22.38')
-    .replace(/גרסה\s*22(?:\.\d+)?(?:\.\d+)?/g,'גרסה 22.38')
-    .replace(/ארבעה מסלולי פעילות/g,'חמישה מסלולי פעילות');
+(() => {
+  'use strict';
+  const VERSION='22.38-cleanup';
+  const frame=document.getElementById('storyosFrame');
+  const boot=document.getElementById('bootScreen');
 
-  const VERSION = '22.38.0';
-  const SCRIPTS = [
-    ['v22CORSHotfixLoader', '/storyos-v22-cors-hotfix.js'],
-    ['v22FirebaseClientLoader', '/storyos-firebase-client.js'],
-    ['v22MediaHubLoader', '/storyos-media-hub.js'],
-    ['v22CloudMediaLoader', '/storyos-v22-cloud-media.js'],
-    ['v22FlatMediaLoader', '/storyos-v22-flat-media.js'],
-    ['v22UnifiedControlsLoader', '/storyos-unified-controls.js'],
-    ['v22ProductionLoader', '/storyos-v22-production.js'],
-    ['v22AravaLoader', '/storyos-v22-arava.js'],
-    ['v22FirebaseAravaLoader', '/storyos-v22-firebase-arava.js'],
-    ['v22ChildViewerLoader', '/storyos-v22-child-viewer.js'],
-    ['v22AravaMediaFixLoader', '/storyos-v22-arava-media-fix.js'],
-    ['v22ViewerLayoutLoader', '/storyos-v22-viewer-layout.js'],
-    ['v22CompareOverlayFixLoader', '/storyos-v22-compare-overlay-fix.js'],
-    ['v22GardenTemplateLoader', '/storyos-v22-garden-template.js'],
-    ['v22WeeklyManagementLoader', '/storyos-v22-weekly-management.js'],
-    ['v22GardenCatalogLoader', '/storyos-v22-garden-catalog.js'],
-    ['v22GardenDashboardLoader', '/storyos-v22-garden-dashboard.js'],
-    ['v22ContentBindingLoader', '/storyos-v22-content-binding.js'],
-    ['v22ContentWindowLoader', '/storyos-v22-content-window.js'],
-    ['v22SchoolCalendarLoader', '/storyos-v22-school-calendar.js'],
-    ['v22GardenRecurringScheduleLoader', '/storyos-v22-garden-recurring-schedule.js'],
-    ['v22KarmielGardens1Loader', '/data/karmiel-gardens-1.js'],
-    ['v22KarmielGardens2Loader', '/data/karmiel-gardens-2.js'],
-    ['v22KarmielGardens3Loader', '/data/karmiel-gardens-3.js'],
-    ['v22KarmielGardenPickerLoader', '/storyos-v22-karmiel-garden-picker.js'],
-    ['v22FlipFixLoader', '/storyos-v22-flip-fix.js'],
-    ['v22FlipHotfixLoader', '/storyos-v22-flip-hotfix.js'],
-    ['v22HomeLauncherLoader', '/storyos-v22-home-launcher.js'],
-    ['v22HomeStyleFixLoader', '/storyos-v22-home-style-fix.js'],
-    ['v22BrandingLoader', '/storyos-v22-branding.js'],
-    ['v22NavigationHotfixLoader', '/storyos-v22-navigation-hotfix.js'],
-    ['v22NoSideMenuLoader', '/storyos-v22-no-side-menu.js'],
-    ['v22FullExcelExportLoader', '/storyos-v22-full-excel-export-v2232.js'],
-    ['v22ReportingSyncLoader', '/storyos-v22-reporting-sync.js'],
-    ['v22ReportingLinkFixLoader', '/storyos-v22-reporting-link-fix.js'],
-    ['v22ActivitySheetLoader', '/storyos-v22-activity-sheet.js'],
-  ];
-  const loadScript=(id,src)=>{
-    if(doc.getElementById(id))return;
-    const s=doc.createElement('script');
-    s.id=id;
-    s.src=src+'?v='+VERSION;
-    s.async=false;
-    doc.body.appendChild(s);
-  };
-  SCRIPTS.forEach(([id,src])=>loadScript(id,src));
-});
-</script></body></html>
+  function loadScript(doc,id,src){
+    return new Promise((resolve,reject)=>{
+      if(doc.getElementById(id))return resolve();
+      const s=doc.createElement('script');
+      s.id=id;
+      s.src=src+'?v='+VERSION;
+      s.async=false;
+      s.onload=()=>resolve();
+      s.onerror=()=>reject(new Error('Failed to load '+src));
+      doc.body.appendChild(s);
+    });
+  }
+
+  async function loadGroup(doc,items){
+    for(const [id,src] of items){
+      try{await loadScript(doc,id,src)}catch(err){console.error('[StoryOS boot]',err)}
+    }
+  }
+
+  function normalizeIdentity(doc){
+    doc.title='Story OS · סבא שמעון · גרסה 22';
+    const subtitle=doc.querySelector('.brand p');
+    if(subtitle)subtitle.textContent=subtitle.textContent
+      .replace(/גרסה\s*20(?:\.\d+)?/g,'גרסה 22')
+      .replace(/גרסה\s*22(?:\.\d+)?(?:\.\d+)?/g,'גרסה 22')
+      .replace(/ארבעה מסלולי פעילות/g,'חמישה מסלולי פעילות');
+  }
+
+  function revealWhenHomeReady(doc){
+    const reveal=()=>{
+      if(!doc.getElementById('v2218Home'))return false;
+      frame.style.visibility='visible';
+      boot.classList.add('ready');
+      return true;
+    };
+    if(reveal())return;
+    const observer=new MutationObserver(()=>{if(reveal())observer.disconnect()});
+    observer.observe(doc.body,{childList:true,subtree:true});
+    setTimeout(()=>{if(!reveal()){frame.style.visibility='visible';boot.classList.add('ready')}observer.disconnect()},5000);
+  }
+
+  frame.addEventListener('load',async()=>{
+    const doc=frame.contentDocument;
+    if(!doc){frame.style.visibility='visible';boot.classList.add('ready');return}
+    normalizeIdentity(doc);
+
+    // שלב 1: ליבת האתחול בלבד. מסך הבית נבנה לפני שאר המודולים ולכן
+    // הממשק הישן לעולם לא נחשף למשתמש בזמן העלייה.
+    const CORE=[
+      ['v22CORSHotfixLoader','/storyos-v22-cors-hotfix.js'],
+      ['v22FirebaseClientLoader','/storyos-firebase-client.js'],
+      ['v22ProductionLoader','/storyos-v22-production.js'],
+      ['v22HomeLauncherLoader','/storyos-v22-home-launcher.js'],
+      ['v22HomeStyleFixLoader','/storyos-v22-home-style-fix.js'],
+      ['v22BrandingLoader','/storyos-v22-branding.js'],
+      ['v22NoSideMenuLoader','/storyos-v22-no-side-menu.js']
+    ];
+    await loadGroup(doc,CORE);
+    revealWhenHomeReady(doc);
+
+    // שלב 2: פיצ'רים שאינם נדרשים לציור הראשון של מסך הבית.
+    // הם נטענים ברקע אחרי שהמשתמש כבר רואה את הממשק הנכון.
+    const FEATURES=[
+      ['v22MediaHubLoader','/storyos-media-hub.js'],
+      ['v22CloudMediaLoader','/storyos-v22-cloud-media.js'],
+      ['v22FlatMediaLoader','/storyos-v22-flat-media.js'],
+      ['v22UnifiedControlsLoader','/storyos-unified-controls.js'],
+      ['v22AravaLoader','/storyos-v22-arava.js'],
+      ['v22FirebaseAravaLoader','/storyos-v22-firebase-arava.js'],
+      ['v22ChildViewerLoader','/storyos-v22-child-viewer.js'],
+      ['v22AravaMediaFixLoader','/storyos-v22-arava-media-fix.js'],
+      ['v22ViewerLayoutLoader','/storyos-v22-viewer-layout.js'],
+      ['v22CompareOverlayFixLoader','/storyos-v22-compare-overlay-fix.js'],
+      ['v22GardenTemplateLoader','/storyos-v22-garden-template.js'],
+      ['v22WeeklyManagementLoader','/storyos-v22-weekly-management.js'],
+      ['v22GardenCatalogLoader','/storyos-v22-garden-catalog.js'],
+      ['v22GardenDashboardLoader','/storyos-v22-garden-dashboard.js'],
+      ['v22ContentBindingLoader','/storyos-v22-content-binding.js'],
+      ['v22ContentWindowLoader','/storyos-v22-content-window.js'],
+      ['v22SchoolCalendarLoader','/storyos-v22-school-calendar.js'],
+      ['v22GardenRecurringScheduleLoader','/storyos-v22-garden-recurring-schedule.js'],
+      ['v22KarmielGardens1Loader','/data/karmiel-gardens-1.js'],
+      ['v22KarmielGardens2Loader','/data/karmiel-gardens-2.js'],
+      ['v22KarmielGardens3Loader','/data/karmiel-gardens-3.js'],
+      ['v22KarmielGardenPickerLoader','/storyos-v22-karmiel-garden-picker.js'],
+      ['v22FlipFixLoader','/storyos-v22-flip-fix.js'],
+      ['v22FlipHotfixLoader','/storyos-v22-flip-hotfix.js'],
+      ['v22NavigationHotfixLoader','/storyos-v22-navigation-hotfix.js'],
+      ['v22FullExcelExportLoader','/storyos-v22-full-excel-export-v2232.js'],
+      ['v22ReportingSyncLoader','/storyos-v22-reporting-sync.js'],
+      ['v22ReportingLinkFixLoader','/storyos-v22-reporting-link-fix.js'],
+      ['v22ActivitySheetLoader','/storyos-v22-activity-sheet.js']
+    ];
+    await loadGroup(doc,FEATURES);
+    console.info('[StoryOS] consolidated boot completed');
+  });
+})();
+</script>
+</body>
+</html>
