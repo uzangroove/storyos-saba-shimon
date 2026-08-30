@@ -1,8 +1,10 @@
 (() => {
+  'use strict';
   const $=s=>document.querySelector(s);
-  const VERSION='22.24.0';
+  const VERSION='22.40.0';
   let activeRoot=null;
   let rootObserver=null;
+  let scheduled=false;
 
   function addStyles(){
     if($('#v2210ViewerStyle'))return;
@@ -48,42 +50,65 @@
     `;document.head.appendChild(s);
   }
 
-  function exitViewer(){
+  function drawingDetailVisible(){
+    const detail=$('#detail');
+    if(!detail||detail.classList.contains('hidden'))return false;
+    return /כשהציור קם לתחייה/.test(detail.textContent||'');
+  }
+
+  function deactivate(){
     document.body.classList.remove('v2210-child-view');
-    if(activeRoot)activeRoot.classList.remove('v2210-layout');
+    const root=activeRoot||$('#v229ChildViewer');
+    if(root)root.classList.remove('v2210-layout');
     activeRoot=null;
-    if(typeof window.goHome==='function')window.goHome();
   }
 
   function ensureCloseButton(root){
-    const head=root.querySelector('.v229-viewer-head');if(!head||head.querySelector('.v2210-close'))return;
-    const btn=document.createElement('button');btn.className='btn v2210-close';btn.type='button';btn.textContent='← חזרה למרכז הפעילויות';btn.onclick=exitViewer;head.appendChild(btn);
+    const head=root.querySelector('.v229-viewer-head');
+    if(!head||head.querySelector('.v2210-close'))return;
+    const btn=document.createElement('button');
+    btn.className='btn v2210-close';
+    btn.type='button';
+    btn.textContent='← חזרה למרכז הפעילויות';
+    btn.onclick=exitViewer;
+    head.appendChild(btn);
   }
 
   function activate(){
-    const root=$('#v229ChildViewer');if(!root)return false;
+    const root=$('#v229ChildViewer');
+    if(!root||!drawingDetailVisible()){deactivate();return false}
     addStyles();
-    if(activeRoot!==root){
-      activeRoot=root;
-      document.body.classList.add('v2210-child-view');
-      root.classList.add('v2210-layout');
-      ensureCloseButton(root);
-    }else if(!root.classList.contains('v2210-layout')){
-      root.classList.add('v2210-layout');document.body.classList.add('v2210-child-view');
-    }
+    activeRoot=root;
+    document.body.classList.add('v2210-child-view');
+    root.classList.add('v2210-layout');
+    ensureCloseButton(root);
     return true;
   }
 
-  function watchForRoot(){
-    activate();
-    rootObserver=new MutationObserver(()=>requestAnimationFrame(activate));
-    rootObserver.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
-    setInterval(activate,900);
+  function refresh(){
+    scheduled=false;
+    if(drawingDetailVisible())activate();else deactivate();
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchForRoot,{once:true});else watchForRoot();
-  // compare-slider ownership moved entirely to storyos-v22-compare-overlay-fix.js
-  // (see that file's header comment); this file now only owns the surrounding
-  // full-screen viewer layout/grid and the close button.
-  window.StoryOSViewerLayout={version:VERSION,activate,exit:exitViewer};
+  function scheduleRefresh(){
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(refresh);
+  }
+
+  function exitViewer(){
+    deactivate();
+    if(typeof window.goHome==='function')window.goHome();
+  }
+
+  function start(){
+    addStyles();
+    refresh();
+    rootObserver=new MutationObserver(scheduleRefresh);
+    rootObserver.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    document.addEventListener('storyos:navigate',scheduleRefresh);
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+  window.StoryOSViewerLayout={version:VERSION,activate,deactivate,refresh:scheduleRefresh,exit:exitViewer};
 })();
