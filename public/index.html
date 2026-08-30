@@ -19,11 +19,11 @@
 </head>
 <body>
   <div id="bootScreen" aria-live="polite"><div class="box"><b>StoryOS · סבא שמעון</b><span>טוען את סביבת העבודה…</span></div></div>
-  <iframe id="storyosFrame" src="/storyos.html?v=22.40-cleanup" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
+  <iframe id="storyosFrame" src="/storyos.html?v=22.41-cleanup" title="Story OS · סבא שמעון" allow="fullscreen"></iframe>
 <script>
 (() => {
   'use strict';
-  const VERSION='22.40-cleanup';
+  const VERSION='22.41-cleanup';
   const frame=document.getElementById('storyosFrame');
   const boot=document.getElementById('bootScreen');
 
@@ -109,11 +109,10 @@
       ['v22FlipLoader','/storyos-v22-flip.js'],
       ['v22FullExcelExportLoader','/storyos-v22-full-excel-export-v2232.js'],
       ['v22ReportingSyncLoader','/storyos-v22-reporting-sync.js'],
-      ['v22ReportingLinkFixLoader','/storyos-v22-reporting-link-fix.js'],
       ['v22ActivitySheetLoader','/storyos-v22-activity-sheet.js']
     ];
     await loadGroup(doc,FEATURES);
-    console.info('[StoryOS] consolidated boot completed v22.40-cleanup');
+    console.info('[StoryOS] consolidated boot completed v22.41-cleanup');
   });
 })();
 </script>
