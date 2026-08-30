@@ -1,0 +1,21 @@
+[
+  {
+    "origin": [
+      "https://storyos-saba-shimon.netlify.app",
+      "https://deploy-preview-4--storyos-saba-shimon.netlify.app",
+      "http://localhost:5173",
+      "http://localhost:8888"
+    ],
+    "method": ["GET", "HEAD", "PUT", "POST", "DELETE", "OPTIONS"],
+    "responseHeader": [
+      "Content-Type",
+      "Content-Length",
+      "Content-Range",
+      "Range",
+      "ETag",
+      "Cache-Control",
+      "x-goog-meta-*"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]

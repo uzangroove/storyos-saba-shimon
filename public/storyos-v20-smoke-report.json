@@ -1,0 +1,249 @@
+{
+  "version": "20.1",
+  "generatedAt": "2026-08-18T07:40:51.109Z",
+  "summary": {
+    "total": 43,
+    "passed": 43,
+    "failed": 0,
+    "pass": true
+  },
+  "core": {
+    "items": 88,
+    "programs": {
+      "כשהציור קם לתחייה": 22,
+      "עולם קטן, קסם גדול": 9,
+      "שיר נולד בגן": 22,
+      "שעת סיפור והמחשה": 30,
+      "תיאטרון בובות": 5
+    },
+    "duplicateIds": []
+  },
+  "ui": {
+    "visibleFields": [
+      "חיפוש חופשי",
+      "סוג פעילות",
+      "גיל הילדים",
+      "נושא / ערך",
+      "עונה / חג",
+      "מספר ילדים",
+      "סוג מסגרת"
+    ]
+  },
+  "checks": [
+    {
+      "name": "Version marker v20",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "88 core items",
+      "pass": true,
+      "detail": "found 88"
+    },
+    {
+      "name": "5 programs",
+      "pass": true,
+      "detail": "{\"כשהציור קם לתחייה\":22,\"עולם קטן, קסם גדול\":9,\"שיר נולד בגן\":22,\"שעת סיפור והמחשה\":30,\"תיאטרון בובות\":5}"
+    },
+    {
+      "name": "Expected program counts",
+      "pass": true,
+      "detail": "{\"כשהציור קם לתחייה\":22,\"עולם קטן, קסם גדול\":9,\"שיר נולד בגן\":22,\"שעת סיפור והמחשה\":30,\"תיאטרון בובות\":5}"
+    },
+    {
+      "name": "No duplicate IDs",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "music01..music22 present",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Five activity tiles",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Music activity tile",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Unified controls script loaded",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Unified controls panel exists in script",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Approved search field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Approved program field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Approved age field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Approved theme field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Approved season field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Approved group size field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Approved setting field",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Old planner hidden",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Old category removed from visible controls",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Old attention removed from visible controls",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Desktop right sidebar layout",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Responsive single-column layout",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Unified clear action exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Unified show-results action exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Group size and setting affect relevance order",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Favorites persistence",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Live mode entry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Timer exists",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "PDF deck support",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "IndexedDB persistence",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Scanned book viewer entry",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Scanned viewer IndexedDB",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "No runtime v20 adapter",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "No old v19 enhancement runtime",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Main iframe points to v20.1 core",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "RTL main document",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "RTL scanned viewer",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "storyos.html JS syntax",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "index.html JS syntax",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "book-viewer.html JS syntax",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "storyos-unified-controls.js JS syntax",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "All referenced story cover assets exist",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "Main logo asset exists",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}
