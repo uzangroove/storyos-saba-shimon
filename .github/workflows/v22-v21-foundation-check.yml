@@ -1,0 +1,65 @@
+name: V22 V21 foundation integration checks
+
+on:
+  push:
+    branches:
+      - integration/v22-v21-foundation
+  pull_request:
+    branches:
+      - release/storyos-v22-production
+    paths:
+      - .env.example
+      - db/**
+      - drizzle.config.ts
+      - package.json
+      - scripts/smoke-test-v22.mjs
+      - public/**
+      - app/**
+      - lib/**
+      - .github/workflows/v22-v21-foundation-check.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate-foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout preview commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify V22 runtime stayed intact
+        run: node scripts/smoke-test-v22.mjs
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Verify PostgreSQL schema generation
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/storyos
+        run: npx drizzle-kit generate --name=v22_foundation_ci
+
+      - name: Build application
+        env:
+          NETLIFY: "true"
+        run: npm run build
+
+      - name: Confirm preview target is not main
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "${{ github.base_ref }}" = "release/storyos-v22-production"
+          else
+            test "${GITHUB_REF_NAME}" = "integration/v22-v21-foundation"
+          fi
